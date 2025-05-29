@@ -771,17 +771,17 @@
         }
 
         function updatePrometheusCharts(metrics) {
-            // CPU chart
+            // CPU chart - data is already in percentage
             const cpuData = Object.entries(metrics)
                 .filter(([k, v]) => k.startsWith('cpu_'))
                 .map(([k, v]) => ({ 
                     label: k.replace('cpu_', '').split('-')[0], 
-                    value: v * 100 
+                    value: v  // Already in percentage
                 }));
             
             if (cpuData.length > 0) {
                 createChart('cpuChart', 'doughnut', {
-                    labels: cpuData.map(d => d.label),
+                    labels: cpuData.map(d => d.label + ' (' + d.value.toFixed(1) + '%)'),
                     datasets: [{
                         data: cpuData.map(d => d.value.toFixed(1)),
                         backgroundColor: [
@@ -796,6 +796,13 @@
                     plugins: {
                         legend: {
                             position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            }
                         }
                     }
                 });
@@ -878,13 +885,24 @@
             
             Object.entries(metrics).forEach(([key, value]) => {
                 let displayValue = value;
+                let unit = '';
+                
                 if (typeof value === 'number') {
-                    displayValue = value > 100 ? value.toFixed(0) : value.toFixed(2);
+                    // Format based on metric type
+                    if (key.startsWith('cpu_')) {
+                        displayValue = value.toFixed(1);
+                        unit = '%';
+                    } else if (key.startsWith('memory_')) {
+                        displayValue = value.toFixed(2);
+                        unit = ' GB';
+                    } else {
+                        displayValue = value > 100 ? value.toFixed(0) : value.toFixed(2);
+                    }
                 }
                 
                 html += `
                     <div class="stat-card">
-                        <div class="stat-value" style="font-size: 1.2rem">${displayValue}</div>
+                        <div class="stat-value" style="font-size: 1.2rem">${displayValue}${unit}</div>
                         <div class="stat-label">${key.replace(/_/g, ' ')}</div>
                     </div>
                 `;

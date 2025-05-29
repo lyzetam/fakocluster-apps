@@ -74,8 +74,8 @@ def query_prometheus(query):
 def get_prometheus_metrics():
     metrics = {}
     
-    # CPU usage by pod
-    cpu_query = 'rate(container_cpu_usage_seconds_total{namespace=~"whisper|piper|openwakeword|homebot"}[5m])'
+    # CPU usage by pod (already in percentage)
+    cpu_query = 'rate(container_cpu_usage_seconds_total{namespace=~"whisper|piper|openwakeword|homebot"}[5m]) * 100'
     cpu_data = query_prometheus(cpu_query)
     for item in cpu_data:
         pod = item['metric'].get('pod', '')
@@ -172,12 +172,12 @@ def get_pod_metrics():
     
     return pods_info
 
-# Service endpoint testing
+# Service endpoint testing - Fixed for Wyoming protocol
 def test_response_times():
     services = {
-        'whisper': {'port': 30300, 'endpoint': '/health'},
-        'piper': {'port': 30200, 'endpoint': '/health'},
-        'openwakeword': {'port': 30400, 'endpoint': '/health'}
+        'whisper': {'port': 30300, 'protocol': 'tcp'},
+        'piper': {'port': 30200, 'protocol': 'tcp'},
+        'openwakeword': {'port': 30400, 'protocol': 'tcp'}
     }
     resp = {}
     
@@ -189,13 +189,17 @@ def test_response_times():
             if node_ip:
                 start = time.time()
                 try:
-                    r = requests.get(f"http://{node_ip}:{info['port']}{info['endpoint']}", 
-                                   timeout=5)
+                    # Test TCP connection for Wyoming protocol
+                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    sock.settimeout(5)
+                    result = sock.connect_ex((node_ip, info['port']))
+                    sock.close()
                     elapsed = time.time() - start
+                    
                     resp[name] = {
                         'time': elapsed,
-                        'status': 'ok' if r.status_code == 200 else 'error',
-                        'code': r.status_code
+                        'status': 'ok' if result == 0 else 'error',
+                        'code': result
                     }
                 except Exception as e:
                     resp[name] = {'time': None, 'status': 'error', 'error': str(e)}
@@ -217,7 +221,7 @@ def get_resource_usage():
                 if key.startswith('cpu_'):
                     pod = key.replace('cpu_', '')
                     usage[pod] = usage.get(pod, {})
-                    usage[pod]['cpu'] = f"{value * 100:.1f}%"
+                    usage[pod]['cpu'] = f"{value:.1f}%"  # Already in percentage
                 elif key.startswith('memory_'):
                     pod = key.replace('memory_', '')
                     usage[pod] = usage.get(pod, {})
@@ -275,7 +279,7 @@ def generate_alerts():
             alerts.append({
                 'severity': 'critical',
                 'type': 'service_down',
-                'message': f"{svc} health check failed",
+                'message': f"{svc} TCP connection failed",
                 'details': data
             })
     
@@ -283,11 +287,11 @@ def generate_alerts():
     prom = metrics_data.get('prometheus_metrics', {})
     for svc in ['whisper', 'piper', 'openwakeword']:
         cpu_key = f"cpu_{svc}"
-        if cpu_key in prom and prom[cpu_key] > 0.8:
+        if cpu_key in prom and prom[cpu_key] > 80:  # Already in percentage
             alerts.append({
                 'severity': 'warning',
                 'type': 'high_cpu',
-                'message': f"{svc} CPU usage is {prom[cpu_key]*100:.1f}%"
+                'message': f"{svc} CPU usage is {prom[cpu_key]:.1f}%"
             })
         
         mem_key = f"memory_{svc}"
