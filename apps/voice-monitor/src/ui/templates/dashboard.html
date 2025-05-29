@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Pipeline Monitor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #0f3460;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a8a8a8;
+            --accent: #e94560;
+            --success: #4CAF50;
+            --warning: #ff9800;
+            --error: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.ok { background: var(--success); }
+        .status-dot.warning { background: var(--warning); }
+        .status-dot.error { background: var(--error); }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .metric-small {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .pod-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .pod-info {
+            flex: 1;
+        }
+
+        .pod-metrics {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert.critical { background: rgba(244, 67, 54, 0.2); border-left: 4px solid var(--error); }
+        .alert.warning { background: rgba(255, 152, 0, 0.2); border-left: 4px solid var(--warning); }
+        .alert.info { background: rgba(33, 150, 243, 0.2); border-left: 4px solid #2196F3; }
+
+        .recommendation {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .recommendation h4 {
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .recommendation .impact {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--bg-secondary);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Voice Pipeline Monitor</h1>
+            <div class="status-indicator">
+                <span>System Status:</span>
+                <div class="status-dot ok" id="systemStatus"></div>
+                <span id="lastUpdate">-</span>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('overview')">Overview</button>
+            <button class="tab" onclick="switchTab('pods')">Pods</button>
+            <button class="tab" onclick="switchTab('performance')">Performance</button>
+            <button class="tab" onclick="switchTab('alerts')">Alerts</button>
+        </div>
+
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid" id="overviewStats"></div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>Service Health</h3>
+                    <div id="serviceHealth"></div>
+                </div>
+                
+                <div class="card">
+                    <h3>Response Times</h3>
+                    <canvas id="responseChart"></canvas>
+                </div>
+                
+                <div class="card">
+                    <h3>Resource Usage</h3>
+                    <div id="resourceSummary"></div>
+                </div>
+                
+                <div class="card">
+                    <h3>Voice Pipeline Metrics</h3>
+                    <div id="voiceMetrics"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pods" class="tab-content">
+            <div class="card">
+                <h3>Pod Status</h3>
+                <div id="podList"></div>
+            </div>
+        </div>
+
+        <div id="performance" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h3>CPU Usage</h3>
+                    <canvas id="cpuChart"></canvas>
+                </div>
+                
+                <div class="card">
+                    <h3>Memory Usage</h3>
+                    <canvas id="memoryChart"></canvas>
+                </div>
+                
+                <div class="card">
+                    <h3>Request Rate</h3>
+                    <canvas id="requestChart"></canvas>
+                </div>
+                
+                <div class="card">
+                    <h3>P99 Latency</h3>
+                    <canvas id="latencyChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <h3>Detailed Metrics</h3>
+                <div id="detailedMetrics"></div>
+            </div>
+        </div>
+
+        <div id="alerts" class="tab-content">
+            <div class="card">
+                <h3>Active Alerts</h3>
+                <div id="alertList"></div>
+            </div>
+            
+            <div class="card">
+                <h3>Recommendations</h3>
+                <div id="recommendationList"></div>
+            </div>
+            
+            <div class="card">
+                <h3>Recent Errors</h3>
+                <div id="errorList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let charts = {};
+        let metricsData = null;
+        let refreshInterval = 30000; // 30 seconds
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Chart setup
+        function createChart(elementId, type, data, options) {
+            const ctx = document.getElementById(elementId).getContext('2d');
+            if (charts[elementId]) {
+                charts[elementId].destroy();
+            }
+            
+            const defaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#f5f5f5'
+                        }
+                    }
+                },
+                scales: type !== 'pie' && type !== 'doughnut' ? {
+                    x: {
+                        ticks: { color: '#a8a8a8' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    y: {
+                        ticks: { color: '#a8a8a8' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                } : undefined
+            };
+            
+            charts[elementId] = new Chart(ctx, { 
+                type, 
+                data, 
+                options: { ...defaultOptions, ...options }
+            });
+        }
+
+        // Update overview stats
+        function updateOverviewStats(data) {
+            const container = document.getElementById('overviewStats');
+            
+            // Calculate stats
+            const totalPods = Object.keys(data.pods || {}).length;
+            const readyPods = Object.values(data.pods || {}).filter(p => p.ready).length;
+            const alerts = data.alerts || [];
+            const criticalAlerts = alerts.filter(a => a.severity === 'critical').length;
+            
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${readyPods}/${totalPods}</div>
+                    <div class="stat-label">Pods Ready</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: ${criticalAlerts > 0 ? 'var(--error)' : 'var(--success)'}">${alerts.length}</div>
+                    <div class="stat-label">Active Alerts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Object.keys(data.response_times || {}).filter(s => data.response_times[s].status === 'ok').length}</div>
+                    <div class="stat-label">Services Up</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.errors ? data.errors.length : 0}</div>
+                    <div class="stat-label">Errors</div>
+                </div>
+            `;
+        }
+
+        // Update service health display
+        function updateServiceHealth(data) {
+            const container = document.getElementById('serviceHealth');
+            let html = '';
+            
+            Object.entries(data.response_times || {}).forEach(([service, info]) => {
+                const status = info.status === 'ok' ? 'success' : 'error';
+                const time = info.time ? `${(info.time * 1000).toFixed(0)}ms` : 'N/A';
+                
+                html += `
+                    <div class="metric">
+                        <span>${service}</span>
+                        <span class="metric-value" style="color: var(--${status})">${time}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update resource summary
+        function updateResourceSummary(data) {
+            const container = document.getElementById('resourceSummary');
+            const usage = data.resource_usage || {};
+            
+            if (Object.keys(usage).length === 0) {
+                container.innerHTML = '<div class="loading">No resource data available</div>';
+                return;
+            }
+            
+            let html = '';
+            Object.entries(usage).slice(0, 5).forEach(([pod, resources]) => {
+                const shortName = pod.split('/').pop().substring(0, 20);
+                html += `
+                    <div class="metric">
+                        <span class="metric-small">${shortName}</span>
+                        <span class="metric-small">CPU: ${resources.cpu} | Mem: ${resources.memory}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update voice metrics
+        function updateVoiceMetrics(data) {
+            const container = document.getElementById('voiceMetrics');
+            const prom = data.prometheus_metrics || {};
+            
+            let html = '';
+            
+            // Whisper metrics
+            if (prom.whisper_avg_transcription_time) {
+                html += `
+                    <div class="metric">
+                        <span>Avg Transcription Time</span>
+                        <span class="metric-value">${prom.whisper_avg_transcription_time.toFixed(2)}s</span>
+                    </div>
+                `;
+            }
+            
+            // Piper metrics
+            if (prom.piper_avg_synthesis_time) {
+                html += `
+                    <div class="metric">
+                        <span>Avg Synthesis Time</span>
+                        <span class="metric-value">${prom.piper_avg_synthesis_time.toFixed(2)}s</span>
+                    </div>
+                `;
+            }
+            
+            // Wake word detections
+            if (prom.wake_word_detections) {
+                html += `
+                    <div class="metric">
+                        <span>Wake Word Detections (5m)</span>
+                        <span class="metric-value">${Math.round(prom.wake_word_detections)}</span>
+                    </div>
+                `;
+            }
+            
+            if (html === '') {
+                html = '<div class="loading">No voice pipeline metrics available</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Update pod list
+        function updatePodList(pods) {
+            const container = document.getElementById('podList');
+            let html = '';
+            
+            Object.entries(pods || {}).forEach(([key, pod]) => {
+                const statusColor = pod.ready ? 'success' : 'error';
+                
+                html += `
+                    <div class="pod-status">
+                        <div class="pod-info">
+                            <div style="color: var(--${statusColor})">${key}</div>
+                            <div class="pod-metrics">
+                                <span>Node: ${pod.node}</span>
+                                <span>Restarts: ${pod.restarts}</span>
+                                <span>Age: ${pod.age}</span>
+                                <span>Events: ${pod.recent_events}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html || '<div class="loading">No pods found</div>';
+        }
+
+        // Update alerts
+        function updateAlerts(alerts) {
+            const container = document.getElementById('alertList');
+            
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-secondary)">No active alerts</div>';
+                return;
+            }
+            
+            let html = '';
+            alerts.forEach(alert => {
+                html += `
+                    <div class="alert ${alert.severity}">
+                        <div>
+                            <strong>${alert.message}</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary)">
+                                Type: ${alert.type}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update recommendations
+        function updateRecommendations(recommendations) {
+            const container = document.getElementById('recommendationList');
+            
+            if (!recommendations || recommendations.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-secondary)">No recommendations</div>';
+                return;
+            }
+            
+            let html = '';
+            recommendations.forEach(rec => {
+                html += `
+                    <div class="recommendation">
+                        <h4>${rec.component}: ${rec.issue}</h4>
+                        <div>${rec.recommendation}</div>
+                        <div class="impact">Impact: ${rec.impact}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update error list
+        function updateErrorList(errors) {
+            const container = document.getElementById('errorList');
+            
+            if (!errors || errors.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-secondary)">No recent errors</div>';
+                return;
+            }
+            
+            let html = '';
+            errors.forEach(error => {
+                html += `<div class="error-message">${error}</div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update charts
+        function updateCharts(data) {
+            // Response time chart
+            const services = Object.keys(data.response_times || {});
+            const responseTimes = services.map(s => 
+                data.response_times[s].time ? data.response_times[s].time * 1000 : 0
+            );
+            
+            createChart('responseChart', 'bar', {
+                labels: services,
+                datasets: [{
+                    label: 'Response Time (ms)',
+                    data: responseTimes,
+                    backgroundColor: 'rgba(233, 69, 96, 0.6)',
+                    borderColor: 'rgba(233, 69, 96, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            });
+
+            // Update Prometheus-based charts if available
+            if (data.prometheus_metrics && Object.keys(data.prometheus_metrics).length > 0) {
+                updatePrometheusCharts(data.prometheus_metrics);
+            }
+        }
+
+        function updatePrometheusCharts(metrics) {
+            // CPU chart
+            const cpuData = Object.entries(metrics)
+                .filter(([k, v]) => k.startsWith('cpu_'))
+                .map(([k, v]) => ({ label: k.replace('cpu_', '').split('-')[0], value: v * 100 }));
+            
+            if (cpuData.length > 0) {
+                createChart('cpuChart', 'doughnut', {
+                    labels: cpuData.map(d => d.label),
+                    datasets: [{
+                        data: cpuData.map(d => d.value),
+                        backgroundColor: [
+                            'rgba(233, 69, 96, 0.6)',
+                            'rgba(76, 175, 80, 0.6)',
+                            'rgba(33, 150, 243, 0.6)',
+                            'rgba(255, 152, 0, 0.6)'
+                        ]
+                    }]
+                });
+            }
+
+            // Memory chart
+            const memData = Object.entries(metrics)
+                .filter(([k, v]) => k.startsWith('memory_'))
+                .map(([k, v]) => ({ label: k.replace('memory_', '').split('-')[0], value: v }));
+            
+            if (memData.length > 0) {
+                createChart('memoryChart', 'bar', {
+                    labels: memData.map(d => d.label),
+                    datasets: [{
+                        label: 'Memory (GB)',
+                        data: memData.map(d => d.value),
+                        backgroundColor: 'rgba(76, 175, 80, 0.6)',
+                        borderColor: 'rgba(76, 175, 80, 1)',
+                        borderWidth: 1
+                    }]
+                }, {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                });
+            }
+
+            // Request rate chart
+            const reqData = Object.entries(metrics)
+                .filter(([k, v]) => k.startsWith('requests_'))
+                .map(([k, v]) => ({ label: k.replace('requests_', ''), value: v }));
+            
+            if (reqData.length > 0) {
+                createChart('requestChart', 'line', {
+                    labels: reqData.map(d => d.label),
+                    datasets: [{
+                        label: 'Requests/sec',
+                        data: reqData.map(d => d.value),
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        tension: 0.1
+                    }]
+                });
+            }
+
+            // P99 latency chart
+            const p99Data = Object.entries(metrics)
+                .filter(([k, v]) => k.startsWith('p99_'))
+                .map(([k, v]) => ({ label: k.replace('p99_', ''), value: v }));
+            
+            if (p99Data.length > 0) {
+                createChart('latencyChart', 'line', {
+                    labels: p99Data.map(d => d.label),
+                    datasets: [{
+                        label: 'P99 Latency (s)',
+                        data: p99Data.map(d => d.value),
+                        borderColor: 'rgba(255, 152, 0, 1)',
+                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                        tension: 0.1
+                    }]
+                });
+            }
+
+            // Update detailed metrics
+            updateDetailedMetrics(metrics);
+        }
+
+        function updateDetailedMetrics(metrics) {
+            const container = document.getElementById('detailedMetrics');
+            let html = '<div class="stats-grid">';
+            
+            Object.entries(metrics).forEach(([key, value]) => {
+                let displayValue = value;
+                if (typeof value === 'number') {
+                    displayValue = value > 100 ? value.toFixed(0) : value.toFixed(2);
+                }
+                
+                html += `
+                    <div class="stat-card">
+                        <div class="stat-value" style="font-size: 1.2rem">${displayValue}</div>
+                        <div class="stat-label">${key.replace(/_/g, ' ')}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Main update function
+        async function updateMetrics() {
+            try {
+                const response = await fetch('/api/metrics');
+                metricsData = await response.json();
+                
+                // Update timestamp
+                document.getElementById('lastUpdate').textContent = 
+                    new Date(metricsData.timestamp).toLocaleTimeString();
+                
+                // Update system status
+                const hasErrors = metricsData.errors && metricsData.errors.length > 0;
+                const hasAlerts = metricsData.alerts && metricsData.alerts.some(a => a.severity === 'critical');
+                const statusDot = document.getElementById('systemStatus');
+                
+                if (hasAlerts || hasErrors) {
+                    statusDot.className = 'status-dot error';
+                } else if (metricsData.alerts && metricsData.alerts.length > 0) {
+                    statusDot.className = 'status-dot warning';
+                } else {
+                    statusDot.className = 'status-dot ok';
+                }
+                
+                // Update all displays
+                updateOverviewStats(metricsData);
+                updateServiceHealth(metricsData);
+                updateResourceSummary(metricsData);
+                updateVoiceMetrics(metricsData);
+                updatePodList(metricsData.pods);
+                updateAlerts(metricsData.alerts);
+                updateRecommendations(metricsData.recommendations);
+                updateErrorList(metricsData.errors);
+                updateCharts(metricsData);
+                
+            } catch (error) {
+                console.error('Error fetching metrics:', error);
+                document.getElementById('systemStatus').className = 'status-dot error';
+            }
+        }
+
+        // Initialize
+        updateMetrics();
+        setInterval(updateMetrics, refreshInterval);
+    </script>
+</body>
+</html>
