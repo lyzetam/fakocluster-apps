@@ -8,11 +8,17 @@ import socket
 import requests
 from collections import deque, defaultdict
 import json
+from functools import wraps
+from time import time
+import pytz
 
 # Configuration with validation
 REFRESH_INTERVAL = int(os.getenv('REFRESH_INTERVAL', '30'))
 FLASK_PORT = int(os.getenv('FLASK_PORT', '8080'))
 PROMETHEUS_URL = os.getenv('PROMETHEUS_URL', 'http://prometheus.monitoring.svc.cluster.local:9090')
+
+# Timezone configuration
+EST = pytz.timezone('US/Eastern')
 
 # Security: Validate refresh interval
 if REFRESH_INTERVAL < 10:
@@ -27,6 +33,7 @@ app = Flask(__name__, template_folder='../ui/templates', static_folder='../ui/st
 metrics_history = defaultdict(lambda: deque(maxlen=100))
 metrics_data = {
     'timestamp': None,
+    'timestamp_est': None,
     'pods': {},
     'response_times': {},
     'resource_usage': {},
@@ -161,7 +168,7 @@ def get_pod_metrics():
                     } for c in pod.status.container_statuses or []]
                 }
         except Exception as e:
-            metrics_data['errors'].append(f"Error getting pods in {ns}: {e}")
+            metrics_data['errors'].append(f"Error getting pods in {ns}: {str(e)[:100]}")
     
     return pods_info
 
@@ -195,7 +202,7 @@ def test_response_times():
             else:
                 resp[name] = {'time': None, 'status': 'error', 'error': 'No node IP'}
     except Exception as e:
-        metrics_data['errors'].append(f"Error testing services: {e}")
+        metrics_data['errors'].append(f"Error testing services: {str(e)[:100]}")
     
     return resp
 
@@ -383,8 +390,12 @@ def collect_metrics():
     global metrics_data
     while True:
         try:
+            utc_now = datetime.utcnow()
+            est_now = pytz.utc.localize(utc_now).astimezone(EST)
+            
             data = {
-                'timestamp': datetime.utcnow().isoformat(),
+                'timestamp': utc_now.isoformat(),
+                'timestamp_est': est_now.strftime('%Y-%m-%d %H:%M:%S %Z'),
                 'pods': get_pod_metrics(),
                 'response_times': test_response_times(),
                 'prometheus_metrics': get_prometheus_metrics(),
@@ -455,6 +466,7 @@ def api_metrics():
     # Sanitize data before sending
     safe_data = {
         'timestamp': metrics_data.get('timestamp'),
+        'timestamp_est': metrics_data.get('timestamp_est'),
         'pods': metrics_data.get('pods', {}),
         'response_times': metrics_data.get('response_times', {}),
         'prometheus_metrics': metrics_data.get('prometheus_metrics', {}),
