@@ -13,7 +13,7 @@ from time import time
 import pytz
 
 # Configuration with validation
-REFRESH_INTERVAL = int(os.getenv('REFRESH_INTERVAL', '10'))
+REFRESH_INTERVAL = int(os.getenv('REFRESH_INTERVAL', '30'))
 FLASK_PORT = int(os.getenv('FLASK_PORT', '8080'))
 PROMETHEUS_URL = os.getenv('PROMETHEUS_URL', 'http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090')
 

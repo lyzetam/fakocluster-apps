@@ -809,4 +809,554 @@
                 html += `
                     <div class="metric">
                         <span class="metric-label">Avg Synthesis Time</span>
-                        <span class="metric-value">${prom.piper
+                        <span class="metric-value">${prom.piper_avg_synthesis_time.toFixed(2)}s</span>
+                    </div>
+                `;
+            }
+            
+            // Wake word detections
+            if (prom.wake_word_detections !== undefined) {
+                html += `
+                    <div class="metric">
+                        <span class="metric-label">Wake Word Detections (5m)</span>
+                        <span class="metric-value">${Math.round(prom.wake_word_detections)}</span>
+                    </div>
+                `;
+            }
+            
+            // Ollama metrics
+            if (prom.ollama_avg_model_load_time) {
+                html += `
+                    <div class="metric">
+                        <span class="metric-label">Avg Model Load Time</span>
+                        <span class="metric-value">${prom.ollama_avg_model_load_time.toFixed(2)}s</span>
+                    </div>
+                `;
+            }
+            
+            if (html === '') {
+                html = '<div class="loading">No voice pipeline metrics available</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Update pod list
+        function updatePodList(pods) {
+            const container = document.getElementById('podList');
+            let html = '';
+            
+            Object.entries(pods || {}).forEach(([key, pod]) => {
+                const statusColor = pod.ready ? 'success' : 'error';
+                const gpuClass = pod.gpu_requested ? 'gpu-pod' : '';
+                const gpuBadge = pod.gpu_requested ? `<span class="gpu-badge">GPU</span>` : '';
+                
+                html += `
+                    <div class="pod-status ${gpuClass}">
+                        <div class="pod-header">
+                            <div style="color: var(--${statusColor}); font-weight: bold;">${key} ${gpuBadge}</div>
+                        </div>
+                        <div class="pod-metrics">
+                            <span>Node: ${pod.node}</span>
+                            <span>Restarts: ${pod.restarts}</span>
+                            <span>Age: ${pod.age}</span>
+                            <span>Events: ${pod.recent_events}</span>
+                            ${pod.gpu_requested ? `<span style="color: var(--gpu-accent)">GPU: ${pod.gpu_limit}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html || '<div class="loading">No pods found</div>';
+        }
+
+        // Update GPU overview
+        function updateGpuOverview(gpuMetrics) {
+            const container = document.getElementById('gpuOverview');
+            
+            if (!gpuMetrics || Object.keys(gpuMetrics).length === 0) {
+                container.innerHTML = '<div class="loading" style="grid-column: 1/-1;">No GPU data available</div>';
+                return;
+            }
+            
+            // Extract GPU metrics by ID
+            const gpuData = {};
+            Object.entries(gpuMetrics).forEach(([key, value]) => {
+                if (key.startsWith('gpu_') && key.split('_').length >= 3) {
+                    const parts = key.split('_');
+                    const gpuId = parts[1];
+                    const metricType = parts.slice(2).join('_');
+                    
+                    if (!gpuData[gpuId]) gpuData[gpuId] = {};
+                    gpuData[gpuId][metricType] = value;
+                }
+            });
+            
+            let html = '';
+            Object.entries(gpuData).forEach(([gpuId, metrics]) => {
+                const util = metrics.utilization || 0;
+                const temp = metrics.temperature || 0;
+                const memPercent = metrics.memory_percent || 0;
+                const power = metrics.power || 0;
+                
+                const tempClass = temp > 80 ? 'temperature-high' : temp > 65 ? 'temperature-warm' : 'temperature-cool';
+                
+                html += `
+                    <div class="gpu-metric-card">
+                        <div class="gpu-metric-header">
+                            🎮 GPU ${gpuId}
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Utilization</span>
+                            <span class="gpu-metric-value" style="font-size: 1.2rem">${util.toFixed(1)}%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Memory</span>
+                            <span class="gpu-metric-value" style="font-size: 1.2rem">${memPercent.toFixed(1)}%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Temperature</span>
+                            <span class="gpu-metric-value ${tempClass}" style="font-size: 1.2rem">${temp.toFixed(0)}°C</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Power</span>
+                            <span class="gpu-metric-value" style="font-size: 1.2rem">${power.toFixed(0)}W</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update GPU workloads
+        function updateGpuWorkloads(pods, gpuMetrics) {
+            const container = document.getElementById('gpuWorkloads');
+            
+            const gpuPods = Object.entries(pods || {}).filter(([key, pod]) => pod.gpu_requested);
+            
+            if (gpuPods.length === 0) {
+                container.innerHTML = '<div class="loading">No GPU workloads detected</div>';
+                return;
+            }
+            
+            let html = '';
+            gpuPods.forEach(([key, pod]) => {
+                const statusColor = pod.ready ? 'success' : 'error';
+                const namespace = pod.namespace;
+                
+                html += `
+                    <div class="metric">
+                        <span class="metric-label">
+                            <strong>${key}</strong><br>
+                            <small>Node: ${pod.node} | GPU Limit: ${pod.gpu_limit}</small>
+                        </span>
+                        <span class="metric-value" style="color: var(--${statusColor}); font-size: 1rem">
+                            ${pod.ready ? 'READY' : 'NOT READY'}
+                        </span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update alerts
+        function updateAlerts(alerts) {
+            const container = document.getElementById('alertList');
+            
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No active alerts</div>';
+                return;
+            }
+            
+            let html = '';
+            alerts.forEach(alert => {
+                html += `
+                    <div class="alert ${alert.severity}">
+                        <div>
+                            <strong>${alert.message}</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 5px;">
+                                Type: ${alert.type}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update recommendations
+        function updateRecommendations(recommendations) {
+            const container = document.getElementById('recommendationList');
+            
+            if (!recommendations || recommendations.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No recommendations</div>';
+                return;
+            }
+            
+            let html = '';
+            recommendations.forEach(rec => {
+                html += `
+                    <div class="recommendation">
+                        <h4>${rec.component}: ${rec.issue}</h4>
+                        <div>${rec.recommendation}</div>
+                        <div class="impact">Impact: ${rec.impact}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update error list
+        function updateErrorList(errors) {
+            const container = document.getElementById('errorList');
+            
+            if (!errors || errors.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 20px;">No recent errors</div>';
+                return;
+            }
+            
+            let html = '';
+            errors.forEach(error => {
+                html += `<div class="error-message">${error}</div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update charts
+        function updateCharts(data) {
+            // Response time chart
+            const services = Object.keys(data.response_times || {});
+            const responseTimes = services.map(s => 
+                data.response_times[s].time ? data.response_times[s].time * 1000 : 0
+            );
+            
+            if (services.length > 0) {
+                createChart('responseChart', 'bar', {
+                    labels: services,
+                    datasets: [{
+                        label: 'Response Time (ms)',
+                        data: responseTimes,
+                        backgroundColor: 'rgba(233, 69, 96, 0.6)',
+                        borderColor: 'rgba(233, 69, 96, 1)',
+                        borderWidth: 1
+                    }]
+                }, {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                });
+            }
+
+            // Update Prometheus-based charts if available
+            if (data.prometheus_metrics && Object.keys(data.prometheus_metrics).length > 0) {
+                updatePrometheusCharts(data.prometheus_metrics);
+            }
+
+            // Update GPU charts if available
+            if (data.gpu_metrics && Object.keys(data.gpu_metrics).length > 0) {
+                updateGpuCharts(data.gpu_metrics);
+            }
+        }
+
+        function updatePrometheusCharts(metrics) {
+            // CPU chart - data is already in percentage
+            const cpuData = Object.entries(metrics)
+                .filter(([k, v]) => k.startsWith('cpu_'))
+                .map(([k, v]) => ({ 
+                    label: k.replace('cpu_', '').split('-')[0], 
+                    value: v  // Already in percentage
+                }));
+            
+            if (cpuData.length > 0) {
+                createChart('cpuChart', 'doughnut', {
+                    labels: cpuData.map(d => d.label + ' (' + d.value.toFixed(1) + '%)'),
+                    datasets: [{
+                        data: cpuData.map(d => d.value.toFixed(1)),
+                        backgroundColor: [
+                            'rgba(233, 69, 96, 0.6)',
+                            'rgba(76, 175, 80, 0.6)',
+                            'rgba(33, 150, 243, 0.6)',
+                            'rgba(255, 152, 0, 0.6)',
+                            'rgba(118, 255, 3, 0.6)'
+                        ],
+                        borderWidth: 0
+                    }]
+                }, {
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Memory chart
+            const memData = Object.entries(metrics)
+                .filter(([k, v]) => k.startsWith('memory_'))
+                .map(([k, v]) => ({ 
+                    label: k.replace('memory_', '').split('-')[0], 
+                    value: v 
+                }));
+            
+            if (memData.length > 0) {
+                createChart('memoryChart', 'bar', {
+                    labels: memData.map(d => d.label),
+                    datasets: [{
+                        label: 'Memory (GB)',
+                        data: memData.map(d => d.value.toFixed(2)),
+                        backgroundColor: 'rgba(76, 175, 80, 0.6)',
+                        borderColor: 'rgba(76, 175, 80, 1)',
+                        borderWidth: 1
+                    }]
+                }, {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                });
+            }
+
+            // Request rate chart
+            const reqData = Object.entries(metrics)
+                .filter(([k, v]) => k.startsWith('requests_'))
+                .map(([k, v]) => ({ 
+                    label: k.replace('requests_', ''), 
+                    value: v 
+                }));
+            
+            if (reqData.length > 0) {
+                createChart('requestChart', 'line', {
+                    labels: reqData.map(d => d.label),
+                    datasets: [{
+                        label: 'Requests/sec',
+                        data: reqData.map(d => d.value.toFixed(2)),
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        tension: 0.3
+                    }]
+                });
+            }
+
+            // P99 latency chart
+            const p99Data = Object.entries(metrics)
+                .filter(([k, v]) => k.startsWith('p99_'))
+                .map(([k, v]) => ({ 
+                    label: k.replace('p99_', ''), 
+                    value: v 
+                }));
+            
+            if (p99Data.length > 0) {
+                createChart('latencyChart', 'line', {
+                    labels: p99Data.map(d => d.label),
+                    datasets: [{
+                        label: 'P99 Latency (s)',
+                        data: p99Data.map(d => d.value.toFixed(2)),
+                        borderColor: 'rgba(255, 152, 0, 1)',
+                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                        tension: 0.3
+                    }]
+                });
+            }
+
+            // Update detailed metrics
+            updateDetailedMetrics(metrics);
+        }
+
+        function updateGpuCharts(gpuMetrics) {
+            // Extract GPU data by ID
+            const gpuData = {};
+            Object.entries(gpuMetrics).forEach(([key, value]) => {
+                if (key.startsWith('gpu_') && key.split('_').length >= 3) {
+                    const parts = key.split('_');
+                    const gpuId = parts[1];
+                    const metricType = parts.slice(2).join('_');
+                    
+                    if (!gpuData[gpuId]) gpuData[gpuId] = {};
+                    gpuData[gpuId][metricType] = value;
+                }
+            });
+
+            const gpuIds = Object.keys(gpuData);
+            
+            if (gpuIds.length === 0) return;
+
+            // GPU Utilization Chart
+            createChart('gpuUtilChart', 'bar', {
+                labels: gpuIds.map(id => `GPU ${id}`),
+                datasets: [{
+                    label: 'Utilization (%)',
+                    data: gpuIds.map(id => (gpuData[id].utilization || 0).toFixed(1)),
+                    backgroundColor: 'rgba(118, 255, 3, 0.6)',
+                    borderColor: 'rgba(118, 255, 3, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            });
+
+            // GPU Memory Chart
+            createChart('gpuMemoryChart', 'doughnut', {
+                labels: gpuIds.map(id => `GPU ${id} (${(gpuData[id].memory_percent || 0).toFixed(1)}%)`),
+                datasets: [{
+                    data: gpuIds.map(id => (gpuData[id].memory_percent || 0).toFixed(1)),
+                    backgroundColor: [
+                        'rgba(118, 255, 3, 0.8)',
+                        'rgba(76, 175, 80, 0.8)',
+                        'rgba(33, 150, 243, 0.8)',
+                        'rgba(255, 152, 0, 0.8)'
+                    ],
+                    borderWidth: 0
+                }]
+            });
+
+            // GPU Temperature Chart
+            createChart('gpuTempChart', 'line', {
+                labels: gpuIds.map(id => `GPU ${id}`),
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: gpuIds.map(id => (gpuData[id].temperature || 0).toFixed(0)),
+                    borderColor: 'rgba(255, 152, 0, 1)',
+                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            }, {
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            });
+
+            // GPU Power Chart
+            createChart('gpuPowerChart', 'bar', {
+                labels: gpuIds.map(id => `GPU ${id}`),
+                datasets: [{
+                    label: 'Power (W)',
+                    data: gpuIds.map(id => (gpuData[id].power || 0).toFixed(0)),
+                    backgroundColor: 'rgba(233, 69, 96, 0.6)',
+                    borderColor: 'rgba(233, 69, 96, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            });
+        }
+
+        function updateDetailedMetrics(metrics) {
+            const container = document.getElementById('detailedMetrics');
+            let html = '<div class="stats-grid">';
+            
+            Object.entries(metrics).forEach(([key, value]) => {
+                let displayValue = value;
+                let unit = '';
+                
+                if (typeof value === 'number') {
+                    // Format based on metric type
+                    if (key.startsWith('cpu_') || key.includes('utilization')) {
+                        displayValue = value.toFixed(1);
+                        unit = '%';
+                    } else if (key.startsWith('memory_') || key.includes('memory')) {
+                        displayValue = value.toFixed(2);
+                        unit = ' GB';
+                    } else if (key.includes('temperature')) {
+                        displayValue = value.toFixed(0);
+                        unit = '°C';
+                    } else if (key.includes('power')) {
+                        displayValue = value.toFixed(0);
+                        unit = 'W';
+                    } else {
+                        displayValue = value > 100 ? value.toFixed(0) : value.toFixed(2);
+                    }
+                }
+                
+                const isGpuMetric = key.startsWith('gpu_') || key.includes('gpu');
+                
+                html += `
+                    <div class="stat-card ${isGpuMetric ? 'gpu-stat' : ''}">
+                        <div class="stat-value ${isGpuMetric ? 'gpu-value' : ''}" style="font-size: 1.2rem">${displayValue}${unit}</div>
+                        <div class="stat-label">${key.replace(/_/g, ' ')}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Main update function
+        async function updateMetrics() {
+            try {
+                const response = await fetch('/api/metrics');
+                metricsData = await response.json();
+                
+                // Update timestamp with EST time
+                const timestampElement = document.getElementById('lastUpdate');
+                if (metricsData.timestamp_est) {
+                    timestampElement.textContent = metricsData.timestamp_est;
+                } else {
+                    timestampElement.textContent = new Date(metricsData.timestamp).toLocaleString('en-US', {
+                        timeZone: 'America/New_York',
+                        dateStyle: 'short',
+                        timeStyle: 'medium'
+                    });
+                }
+                
+                // Update system status
+                const hasErrors = metricsData.errors && metricsData.errors.length > 0;
+                const hasAlerts = metricsData.alerts && metricsData.alerts.some(a => a.severity === 'critical');
+                const statusDot = document.getElementById('systemStatus');
+                
+                if (hasAlerts || hasErrors) {
+                    statusDot.className = 'status-dot error';
+                } else if (metricsData.alerts && metricsData.alerts.length > 0) {
+                    statusDot.className = 'status-dot warning';
+                } else {
+                    statusDot.className = 'status-dot ok';
+                }
+                
+                // Update all displays
+                updateOverviewStats(metricsData);
+                updateServiceHealth(metricsData);
+                updateResourceSummary(metricsData);
+                updateVoiceMetrics(metricsData);
+                updatePodList(metricsData.pods);
+                updateGpuOverview(metricsData.gpu_metrics);
+                updateGpuWorkloads(metricsData.pods, metricsData.gpu_metrics);
+                updateAlerts(metricsData.alerts);
+                updateRecommendations(metricsData.recommendations);
+                updateErrorList(metricsData.errors);
+                updateCharts(metricsData);
+                
+            } catch (error) {
+                console.error('Error fetching metrics:', error);
+                document.getElementById('systemStatus').className = 'status-dot error';
+                document.getElementById('lastUpdate').textContent = 'Connection error';
+            }
+        }
+
+        // Initialize
+        updateMetrics();
+        setInterval(updateMetrics, refreshInterval);
+    </script>
+</body>
+</html>
