@@ -6,4 +6,5 @@
 *.crt
 *.key
 notes/
-externalconnections/
+*.json
+# externalconnections/
