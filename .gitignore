@@ -1,0 +1,9 @@
+*.txt
+*.log
+*.csv
+*.agekey
+*.pem
+*.crt
+*.key
+notes/
+externalconnections/
