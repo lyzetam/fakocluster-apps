@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""Main collector script that orchestrates data collection"""
+"""Enhanced Oura data collector with support for all endpoints"""
 import sys
 import logging
 import schedule
 import time
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 # Import configuration
 import config
 
 # Import modules
-from aws_secrets import AWSSecretsManager
+sys.path.insert(0, '../Scripts/externalconnections')
+from fetch_secrets_from_aws import get_secret
 from oura_client import OuraAPIClient
 from data_processor import DataProcessor
 from storage import DataStorage
@@ -25,11 +26,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class OuraCollector:
-    """Main collector class that orchestrates data collection"""
+    """Enhanced collector that orchestrates comprehensive data collection"""
     
     def __init__(self):
         """Initialize the collector"""
-        logger.info("Initializing Oura Collector")
+        logger.info("Initializing Enhanced Oura Collector")
         
         # Load configuration from AWS Secrets Manager
         self.config = self._load_configuration()
@@ -46,7 +47,7 @@ class OuraCollector:
         if not self.oura_client.test_connection():
             raise RuntimeError("Failed to connect to Oura API")
         
-        logger.info("Oura Collector initialized successfully")
+        logger.info("Enhanced Oura Collector initialized successfully")
     
     def _load_configuration(self) -> Dict[str, Any]:
         """Load configuration from AWS Secrets Manager
@@ -54,10 +55,9 @@ class OuraCollector:
         Returns:
             Configuration dictionary
         """
-        secrets_manager = AWSSecretsManager(region=config.AWS_REGION)
-        
         try:
-            secrets = secrets_manager.get_secret(config.SECRETS_NAME)
+            # Use the existing get_secret function
+            secrets = get_secret(config.SECRETS_NAME)
             
             # Required configuration
             if 'oura_personal_access_token' not in secrets:
@@ -66,7 +66,9 @@ class OuraCollector:
             configuration = {
                 'oura_token': secrets['oura_personal_access_token'],
                 'collection_interval': secrets.get('collection_interval', config.COLLECTION_INTERVAL),
-                'days_to_backfill': secrets.get('days_to_backfill', config.DAYS_TO_BACKFILL)
+                'days_to_backfill': secrets.get('days_to_backfill', config.DAYS_TO_BACKFILL),
+                'collect_all_endpoints': secrets.get('collect_all_endpoints', True),
+                'endpoints_to_collect': secrets.get('endpoints_to_collect', [])
             }
             
             logger.info("Configuration loaded from AWS Secrets Manager")
@@ -91,7 +93,7 @@ class OuraCollector:
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=days_back)
         
-        logger.info(f"Starting data collection from {start_date} to {end_date}")
+        logger.info(f"Starting comprehensive data collection from {start_date} to {end_date}")
         
         summary = {
             'start_date': str(start_date),
@@ -100,37 +102,80 @@ class OuraCollector:
             'results': {}
         }
         
-        # Collect sleep data
+        # Collect personal info first (not date-based)
         try:
-            logger.info("Collecting sleep data...")
-            raw_sleep = self.oura_client.get_sleep_data(start_date, end_date)
-            processed_sleep = self.processor.process_sleep_data(raw_sleep)
+            logger.info("Collecting personal info...")
+            personal_info = self.oura_client.get_personal_info()
+            
+            # Save personal info
+            info_path = self.storage.save_data([personal_info], 'personal_info')
+            summary['results']['personal_info'] = {
+                'collected': True,
+                'file': info_path
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to collect personal info: {e}")
+            summary['results']['personal_info'] = {'error': str(e)}
+        
+        # Core data collection
+        collected_data = {}
+        
+        # Sleep period data (detailed sleep stages)
+        try:
+            logger.info("Collecting sleep period data...")
+            raw_sleep_periods = self.oura_client.get_sleep_periods(start_date, end_date)
+            processed_sleep_periods = self.processor.process_sleep_periods(raw_sleep_periods)
             
             # Save raw and processed data
-            raw_path = self.storage.save_data(raw_sleep, 'sleep', raw=True)
-            processed_path = self.storage.save_data(processed_sleep, 'sleep')
+            raw_path = self.storage.save_data(raw_sleep_periods, 'sleep_periods', raw=True)
+            processed_path = self.storage.save_data(processed_sleep_periods, 'sleep_periods')
             
-            summary['results']['sleep'] = {
-                'records_collected': len(raw_sleep),
-                'records_processed': len(processed_sleep),
+            collected_data['sleep_periods'] = processed_sleep_periods
+            summary['results']['sleep_periods'] = {
+                'records_collected': len(raw_sleep_periods),
+                'records_processed': len(processed_sleep_periods),
                 'raw_file': raw_path,
                 'processed_file': processed_path
             }
             
         except Exception as e:
-            logger.error(f"Failed to collect sleep data: {e}")
-            summary['results']['sleep'] = {'error': str(e)}
+            logger.error(f"Failed to collect sleep period data: {e}")
+            summary['results']['sleep_periods'] = {'error': str(e)}
         
-        # Collect activity data
+        # Daily sleep scores
+        try:
+            logger.info("Collecting daily sleep scores...")
+            raw_daily_sleep = self.oura_client.get_daily_sleep(start_date, end_date)
+            processed_daily_sleep = self.processor.process_daily_sleep(raw_daily_sleep)
+            
+            # Save raw and processed data
+            raw_path = self.storage.save_data(raw_daily_sleep, 'daily_sleep', raw=True)
+            processed_path = self.storage.save_data(processed_daily_sleep, 'daily_sleep')
+            
+            collected_data['daily_sleep'] = processed_daily_sleep
+            summary['results']['daily_sleep'] = {
+                'records_collected': len(raw_daily_sleep),
+                'records_processed': len(processed_daily_sleep),
+                'raw_file': raw_path,
+                'processed_file': processed_path
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to collect daily sleep data: {e}")
+            summary['results']['daily_sleep'] = {'error': str(e)}
+        
+        # Activity data
         try:
             logger.info("Collecting activity data...")
-            raw_activity = self.oura_client.get_activity_data(start_date, end_date)
+            raw_activity = self.oura_client.get_daily_activity(start_date, end_date)
             processed_activity = self.processor.process_activity_data(raw_activity)
             
             # Save raw and processed data
             raw_path = self.storage.save_data(raw_activity, 'activity', raw=True)
             processed_path = self.storage.save_data(processed_activity, 'activity')
             
+            collected_data['activity'] = processed_activity
             summary['results']['activity'] = {
                 'records_collected': len(raw_activity),
                 'records_processed': len(processed_activity),
@@ -142,16 +187,17 @@ class OuraCollector:
             logger.error(f"Failed to collect activity data: {e}")
             summary['results']['activity'] = {'error': str(e)}
         
-        # Collect readiness data
+        # Readiness data
         try:
             logger.info("Collecting readiness data...")
-            raw_readiness = self.oura_client.get_readiness_data(start_date, end_date)
+            raw_readiness = self.oura_client.get_daily_readiness(start_date, end_date)
             processed_readiness = self.processor.process_readiness_data(raw_readiness)
             
             # Save raw and processed data
             raw_path = self.storage.save_data(raw_readiness, 'readiness', raw=True)
             processed_path = self.storage.save_data(processed_readiness, 'readiness')
             
+            collected_data['readiness'] = processed_readiness
             summary['results']['readiness'] = {
                 'records_collected': len(raw_readiness),
                 'records_processed': len(processed_readiness),
@@ -163,12 +209,135 @@ class OuraCollector:
             logger.error(f"Failed to collect readiness data: {e}")
             summary['results']['readiness'] = {'error': str(e)}
         
-        # Create daily summaries if we have all data types
-        if all(k in locals() for k in ['processed_sleep', 'processed_activity', 'processed_readiness']):
+        # Workout data
+        try:
+            logger.info("Collecting workout data...")
+            raw_workouts = self.oura_client.get_workouts(start_date, end_date)
+            processed_workouts = self.processor.process_workout_data(raw_workouts)
+            
+            # Save raw and processed data
+            raw_path = self.storage.save_data(raw_workouts, 'workouts', raw=True)
+            processed_path = self.storage.save_data(processed_workouts, 'workouts')
+            
+            collected_data['workouts'] = processed_workouts
+            summary['results']['workouts'] = {
+                'records_collected': len(raw_workouts),
+                'records_processed': len(processed_workouts),
+                'raw_file': raw_path,
+                'processed_file': processed_path
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to collect workout data: {e}")
+            summary['results']['workouts'] = {'error': str(e)}
+        
+        # Stress data (if enabled)
+        if self.config.get('collect_all_endpoints', True) or 'stress' in self.config.get('endpoints_to_collect', []):
             try:
-                logger.info("Creating daily summaries...")
+                logger.info("Collecting stress data...")
+                raw_stress = self.oura_client.get_daily_stress(start_date, end_date)
+                processed_stress = self.processor.process_stress_data(raw_stress)
+                
+                # Save raw and processed data
+                raw_path = self.storage.save_data(raw_stress, 'stress', raw=True)
+                processed_path = self.storage.save_data(processed_stress, 'stress')
+                
+                collected_data['stress'] = processed_stress
+                summary['results']['stress'] = {
+                    'records_collected': len(raw_stress),
+                    'records_processed': len(processed_stress),
+                    'raw_file': raw_path,
+                    'processed_file': processed_path
+                }
+                
+            except Exception as e:
+                logger.error(f"Failed to collect stress data: {e}")
+                summary['results']['stress'] = {'error': str(e)}
+        
+        # Additional endpoints if enabled
+        if self.config.get('collect_all_endpoints', True):
+            # Heart rate time series
+            try:
+                logger.info("Collecting heart rate data...")
+                start_datetime = datetime.combine(start_date, datetime.min.time())
+                end_datetime = datetime.combine(end_date, datetime.max.time())
+                
+                raw_heart_rate = self.oura_client.get_heart_rate(start_datetime, end_datetime)
+                
+                # Save raw data (no processing needed for time series)
+                hr_path = self.storage.save_data(raw_heart_rate, 'heart_rate', raw=True)
+                
+                summary['results']['heart_rate'] = {
+                    'records_collected': len(raw_heart_rate),
+                    'file': hr_path
+                }
+                
+            except Exception as e:
+                logger.error(f"Failed to collect heart rate data: {e}")
+                summary['results']['heart_rate'] = {'error': str(e)}
+            
+            # SpO2 data
+            try:
+                logger.info("Collecting SpO2 data...")
+                raw_spo2 = self.oura_client.get_daily_spo2(start_date, end_date)
+                
+                # Save raw data
+                spo2_path = self.storage.save_data(raw_spo2, 'spo2', raw=True)
+                
+                summary['results']['spo2'] = {
+                    'records_collected': len(raw_spo2),
+                    'file': spo2_path
+                }
+                
+            except Exception as e:
+                logger.error(f"Failed to collect SpO2 data: {e}")
+                summary['results']['spo2'] = {'error': str(e)}
+            
+            # Sessions data
+            try:
+                logger.info("Collecting sessions data...")
+                raw_sessions = self.oura_client.get_sessions(start_date, end_date)
+                
+                # Save raw data
+                sessions_path = self.storage.save_data(raw_sessions, 'sessions', raw=True)
+                
+                summary['results']['sessions'] = {
+                    'records_collected': len(raw_sessions),
+                    'file': sessions_path
+                }
+                
+            except Exception as e:
+                logger.error(f"Failed to collect sessions data: {e}")
+                summary['results']['sessions'] = {'error': str(e)}
+            
+            # Tags data
+            try:
+                logger.info("Collecting tags data...")
+                raw_tags = self.oura_client.get_enhanced_tags(start_date, end_date)
+                
+                # Save raw data
+                tags_path = self.storage.save_data(raw_tags, 'tags', raw=True)
+                
+                summary['results']['tags'] = {
+                    'records_collected': len(raw_tags),
+                    'file': tags_path
+                }
+                
+            except Exception as e:
+                logger.error(f"Failed to collect tags data: {e}")
+                summary['results']['tags'] = {'error': str(e)}
+        
+        # Create comprehensive daily summaries
+        if all(k in collected_data for k in ['sleep_periods', 'daily_sleep', 'activity', 'readiness']):
+            try:
+                logger.info("Creating comprehensive daily summaries...")
                 daily_summaries = self.processor.create_daily_summary(
-                    processed_sleep, processed_activity, processed_readiness
+                    sleep_periods=collected_data['sleep_periods'],
+                    daily_sleep=collected_data['daily_sleep'],
+                    activity_data=collected_data['activity'],
+                    readiness_data=collected_data['readiness'],
+                    stress_data=collected_data.get('stress'),
+                    workout_data=collected_data.get('workouts')
                 )
                 
                 summary_path = self.storage.save_data(daily_summaries, 'daily_summaries')
@@ -184,7 +353,7 @@ class OuraCollector:
         # Save collection summary
         self.storage.save_collection_summary(summary)
         
-        logger.info("Data collection completed")
+        logger.info("Comprehensive data collection completed")
         return summary
     
     def run_once(self, days_back: Optional[int] = None):
@@ -193,16 +362,27 @@ class OuraCollector:
         Args:
             days_back: Number of days to collect
         """
-        logger.info("Running single collection")
+        logger.info("Running single comprehensive collection")
         summary = self.collect_data(days_back)
         
         # Log summary statistics
+        total_records = 0
+        successful_endpoints = 0
+        failed_endpoints = 0
+        
         for data_type, result in summary['results'].items():
             if 'error' in result:
                 logger.error(f"{data_type}: {result['error']}")
+                failed_endpoints += 1
             else:
-                logger.info(f"{data_type}: {result.get('records_collected', 0)} collected, "
-                          f"{result.get('records_processed', 0)} processed")
+                records = result.get('records_collected', 0) or result.get('records_created', 0)
+                if records > 0:
+                    successful_endpoints += 1
+                    total_records += records
+                logger.info(f"{data_type}: {records} records collected/created")
+        
+        logger.info(f"Collection summary: {total_records} total records from "
+                   f"{successful_endpoints} endpoints (failed: {failed_endpoints})")
     
     def run_continuous(self):
         """Run continuous collection on schedule"""
