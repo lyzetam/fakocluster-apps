@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, List
 
 # Import configuration
-from collector import config
+import config
 
 # Import modules
 sys.path.insert(0, '../externalconnections')
