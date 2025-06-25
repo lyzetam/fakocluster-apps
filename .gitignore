@@ -1,4 +1,4 @@
-*.txt
+
 *.log
 *.csv
 *.agekey
@@ -7,4 +7,4 @@
 *.key
 notes/
 *.json
-# externalconnections/
+

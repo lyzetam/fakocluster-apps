@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enhanced Oura data collector with support for all endpoints"""
+"""Enhanced Oura data collector with PostgreSQL support"""
 import sys
 import logging
 import schedule
@@ -11,11 +11,12 @@ from typing import Optional, Dict, Any, List
 import config
 
 # Import modules
-sys.path.insert(0, '../Scripts/externalconnections')
-from fetch_secrets_from_aws import get_secret
+sys.path.insert(0, '../externalconnections')
+from fetch_oura_secrets import get_oura_credentials, get_postgres_credentials, build_postgres_connection_string
 from oura_client import OuraAPIClient
 from data_processor import DataProcessor
 from storage import DataStorage
+from postgres_storage import PostgresStorage
 
 # Configure logging
 logging.basicConfig(
@@ -38,10 +39,17 @@ class OuraCollector:
         # Initialize components
         self.oura_client = OuraAPIClient(self.config['oura_token'])
         self.processor = DataProcessor()
-        self.storage = DataStorage(
-            data_dir=config.DATA_DIR,
-            output_format=config.OUTPUT_FORMAT
-        )
+        
+        # Initialize storage based on backend type
+        if config.STORAGE_BACKEND.lower() == 'postgres':
+            logger.info("Using PostgreSQL storage backend")
+            self.storage = PostgresStorage(self.config['postgres_connection_string'])
+        else:
+            logger.info("Using file storage backend")
+            self.storage = DataStorage(
+                data_dir=config.DATA_DIR,
+                output_format=config.OUTPUT_FORMAT
+            )
         
         # Test connection
         if not self.oura_client.test_connection():
@@ -56,20 +64,39 @@ class OuraCollector:
             Configuration dictionary
         """
         try:
-            # Use the existing get_secret function
-            secrets = get_secret(config.SECRETS_NAME)
+            # Get Oura credentials
+            oura_secrets = get_oura_credentials(
+                secret_name=config.OURA_SECRETS_NAME,
+                region_name=config.AWS_REGION
+            )
             
-            # Required configuration
-            if 'oura_personal_access_token' not in secrets:
-                raise ValueError("oura_personal_access_token not found in secrets")
+            # Required Oura configuration
+            if 'oura_personal_access_token' not in oura_secrets:
+                raise ValueError("oura_personal_access_token not found in Oura secrets")
             
             configuration = {
-                'oura_token': secrets['oura_personal_access_token'],
-                'collection_interval': secrets.get('collection_interval', config.COLLECTION_INTERVAL),
-                'days_to_backfill': secrets.get('days_to_backfill', config.DAYS_TO_BACKFILL),
-                'collect_all_endpoints': secrets.get('collect_all_endpoints', True),
-                'endpoints_to_collect': secrets.get('endpoints_to_collect', [])
+                'oura_token': oura_secrets['oura_personal_access_token'],
+                'collection_interval': oura_secrets.get('collection_interval', config.COLLECTION_INTERVAL),
+                'days_to_backfill': oura_secrets.get('days_to_backfill', config.DAYS_TO_BACKFILL),
+                'collect_all_endpoints': oura_secrets.get('collect_all_endpoints', True),
+                'endpoints_to_collect': oura_secrets.get('endpoints_to_collect', [])
             }
+            
+            # Get PostgreSQL credentials if using postgres backend
+            if config.STORAGE_BACKEND.lower() == 'postgres':
+                postgres_secrets = get_postgres_credentials(
+                    secret_name=config.POSTGRES_SECRETS_NAME,
+                    region_name=config.AWS_REGION
+                )
+                
+                # Override with environment variables if provided
+                if config.DATABASE_HOST:
+                    postgres_secrets['host'] = config.DATABASE_HOST
+                if config.DATABASE_NAME:
+                    postgres_secrets['database'] = config.DATABASE_NAME
+                    
+                configuration['postgres_connection_string'] = build_postgres_connection_string(postgres_secrets)
+                logger.info("PostgreSQL configuration loaded successfully")
             
             logger.info("Configuration loaded from AWS Secrets Manager")
             return configuration
@@ -108,10 +135,10 @@ class OuraCollector:
             personal_info = self.oura_client.get_personal_info()
             
             # Save personal info
-            info_path = self.storage.save_data([personal_info], 'personal_info')
+            count = self.storage.save_data([personal_info], 'personal_info')
             summary['results']['personal_info'] = {
                 'collected': True,
-                'file': info_path
+                'records_saved': count
             }
             
         except Exception as e:
@@ -127,16 +154,14 @@ class OuraCollector:
             raw_sleep_periods = self.oura_client.get_sleep_periods(start_date, end_date)
             processed_sleep_periods = self.processor.process_sleep_periods(raw_sleep_periods)
             
-            # Save raw and processed data
-            raw_path = self.storage.save_data(raw_sleep_periods, 'sleep_periods', raw=True)
-            processed_path = self.storage.save_data(processed_sleep_periods, 'sleep_periods')
+            # Save processed data (raw data is included in the processed records)
+            count = self.storage.save_data(processed_sleep_periods, 'sleep_periods')
             
             collected_data['sleep_periods'] = processed_sleep_periods
             summary['results']['sleep_periods'] = {
                 'records_collected': len(raw_sleep_periods),
                 'records_processed': len(processed_sleep_periods),
-                'raw_file': raw_path,
-                'processed_file': processed_path
+                'records_saved': count
             }
             
         except Exception as e:
@@ -149,16 +174,14 @@ class OuraCollector:
             raw_daily_sleep = self.oura_client.get_daily_sleep(start_date, end_date)
             processed_daily_sleep = self.processor.process_daily_sleep(raw_daily_sleep)
             
-            # Save raw and processed data
-            raw_path = self.storage.save_data(raw_daily_sleep, 'daily_sleep', raw=True)
-            processed_path = self.storage.save_data(processed_daily_sleep, 'daily_sleep')
+            # Save processed data
+            count = self.storage.save_data(processed_daily_sleep, 'daily_sleep')
             
             collected_data['daily_sleep'] = processed_daily_sleep
             summary['results']['daily_sleep'] = {
                 'records_collected': len(raw_daily_sleep),
                 'records_processed': len(processed_daily_sleep),
-                'raw_file': raw_path,
-                'processed_file': processed_path
+                'records_saved': count
             }
             
         except Exception as e:
@@ -171,16 +194,14 @@ class OuraCollector:
             raw_activity = self.oura_client.get_daily_activity(start_date, end_date)
             processed_activity = self.processor.process_activity_data(raw_activity)
             
-            # Save raw and processed data
-            raw_path = self.storage.save_data(raw_activity, 'activity', raw=True)
-            processed_path = self.storage.save_data(processed_activity, 'activity')
+            # Save processed data
+            count = self.storage.save_data(processed_activity, 'activity')
             
             collected_data['activity'] = processed_activity
             summary['results']['activity'] = {
                 'records_collected': len(raw_activity),
                 'records_processed': len(processed_activity),
-                'raw_file': raw_path,
-                'processed_file': processed_path
+                'records_saved': count
             }
             
         except Exception as e:
@@ -193,16 +214,14 @@ class OuraCollector:
             raw_readiness = self.oura_client.get_daily_readiness(start_date, end_date)
             processed_readiness = self.processor.process_readiness_data(raw_readiness)
             
-            # Save raw and processed data
-            raw_path = self.storage.save_data(raw_readiness, 'readiness', raw=True)
-            processed_path = self.storage.save_data(processed_readiness, 'readiness')
+            # Save processed data
+            count = self.storage.save_data(processed_readiness, 'readiness')
             
             collected_data['readiness'] = processed_readiness
             summary['results']['readiness'] = {
                 'records_collected': len(raw_readiness),
                 'records_processed': len(processed_readiness),
-                'raw_file': raw_path,
-                'processed_file': processed_path
+                'records_saved': count
             }
             
         except Exception as e:
@@ -215,16 +234,14 @@ class OuraCollector:
             raw_workouts = self.oura_client.get_workouts(start_date, end_date)
             processed_workouts = self.processor.process_workout_data(raw_workouts)
             
-            # Save raw and processed data
-            raw_path = self.storage.save_data(raw_workouts, 'workouts', raw=True)
-            processed_path = self.storage.save_data(processed_workouts, 'workouts')
+            # Save processed data
+            count = self.storage.save_data(processed_workouts, 'workouts')
             
             collected_data['workouts'] = processed_workouts
             summary['results']['workouts'] = {
                 'records_collected': len(raw_workouts),
                 'records_processed': len(processed_workouts),
-                'raw_file': raw_path,
-                'processed_file': processed_path
+                'records_saved': count
             }
             
         except Exception as e:
@@ -238,16 +255,14 @@ class OuraCollector:
                 raw_stress = self.oura_client.get_daily_stress(start_date, end_date)
                 processed_stress = self.processor.process_stress_data(raw_stress)
                 
-                # Save raw and processed data
-                raw_path = self.storage.save_data(raw_stress, 'stress', raw=True)
-                processed_path = self.storage.save_data(processed_stress, 'stress')
+                # Save processed data
+                count = self.storage.save_data(processed_stress, 'stress')
                 
                 collected_data['stress'] = processed_stress
                 summary['results']['stress'] = {
                     'records_collected': len(raw_stress),
                     'records_processed': len(processed_stress),
-                    'raw_file': raw_path,
-                    'processed_file': processed_path
+                    'records_saved': count
                 }
                 
             except Exception as e:
@@ -264,12 +279,12 @@ class OuraCollector:
                 
                 raw_heart_rate = self.oura_client.get_heart_rate(start_datetime, end_datetime)
                 
-                # Save raw data (no processing needed for time series)
-                hr_path = self.storage.save_data(raw_heart_rate, 'heart_rate', raw=True)
+                # Save heart rate data
+                count = self.storage.save_data(raw_heart_rate, 'heart_rate')
                 
                 summary['results']['heart_rate'] = {
                     'records_collected': len(raw_heart_rate),
-                    'file': hr_path
+                    'records_saved': count
                 }
                 
             except Exception as e:
@@ -282,11 +297,11 @@ class OuraCollector:
                 raw_spo2 = self.oura_client.get_daily_spo2(start_date, end_date)
                 
                 # Save raw data
-                spo2_path = self.storage.save_data(raw_spo2, 'spo2', raw=True)
+                count = self.storage.save_data(raw_spo2, 'spo2')
                 
                 summary['results']['spo2'] = {
                     'records_collected': len(raw_spo2),
-                    'file': spo2_path
+                    'records_saved': count
                 }
                 
             except Exception as e:
@@ -299,11 +314,11 @@ class OuraCollector:
                 raw_sessions = self.oura_client.get_sessions(start_date, end_date)
                 
                 # Save raw data
-                sessions_path = self.storage.save_data(raw_sessions, 'sessions', raw=True)
+                count = self.storage.save_data(raw_sessions, 'sessions')
                 
                 summary['results']['sessions'] = {
                     'records_collected': len(raw_sessions),
-                    'file': sessions_path
+                    'records_saved': count
                 }
                 
             except Exception as e:
@@ -316,11 +331,11 @@ class OuraCollector:
                 raw_tags = self.oura_client.get_enhanced_tags(start_date, end_date)
                 
                 # Save raw data
-                tags_path = self.storage.save_data(raw_tags, 'tags', raw=True)
+                count = self.storage.save_data(raw_tags, 'tags')
                 
                 summary['results']['tags'] = {
                     'records_collected': len(raw_tags),
-                    'file': tags_path
+                    'records_saved': count
                 }
                 
             except Exception as e:
@@ -340,10 +355,10 @@ class OuraCollector:
                     workout_data=collected_data.get('workouts')
                 )
                 
-                summary_path = self.storage.save_data(daily_summaries, 'daily_summaries')
+                count = self.storage.save_data(daily_summaries, 'daily_summaries')
                 summary['results']['daily_summaries'] = {
                     'records_created': len(daily_summaries),
-                    'file': summary_path
+                    'records_saved': count
                 }
                 
             except Exception as e:
@@ -375,13 +390,13 @@ class OuraCollector:
                 logger.error(f"{data_type}: {result['error']}")
                 failed_endpoints += 1
             else:
-                records = result.get('records_collected', 0) or result.get('records_created', 0)
+                records = result.get('records_saved', 0) or result.get('records_created', 0)
                 if records > 0:
                     successful_endpoints += 1
                     total_records += records
-                logger.info(f"{data_type}: {records} records collected/created")
+                logger.info(f"{data_type}: {records} records saved")
         
-        logger.info(f"Collection summary: {total_records} total records from "
+        logger.info(f"Collection summary: {total_records} total records saved from "
                    f"{successful_endpoints} endpoints (failed: {failed_endpoints})")
     
     def run_continuous(self):
@@ -405,6 +420,11 @@ class OuraCollector:
             except Exception as e:
                 logger.error(f"Error in continuous collection: {e}")
                 time.sleep(300)  # Wait 5 minutes before retrying
+    
+    def __del__(self):
+        """Cleanup when collector is destroyed"""
+        if hasattr(self, 'storage') and hasattr(self.storage, 'close'):
+            self.storage.close()
 
 def main():
     """Main entry point"""
