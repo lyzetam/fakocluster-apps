@@ -14,26 +14,30 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip cache purge
 
-# Copy application files
+# Copy application files - paths relative to build context (./apps/oura-dashboard)
+COPY externalconnections/ ./externalconnections/
 COPY src/ ./src/
 COPY streamlit_config.toml /root/.streamlit/config.toml
 
-# Set Python path
-ENV PYTHONPATH=/app/src
+# Set Python path - must include /app for externalconnections to be found
+ENV PYTHONPATH=/app
 
-# Environment variables with defaults
-ENV DATABASE_HOST=localhost
-ENV DATABASE_PORT=5432
-ENV DATABASE_NAME=oura_health
-ENV DATABASE_USER=postgres
-ENV DATABASE_PASSWORD=password
+# Default environment variables
+ENV STORAGE_BACKEND=postgres
+ENV AWS_DEFAULT_REGION=us-east-1
+ENV LOG_LEVEL=INFO
+ENV USE_AWS_SECRETS=true
+
+# Streamlit specific
 ENV STREAMLIT_SERVER_PORT=8501
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
-ENV LOG_LEVEL=INFO
 
 # Create non-root user
 RUN useradd -m -u 1000 streamlit && \
-    chown -R streamlit:streamlit /app
+    chown -R streamlit:streamlit /app && \
+    mkdir -p /home/streamlit/.streamlit && \
+    cp /root/.streamlit/config.toml /home/streamlit/.streamlit/config.toml && \
+    chown -R streamlit:streamlit /home/streamlit/.streamlit
 
 USER streamlit
 
