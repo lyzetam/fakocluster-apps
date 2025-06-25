@@ -18,6 +18,8 @@ from data_processor import DataProcessor
 from storage import DataStorage
 from postgres_storage import PostgresStorage
 
+from healthcheck import HealthStatus, start_health_server
+
 # Configure logging
 logging.basicConfig(
     level=getattr(logging, config.LOG_LEVEL),

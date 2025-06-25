@@ -6,11 +6,12 @@ import argparse
 
 # Add the src directory to the Python path
 sys.path.insert(0, '../src')
+sys.path.insert(0, '../src/collector')
 sys.path.insert(0, '../src/externalconnections')
 
 from sqlalchemy import create_engine, text
-from collector.database_models import Base
-from externalconnections.fetch_oura_secrets import get_postgres_credentials, build_postgres_connection_string
+from database_models import Base
+from fetch_oura_secrets import get_postgres_credentials, build_postgres_connection_string
 import config
 
 logging.basicConfig(level=logging.INFO)
@@ -22,7 +23,12 @@ def create_database_if_not_exists(connection_string: str, database_name: str):
     base_connection = connection_string.rsplit('/', 1)[0] + '/postgres'
     
     engine = create_engine(base_connection)
-    with engine.connect() as conn:
+    conn = engine.connect()
+    
+    # For PostgreSQL 13+, we need to use isolation level for CREATE DATABASE
+    conn = conn.execution_options(isolation_level="AUTOCOMMIT")
+    
+    try:
         # Check if database exists
         result = conn.execute(
             text("SELECT 1 FROM pg_database WHERE datname = :dbname"),
@@ -32,10 +38,11 @@ def create_database_if_not_exists(connection_string: str, database_name: str):
         if not result.fetchone():
             # Create database
             conn.execute(text(f"CREATE DATABASE {database_name}"))
-            conn.commit()
             logger.info(f"Created database: {database_name}")
         else:
             logger.info(f"Database already exists: {database_name}")
+    finally:
+        conn.close()
 
 def init_database(connection_string: str):
     """Initialize the database schema"""
