@@ -13,13 +13,12 @@ from collector import config
 # Import modules
 sys.path.insert(0, '../externalconnections')
 from externalconnections.fetch_oura_secrets import get_oura_credentials, get_postgres_credentials, build_postgres_connection_string
-from collector.oura_client import OuraAPIClient
-from collector.data_processor import DataProcessor
-from collector.storage import DataStorage
-from collector.postgres_storage import PostgresStorage
-from collector.healthcheck import HealthStatus, start_health_server
-
+from oura_client import OuraAPIClient
+from data_processor import DataProcessor
+from storage import DataStorage
+from postgres_storage import PostgresStorage
 from healthcheck import HealthStatus, start_health_server
+
 
 # Configure logging
 logging.basicConfig(
