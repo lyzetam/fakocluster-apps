@@ -3,16 +3,18 @@
 import sys
 import logging
 import argparse
+import os
 
 # Add the src directory to the Python path
 sys.path.insert(0, '../src')
 sys.path.insert(0, '../src/collector')
 sys.path.insert(0, '../src/externalconnections')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sqlalchemy import create_engine, text
-from database_models import Base
-from fetch_oura_secrets import get_postgres_credentials, build_postgres_connection_string
-import config
+from collector.database_models import Base
+from externalconnections.fetch_oura_secrets import get_postgres_credentials, build_postgres_connection_string
+from collector import config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
