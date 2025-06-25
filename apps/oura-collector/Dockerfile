@@ -17,20 +17,21 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip cache purge
 
-# Copy application
+# Copy application - paths relative to build context (./apps/oura-collector)
+COPY externalconnections/ ./externalconnections/
 COPY src/ ./src/
 
-# Set Python path
-ENV PYTHONPATH=/app/src:/app/src/externalconnections
+# Set Python path - must include /app for externalconnections to be found
+ENV PYTHONPATH=/app
 
 # Default environment variables
 ENV STORAGE_BACKEND=postgres
 ENV AWS_DEFAULT_REGION=us-east-1
 ENV LOG_LEVEL=INFO
 
-# Health check
+# Health check - use wget since it's available in slim image
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD python -c "import sys; sys.path.insert(0, 'src'); from collector.collector import OuraCollector; print('Health check passed')"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')" || exit 1
 
 # Run collector
 CMD ["python", "-u", "src/collector/collector.py"]
