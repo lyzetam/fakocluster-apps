@@ -60,12 +60,17 @@ if 'queries' not in st.session_state:
 st.sidebar.title("💍 Oura Health Dashboard")
 st.sidebar.markdown("---")
 
+
 # Date range selection
 min_date, max_date = st.session_state.queries.get_date_range()
 st.sidebar.subheader("Date Range")
+
+# Calculate default start date (30 days ago or min_date, whichever is later)
+default_start = max(max_date - timedelta(days=30), min_date)
+
 start_date = st.sidebar.date_input(
     "Start Date",
-    value=max_date - timedelta(days=30),
+    value=default_start,  # Changed from max_date - timedelta(days=30)
     min_value=min_date,
     max_value=max_date
 )
