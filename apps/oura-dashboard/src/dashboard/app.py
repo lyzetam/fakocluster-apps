@@ -47,10 +47,14 @@ st.markdown("""
 
 # Initialize session state
 if 'queries' not in st.session_state:
-    # Get connection string from environment or use default
-    connection_string = os.environ.get('DATABASE_URL', 
-        'postgresql://username:password@localhost:5432/oura_health')
-    st.session_state.queries = OuraDataQueries(connection_string)
+    try:
+        # Import config to get database connection
+        from config import get_database_connection_string
+        connection_string = get_database_connection_string()
+        st.session_state.queries = OuraDataQueries(connection_string)
+    except Exception as e:
+        st.error(f"Failed to connect to database: {e}")
+        st.stop()
 
 # Sidebar
 st.sidebar.title("💍 Oura Health Dashboard")

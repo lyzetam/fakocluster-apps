@@ -20,7 +20,7 @@ COPY src/ ./src/
 
 # Create .streamlit directory and copy config
 RUN mkdir -p /root/.streamlit
-COPY src/streamlit_config.toml /root/.streamlit/config.toml
+COPY streamlit_config.toml /root/.streamlit/config.toml
 
 # Set Python path - must include /app for externalconnections to be found
 ENV PYTHONPATH=/app

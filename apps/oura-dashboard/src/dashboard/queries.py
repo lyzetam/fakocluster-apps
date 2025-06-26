@@ -1,20 +1,17 @@
-"""Database queries for Oura data visualization"""
+"""Database queries for Oura data visualization - Simplified version"""
 from datetime import datetime, timedelta, date
-from typing import List, Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple
 import pandas as pd
-from sqlalchemy import create_engine, text, func, and_, or_
-from sqlalchemy.orm import sessionmaker, Session
-from contextlib import contextmanager
-import numpy as np
+from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
+import logging
+import time
 
-# Import the database models
-from database_models import (
-    Base, PersonalInfo, SleepPeriod, DailySleep, Activity, 
-    Readiness, Workout, Stress, HeartRate, DailySummary
-)
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class OuraDataQueries:
-    """Query interface for Oura health data"""
+    """Query interface for Oura health data - Direct SQL queries"""
     
     def __init__(self, connection_string: str):
         """Initialize database connection
@@ -22,558 +19,344 @@ class OuraDataQueries:
         Args:
             connection_string: PostgreSQL connection string
         """
-        self.engine = create_engine(
-            connection_string,
-            pool_size=5,
-            max_overflow=10,
-            pool_pre_ping=True,
-            echo=False
-        )
-        self.SessionLocal = sessionmaker(bind=self.engine)
-    
-    @contextmanager
-    def get_session(self) -> Session:
-        """Provide a transactional scope for database operations"""
-        session = self.SessionLocal()
+        self.connection_string = connection_string
+        self._create_engine()
+        
+    def _create_engine(self):
+        """Create database engine with connection pooling"""
         try:
-            yield session
-            session.commit()
+            self.engine = create_engine(
+                self.connection_string,
+                pool_size=5,
+                max_overflow=10,
+                pool_pre_ping=True,
+                echo=False
+            )
+            # Test connection
+            with self.engine.connect() as conn:
+                conn.execute("SELECT 1")
+            logger.info("Database connection established")
         except Exception as e:
-            session.rollback()
+            logger.error(f"Failed to create database engine: {e}")
             raise
-        finally:
-            session.close()
+    
+    def _execute_query(self, query: str, params: Dict = None) -> pd.DataFrame:
+        """Execute a query with retry logic and return results as DataFrame
+        
+        Args:
+            query: SQL query to execute
+            params: Query parameters
+            
+        Returns:
+            Query results as DataFrame
+        """
+        max_retries = 3
+        retry_delay = 1
+        
+        for attempt in range(max_retries):
+            try:
+                return pd.read_sql_query(query, self.engine, params=params)
+            except OperationalError as e:
+                if attempt < max_retries - 1:
+                    logger.warning(f"Database query error (attempt {attempt + 1}/{max_retries}): {e}")
+                    time.sleep(retry_delay)
+                    retry_delay *= 2
+                    
+                    # Try to recreate the engine
+                    try:
+                        self._create_engine()
+                    except Exception:
+                        pass
+                else:
+                    logger.error(f"Database query failed after {max_retries} attempts: {e}")
+                    raise
     
     def get_date_range(self) -> Tuple[date, date]:
-        """Get the date range of available data
+        """Get the date range of available data"""
+        try:
+            query = """
+            SELECT 
+                COALESCE(MIN(date), CURRENT_DATE - INTERVAL '30 days')::date as min_date,
+                COALESCE(MAX(date), CURRENT_DATE)::date as max_date
+            FROM (
+                SELECT date FROM oura_daily_summaries
+                UNION ALL
+                SELECT date FROM oura_activity
+                UNION ALL
+                SELECT date FROM oura_daily_sleep
+            ) combined_dates
+            """
+            df = self._execute_query(query)
+            if not df.empty:
+                return df.iloc[0]['min_date'], df.iloc[0]['max_date']
+        except Exception as e:
+            logger.error(f"Failed to get date range: {e}")
         
-        Returns:
-            Tuple of (min_date, max_date)
-        """
-        with self.get_session() as session:
-            result = session.query(
-                func.min(DailySummary.date),
-                func.max(DailySummary.date)
-            ).first()
-            
-            if result and result[0]:
-                return result[0], result[1]
-            
-            # Fallback to activity data
-            result = session.query(
-                func.min(Activity.date),
-                func.max(Activity.date)
-            ).first()
-            
-            if result and result[0]:
-                return result[0], result[1]
-                
-            # Default to last 30 days
-            end_date = date.today()
-            start_date = end_date - timedelta(days=30)
-            return start_date, end_date
+        # Default to last 30 days
+        end_date = date.today()
+        start_date = end_date - timedelta(days=30)
+        return start_date, end_date
     
     def get_personal_info(self) -> Dict[str, Any]:
-        """Get personal information
-        
-        Returns:
-            Personal info dictionary
-        """
-        with self.get_session() as session:
-            info = session.query(PersonalInfo).order_by(
-                PersonalInfo.updated_at.desc()
-            ).first()
-            
-            if info:
-                return {
-                    'user_id': info.user_id,
-                    'age': info.age,
-                    'weight': info.weight,
-                    'height': info.height,
-                    'biological_sex': info.biological_sex,
-                    'email': info.email,
-                    'updated_at': info.updated_at
-                }
-            return {}
+        """Get personal information"""
+        try:
+            query = """
+            SELECT user_id, age, weight, height, biological_sex, email, updated_at
+            FROM oura_personal_info
+            ORDER BY updated_at DESC
+            LIMIT 1
+            """
+            df = self._execute_query(query)
+            if not df.empty:
+                return df.iloc[0].to_dict()
+        except Exception as e:
+            logger.error(f"Failed to get personal info: {e}")
+        return {}
     
     def get_daily_summary_df(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get daily summary data as DataFrame
-        
-        Args:
-            start_date: Start date
-            end_date: End date
-            
-        Returns:
-            DataFrame with daily summaries
+        """Get daily summary data as DataFrame"""
+        query = """
+        SELECT 
+            COALESCE(ds.date, s.date, a.date, r.date) as date,
+            ds.overall_health_score,
+            s.sleep_score,
+            a.activity_score,
+            a.steps,
+            a.calories_total,
+            a.total_active_minutes,
+            r.readiness_score,
+            r.temperature_deviation,
+            r.hrv_balance,
+            r.resting_heart_rate,
+            st.stress_high_minutes,
+            st.recovery_high_minutes,
+            st.stress_recovery_ratio
+        FROM oura_daily_summaries ds
+        FULL OUTER JOIN oura_daily_sleep s ON ds.date = s.date
+        FULL OUTER JOIN oura_activity a ON ds.date = a.date
+        FULL OUTER JOIN oura_readiness r ON ds.date = r.date
+        LEFT JOIN oura_stress st ON ds.date = st.date
+        WHERE COALESCE(ds.date, s.date, a.date, r.date) BETWEEN %(start_date)s AND %(end_date)s
+        ORDER BY date
         """
-        with self.get_session() as session:
-            # Query all relevant daily data
-            query = session.query(
-                DailySummary.date,
-                DailySummary.overall_health_score,
-                DailySleep.sleep_score,
-                Activity.activity_score,
-                Activity.steps,
-                Activity.calories_total,
-                Activity.total_active_minutes,
-                Readiness.readiness_score,
-                Readiness.temperature_deviation,
-                Readiness.hrv_balance,
-                Readiness.resting_heart_rate,
-                Stress.stress_high_minutes,
-                Stress.recovery_high_minutes,
-                Stress.stress_recovery_ratio
-            ).outerjoin(
-                DailySleep, DailySummary.date == DailySleep.date
-            ).outerjoin(
-                Activity, DailySummary.date == Activity.date
-            ).outerjoin(
-                Readiness, DailySummary.date == Readiness.date
-            ).outerjoin(
-                Stress, DailySummary.date == Stress.date
-            ).filter(
-                DailySummary.date.between(start_date, end_date)
-            ).order_by(DailySummary.date)
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
             
-            results = query.all()
-            
-            if results:
-                df = pd.DataFrame(results)
-                df['date'] = pd.to_datetime(df['date'])
-                return df
-            
-            # Fallback if no daily summaries exist
-            return self._get_daily_data_fallback(start_date, end_date)
-    
-    def _get_daily_data_fallback(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get daily data without DailySummary table"""
-        with self.get_session() as session:
-            # Query from individual tables
-            sleep_q = session.query(
-                DailySleep.date,
-                DailySleep.sleep_score
-            ).filter(DailySleep.date.between(start_date, end_date)).subquery()
-            
-            activity_q = session.query(
-                Activity.date,
-                Activity.activity_score,
-                Activity.steps,
-                Activity.calories_total,
-                Activity.total_active_minutes
-            ).filter(Activity.date.between(start_date, end_date)).subquery()
-            
-            readiness_q = session.query(
-                Readiness.date,
-                Readiness.readiness_score,
-                Readiness.temperature_deviation,
-                Readiness.hrv_balance,
-                Readiness.resting_heart_rate
-            ).filter(Readiness.date.between(start_date, end_date)).subquery()
-            
-            # Create a date series
-            dates = pd.date_range(start_date, end_date, freq='D')
-            df = pd.DataFrame({'date': dates})
-            
-            # Fetch and merge data
-            for table, alias in [(sleep_q, 'sleep'), (activity_q, 'activity'), (readiness_q, 'readiness')]:
-                data = session.query(table).all()
-                if data:
-                    temp_df = pd.DataFrame(data)
-                    temp_df['date'] = pd.to_datetime(temp_df['date'])
-                    df = df.merge(temp_df, on='date', how='left')
-            
-            # Calculate overall health score
-            score_cols = ['sleep_score', 'activity_score', 'readiness_score']
-            existing_cols = [col for col in score_cols if col in df.columns]
-            if existing_cols:
-                df['overall_health_score'] = df[existing_cols].mean(axis=1)
-            
-            return df
+            # Calculate overall health score if missing
+            if 'overall_health_score' not in df.columns or df['overall_health_score'].isna().all():
+                score_cols = ['sleep_score', 'activity_score', 'readiness_score']
+                existing_cols = [col for col in score_cols if col in df.columns]
+                if existing_cols:
+                    df['overall_health_score'] = df[existing_cols].mean(axis=1)
+        
+        return df
     
     def get_sleep_periods_df(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get detailed sleep period data
-        
-        Args:
-            start_date: Start date
-            end_date: End date
-            
-        Returns:
-            DataFrame with sleep periods
+        """Get detailed sleep period data"""
+        query = """
+        SELECT 
+            date, type, total_sleep_hours, time_in_bed_hours,
+            efficiency_percent, rem_hours, deep_hours, light_hours,
+            awake_time, rem_percentage, deep_percentage, light_percentage,
+            latency_minutes, heart_rate_avg, hrv_avg, respiratory_rate
+        FROM oura_sleep_periods
+        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        ORDER BY date
         """
-        with self.get_session() as session:
-            periods = session.query(SleepPeriod).filter(
-                SleepPeriod.date.between(start_date, end_date)
-            ).order_by(SleepPeriod.date).all()
-            
-            if periods:
-                data = []
-                for p in periods:
-                    data.append({
-                        'date': p.date,
-                        'type': p.type,
-                        'total_sleep_hours': p.total_sleep_hours,
-                        'time_in_bed_hours': p.time_in_bed_hours,
-                        'efficiency_percent': p.efficiency_percent,
-                        'rem_hours': p.rem_hours,
-                        'deep_hours': p.deep_hours,
-                        'light_hours': p.light_hours,
-                        'awake_time': p.awake_time,
-                        'rem_percentage': p.rem_percentage,
-                        'deep_percentage': p.deep_percentage,
-                        'light_percentage': p.light_percentage,
-                        'latency_minutes': p.latency_minutes,
-                        'heart_rate_avg': p.heart_rate_avg,
-                        'hrv_avg': p.hrv_avg,
-                        'respiratory_rate': p.respiratory_rate
-                    })
-                
-                df = pd.DataFrame(data)
-                df['date'] = pd.to_datetime(df['date'])
-                return df
-            
-            return pd.DataFrame()
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
     
     def get_activity_df(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get activity data
-        
-        Args:
-            start_date: Start date
-            end_date: End date
-            
-        Returns:
-            DataFrame with activity data
+        """Get activity data"""
+        query = """
+        SELECT 
+            date, activity_score, steps, distance_km,
+            calories_active, calories_total,
+            high_activity_minutes, medium_activity_minutes,
+            low_activity_minutes, sedentary_minutes,
+            total_active_minutes, met_minutes, inactivity_alerts
+        FROM oura_activity
+        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        ORDER BY date
         """
-        with self.get_session() as session:
-            activities = session.query(Activity).filter(
-                Activity.date.between(start_date, end_date)
-            ).order_by(Activity.date).all()
-            
-            if activities:
-                data = []
-                for a in activities:
-                    data.append({
-                        'date': a.date,
-                        'activity_score': a.activity_score,
-                        'steps': a.steps,
-                        'distance_km': a.distance_km,
-                        'calories_active': a.calories_active,
-                        'calories_total': a.calories_total,
-                        'high_activity_minutes': a.high_activity_minutes,
-                        'medium_activity_minutes': a.medium_activity_minutes,
-                        'low_activity_minutes': a.low_activity_minutes,
-                        'sedentary_minutes': a.sedentary_minutes,
-                        'total_active_minutes': a.total_active_minutes,
-                        'met_minutes': a.met_minutes,
-                        'inactivity_alerts': a.inactivity_alerts
-                    })
-                
-                df = pd.DataFrame(data)
-                df['date'] = pd.to_datetime(df['date'])
-                return df
-            
-            return pd.DataFrame()
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
     
     def get_readiness_df(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get readiness data
-        
-        Args:
-            start_date: Start date
-            end_date: End date
-            
-        Returns:
-            DataFrame with readiness data
+        """Get readiness data"""
+        query = """
+        SELECT 
+            date, readiness_score, temperature_deviation,
+            temperature_trend_deviation, recovery_index,
+            resting_heart_rate, hrv_balance,
+            score_activity_balance, score_body_temperature,
+            score_hrv_balance, score_previous_night,
+            score_recovery_index, score_resting_heart_rate
+        FROM oura_readiness
+        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        ORDER BY date
         """
-        with self.get_session() as session:
-            readiness = session.query(Readiness).filter(
-                Readiness.date.between(start_date, end_date)
-            ).order_by(Readiness.date).all()
-            
-            if readiness:
-                data = []
-                for r in readiness:
-                    data.append({
-                        'date': r.date,
-                        'readiness_score': r.readiness_score,
-                        'temperature_deviation': r.temperature_deviation,
-                        'temperature_trend_deviation': r.temperature_trend_deviation,
-                        'recovery_index': r.recovery_index,
-                        'resting_heart_rate': r.resting_heart_rate,
-                        'hrv_balance': r.hrv_balance,
-                        'score_activity_balance': r.score_activity_balance,
-                        'score_body_temperature': r.score_body_temperature,
-                        'score_hrv_balance': r.score_hrv_balance,
-                        'score_previous_night': r.score_previous_night,
-                        'score_recovery_index': r.score_recovery_index,
-                        'score_resting_heart_rate': r.score_resting_heart_rate
-                    })
-                
-                df = pd.DataFrame(data)
-                df['date'] = pd.to_datetime(df['date'])
-                return df
-            
-            return pd.DataFrame()
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
     
     def get_workouts_df(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get workout data
-        
-        Args:
-            start_date: Start date
-            end_date: End date
-            
-        Returns:
-            DataFrame with workout data
+        """Get workout data"""
+        query = """
+        SELECT 
+            date, activity, intensity, duration_minutes,
+            calories, distance_km, source, label
+        FROM oura_workouts
+        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        ORDER BY date
         """
-        with self.get_session() as session:
-            workouts = session.query(Workout).filter(
-                Workout.date.between(start_date, end_date)
-            ).order_by(Workout.date).all()
-            
-            if workouts:
-                data = []
-                for w in workouts:
-                    data.append({
-                        'date': w.date,
-                        'activity': w.activity,
-                        'intensity': w.intensity,
-                        'duration_minutes': w.duration_minutes,
-                        'calories': w.calories,
-                        'distance_km': w.distance_km,
-                        'source': w.source,
-                        'label': w.label
-                    })
-                
-                df = pd.DataFrame(data)
-                df['date'] = pd.to_datetime(df['date'])
-                return df
-            
-            return pd.DataFrame()
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
     
     def get_stress_df(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get stress data
-        
-        Args:
-            start_date: Start date
-            end_date: End date
-            
-        Returns:
-            DataFrame with stress data
+        """Get stress data"""
+        query = """
+        SELECT 
+            date, stress_high_minutes, recovery_high_minutes,
+            stress_recovery_ratio, day_summary
+        FROM oura_stress
+        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        ORDER BY date
         """
-        with self.get_session() as session:
-            stress = session.query(Stress).filter(
-                Stress.date.between(start_date, end_date)
-            ).order_by(Stress.date).all()
-            
-            if stress:
-                data = []
-                for s in stress:
-                    data.append({
-                        'date': s.date,
-                        'stress_high_minutes': s.stress_high_minutes,
-                        'recovery_high_minutes': s.recovery_high_minutes,
-                        'stress_recovery_ratio': s.stress_recovery_ratio,
-                        'day_summary': s.day_summary
-                    })
-                
-                df = pd.DataFrame(data)
-                df['date'] = pd.to_datetime(df['date'])
-                return df
-            
-            return pd.DataFrame()
-    
-    def get_heart_rate_df(self, start_datetime: datetime, end_datetime: datetime) -> pd.DataFrame:
-        """Get heart rate time series data
         
-        Args:
-            start_datetime: Start datetime
-            end_datetime: End datetime
-            
-        Returns:
-            DataFrame with heart rate data
-        """
-        with self.get_session() as session:
-            hr_data = session.query(HeartRate).filter(
-                HeartRate.timestamp.between(start_datetime, end_datetime)
-            ).order_by(HeartRate.timestamp).all()
-            
-            if hr_data:
-                data = []
-                for hr in hr_data:
-                    data.append({
-                        'timestamp': hr.timestamp,
-                        'heart_rate': hr.heart_rate,
-                        'source': hr.source
-                    })
-                
-                df = pd.DataFrame(data)
-                df['timestamp'] = pd.to_datetime(df['timestamp'])
-                return df
-            
-            return pd.DataFrame()
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
     
     def get_sleep_trends(self, days: int = 30) -> Dict[str, Any]:
-        """Get sleep trends for the last N days
-        
-        Args:
-            days: Number of days to analyze
-            
-        Returns:
-            Dictionary with sleep trend statistics
+        """Get sleep trends for the last N days"""
+        query = """
+        WITH sleep_stats AS (
+            SELECT 
+                AVG(total_sleep_hours) as avg_sleep_hours,
+                AVG(efficiency_percent) as avg_efficiency,
+                AVG(rem_percentage) as avg_rem_percent,
+                AVG(deep_percentage) as avg_deep_percent,
+                AVG(light_percentage) as avg_light_percent,
+                AVG(hrv_avg) as avg_hrv,
+                AVG(heart_rate_avg) as avg_heart_rate
+            FROM oura_sleep_periods
+            WHERE date >= CURRENT_DATE - INTERVAL '%(days)s days'
+                AND type = 'long_sleep'
+        )
+        SELECT * FROM sleep_stats
         """
-        end_date = date.today()
-        start_date = end_date - timedelta(days=days)
         
-        df = self.get_sleep_periods_df(start_date, end_date)
-        
-        if df.empty:
-            return {}
-        
-        # Filter for main sleep periods only
-        df_main = df[df['type'] == 'long_sleep']
-        
-        return {
-            'avg_sleep_hours': df_main['total_sleep_hours'].mean(),
-            'avg_efficiency': df_main['efficiency_percent'].mean(),
-            'avg_rem_percent': df_main['rem_percentage'].mean(),
-            'avg_deep_percent': df_main['deep_percentage'].mean(),
-            'avg_light_percent': df_main['light_percentage'].mean(),
-            'avg_hrv': df_main['hrv_avg'].mean(),
-            'avg_heart_rate': df_main['heart_rate_avg'].mean(),
-            'trend_sleep_hours': self._calculate_trend(df_main, 'total_sleep_hours'),
-            'trend_efficiency': self._calculate_trend(df_main, 'efficiency_percent'),
-            'trend_hrv': self._calculate_trend(df_main, 'hrv_avg')
-        }
+        df = self._execute_query(query, {'days': days})
+        if not df.empty:
+            result = df.iloc[0].to_dict()
+            # Add trend calculations here if needed
+            return result
+        return {}
     
     def get_activity_trends(self, days: int = 30) -> Dict[str, Any]:
-        """Get activity trends for the last N days
-        
-        Args:
-            days: Number of days to analyze
-            
-        Returns:
-            Dictionary with activity trend statistics
+        """Get activity trends for the last N days"""
+        query = """
+        WITH activity_stats AS (
+            SELECT 
+                AVG(steps) as avg_steps,
+                AVG(total_active_minutes) as avg_active_minutes,
+                AVG(calories_total) as avg_calories,
+                SUM(distance_km) as total_distance_km,
+                AVG(activity_score) as avg_activity_score,
+                COUNT(CASE WHEN steps >= 10000 THEN 1 END) as days_above_10k_steps,
+                AVG(sedentary_minutes) / (24 * 60) * 100 as sedentary_percentage
+            FROM oura_activity
+            WHERE date >= CURRENT_DATE - INTERVAL '%(days)s days'
+        )
+        SELECT * FROM activity_stats
         """
-        end_date = date.today()
-        start_date = end_date - timedelta(days=days)
         
-        df = self.get_activity_df(start_date, end_date)
-        
-        if df.empty:
-            return {}
-        
-        return {
-            'avg_steps': df['steps'].mean(),
-            'avg_active_minutes': df['total_active_minutes'].mean(),
-            'avg_calories': df['calories_total'].mean(),
-            'total_distance_km': df['distance_km'].sum(),
-            'avg_activity_score': df['activity_score'].mean(),
-            'trend_steps': self._calculate_trend(df, 'steps'),
-            'trend_active_minutes': self._calculate_trend(df, 'total_active_minutes'),
-            'days_above_10k_steps': len(df[df['steps'] >= 10000]),
-            'sedentary_percentage': (df['sedentary_minutes'].mean() / (24 * 60)) * 100
-        }
+        df = self._execute_query(query, {'days': days})
+        if not df.empty:
+            return df.iloc[0].to_dict()
+        return {}
     
     def get_health_correlations(self, days: int = 30) -> pd.DataFrame:
-        """Calculate correlations between health metrics
-        
-        Args:
-            days: Number of days to analyze
-            
-        Returns:
-            Correlation matrix DataFrame
+        """Calculate correlations between health metrics"""
+        query = """
+        SELECT 
+            s.sleep_score,
+            a.activity_score,
+            r.readiness_score,
+            a.steps,
+            a.total_active_minutes,
+            r.hrv_balance,
+            r.resting_heart_rate,
+            r.temperature_deviation
+        FROM oura_daily_sleep s
+        JOIN oura_activity a ON s.date = a.date
+        JOIN oura_readiness r ON s.date = r.date
+        WHERE s.date >= CURRENT_DATE - INTERVAL '%(days)s days'
         """
-        end_date = date.today()
-        start_date = end_date - timedelta(days=days)
         
-        df = self.get_daily_summary_df(start_date, end_date)
-        
-        if df.empty:
-            return pd.DataFrame()
-        
-        # Select numeric columns for correlation
-        corr_cols = [
-            'sleep_score', 'activity_score', 'readiness_score',
-            'steps', 'total_active_minutes', 'hrv_balance',
-            'resting_heart_rate', 'temperature_deviation'
-        ]
-        
-        existing_cols = [col for col in corr_cols if col in df.columns]
-        
-        if existing_cols:
-            return df[existing_cols].corr()
-        
+        df = self._execute_query(query, {'days': days})
+        if not df.empty:
+            return df.corr()
         return pd.DataFrame()
     
     def get_weekly_summary(self, weeks: int = 4) -> pd.DataFrame:
-        """Get weekly summary statistics
-        
-        Args:
-            weeks: Number of weeks to analyze
-            
-        Returns:
-            DataFrame with weekly summaries
+        """Get weekly summary statistics"""
+        query = """
+        SELECT 
+            DATE_TRUNC('week', date)::date as week_start,
+            AVG(s.sleep_score) as sleep_score,
+            AVG(a.activity_score) as activity_score,
+            AVG(r.readiness_score) as readiness_score,
+            AVG(COALESCE(ds.overall_health_score, 
+                (s.sleep_score + a.activity_score + r.readiness_score) / 3.0)) as overall_health_score,
+            AVG(a.steps) as steps,
+            AVG(a.total_active_minutes) as total_active_minutes,
+            AVG(r.hrv_balance) as hrv_balance,
+            AVG(r.resting_heart_rate) as resting_heart_rate
+        FROM oura_daily_sleep s
+        JOIN oura_activity a ON s.date = a.date
+        JOIN oura_readiness r ON s.date = r.date
+        LEFT JOIN oura_daily_summaries ds ON s.date = ds.date
+        WHERE s.date >= CURRENT_DATE - INTERVAL '%(weeks)s weeks'
+        GROUP BY DATE_TRUNC('week', date)
+        ORDER BY week_start
         """
-        end_date = date.today()
-        start_date = end_date - timedelta(weeks=weeks * 7)
         
-        df = self.get_daily_summary_df(start_date, end_date)
-        
-        if df.empty:
-            return pd.DataFrame()
-        
-        # Add week information
-        df['week'] = df['date'].dt.isocalendar().week
-        df['year'] = df['date'].dt.year
-        
-        # Group by week
-        weekly = df.groupby(['year', 'week']).agg({
-            'sleep_score': 'mean',
-            'activity_score': 'mean',
-            'readiness_score': 'mean',
-            'overall_health_score': 'mean',
-            'steps': 'mean',
-            'total_active_minutes': 'mean',
-            'hrv_balance': 'mean',
-            'resting_heart_rate': 'mean'
-        }).round(1)
-        
-        weekly.reset_index(inplace=True)
-        weekly['week_start'] = weekly.apply(
-            lambda x: datetime.strptime(f"{x['year']}-W{x['week']}-1", "%Y-W%W-%w").date(),
-            axis=1
-        )
-        
-        return weekly
+        df = self._execute_query(query, {'weeks': weeks})
+        if not df.empty:
+            df['week_start'] = pd.to_datetime(df['week_start'])
+        return df
     
     def _calculate_trend(self, df: pd.DataFrame, column: str) -> str:
-        """Calculate trend direction for a metric
-        
-        Args:
-            df: DataFrame with date index
-            column: Column to analyze
-            
-        Returns:
-            'increasing', 'decreasing', or 'stable'
-        """
-        if df.empty or column not in df.columns:
-            return 'unknown'
-        
-        # Remove NaN values
-        values = df[column].dropna()
-        
-        if len(values) < 3:
+        """Calculate trend direction for a metric"""
+        # Simple trend calculation - can be enhanced
+        if len(df) < 3:
             return 'insufficient_data'
         
-        # Calculate linear regression slope
-        x = np.arange(len(values))
-        slope = np.polyfit(x, values, 1)[0]
+        recent_avg = df[column].tail(7).mean()
+        older_avg = df[column].head(7).mean()
         
-        # Determine trend based on slope
-        if abs(slope) < 0.01:  # Threshold for "stable"
-            return 'stable'
-        elif slope > 0:
+        if recent_avg > older_avg * 1.05:
             return 'increasing'
-        else:
+        elif recent_avg < older_avg * 0.95:
             return 'decreasing'
+        else:
+            return 'stable'
     
     def close(self):
         """Close database connections"""

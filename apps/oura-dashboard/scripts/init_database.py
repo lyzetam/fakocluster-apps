@@ -59,9 +59,9 @@ def test_connection(connection_string: str):
     """Test database connection"""
     try:
         engine = create_engine(connection_string)
-        conn = engine.connect()
-        result = conn.execute("SELECT 1")
-        conn.close()
+        with engine.connect() as conn:
+            result = conn.execute("SELECT 1")
+            result.fetchone()
         logger.info("Database connection successful!")
         return True
     except Exception as e:
@@ -90,7 +90,7 @@ def main():
             logger.info("Database verification completed successfully")
         else:
             logger.error("Database verification failed")
-            logger.info("Please run: python apps/oura-collector/scripts/init_database.py")
+            logger.info("Please run: python apps/oura-collector/scripts/init_database.py --create-db")
             sys.exit(1)
         
     except Exception as e:
