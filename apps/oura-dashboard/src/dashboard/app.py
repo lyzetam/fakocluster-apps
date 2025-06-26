@@ -17,7 +17,7 @@ from queries import OuraDataQueries
 # Page configuration
 st.set_page_config(
     page_title="Oura Health Dashboard",
-    page_icon="💍",
+    page_icon="💚",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -57,7 +57,7 @@ if 'queries' not in st.session_state:
         st.stop()
 
 # Sidebar
-st.sidebar.title("💍 Oura Health Dashboard")
+st.sidebar.title("💚 Oura Health Dashboard")
 st.sidebar.markdown("---")
 
 
@@ -571,9 +571,25 @@ elif page == "Activity Tracking":
                 )
                 st.plotly_chart(fig_types, use_container_width=True)
                 
+                # # Workout timeline
+                # fig_timeline = px.scatter(
+                #     df_workouts,
+                #     x='date',
+                #     y='duration_minutes',
+                #     size='calories',
+                #     color='activity',
+                #     title='Workout Timeline',
+                #     hover_data=['intensity', 'distance_km']
+                # )
+                # st.plotly_chart(fig_timeline, use_container_width=True)
+
                 # Workout timeline
+                # Handle NaN values in calories column
+                df_workouts_clean = df_workouts.copy()
+                df_workouts_clean['calories'] = df_workouts_clean['calories'].fillna(0)
+                
                 fig_timeline = px.scatter(
-                    df_workouts,
+                    df_workouts_clean,
                     x='date',
                     y='duration_minutes',
                     size='calories',
@@ -581,7 +597,10 @@ elif page == "Activity Tracking":
                     title='Workout Timeline',
                     hover_data=['intensity', 'distance_km']
                 )
+                # Set minimum size for points with 0 calories
+                fig_timeline.update_traces(marker=dict(sizemin=5))
                 st.plotly_chart(fig_timeline, use_container_width=True)
+
             else:
                 st.info("No workout data available for this period")
 
