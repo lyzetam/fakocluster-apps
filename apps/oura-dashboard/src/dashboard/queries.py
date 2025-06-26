@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta, date
 from typing import Dict, Any, Optional, Tuple
 import pandas as pd
-from sqlalchemy import create_engine, text  # Added text import
+from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 import logging
 import time
@@ -32,7 +32,7 @@ class OuraDataQueries:
                 pool_pre_ping=True,
                 echo=False
             )
-            # Test connection - Fixed to use text()
+            # Test connection
             with self.engine.connect() as conn:
                 conn.execute(text("SELECT 1"))
             logger.info("Database connection established")
@@ -55,8 +55,11 @@ class OuraDataQueries:
         
         for attempt in range(max_retries):
             try:
-                # Use text() wrapper for SQL queries
-                return pd.read_sql_query(text(query), self.engine, params=params)
+                # For SQLAlchemy 2.0+, we need to use connection.execute with text()
+                with self.engine.connect() as conn:
+                    result = conn.execute(text(query), params or {})
+                    df = pd.DataFrame(result.fetchall(), columns=result.keys())
+                    return df
             except OperationalError as e:
                 if attempt < max_retries - 1:
                     logger.warning(f"Database query error (attempt {attempt + 1}/{max_retries}): {e}")
@@ -137,7 +140,7 @@ class OuraDataQueries:
         FULL OUTER JOIN oura_activity a ON ds.date = a.date
         FULL OUTER JOIN oura_readiness r ON ds.date = r.date
         LEFT JOIN oura_stress st ON ds.date = st.date
-        WHERE COALESCE(ds.date, s.date, a.date, r.date) BETWEEN %(start_date)s AND %(end_date)s
+        WHERE COALESCE(ds.date, s.date, a.date, r.date) BETWEEN :start_date AND :end_date
         ORDER BY date
         """
         
@@ -163,7 +166,7 @@ class OuraDataQueries:
             awake_time, rem_percentage, deep_percentage, light_percentage,
             latency_minutes, heart_rate_avg, hrv_avg, respiratory_rate
         FROM oura_sleep_periods
-        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        WHERE date BETWEEN :start_date AND :end_date
         ORDER BY date
         """
         
@@ -182,7 +185,7 @@ class OuraDataQueries:
             low_activity_minutes, sedentary_minutes,
             total_active_minutes, met_minutes, inactivity_alerts
         FROM oura_activity
-        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        WHERE date BETWEEN :start_date AND :end_date
         ORDER BY date
         """
         
@@ -202,7 +205,7 @@ class OuraDataQueries:
             score_hrv_balance, score_previous_night,
             score_recovery_index, score_resting_heart_rate
         FROM oura_readiness
-        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        WHERE date BETWEEN :start_date AND :end_date
         ORDER BY date
         """
         
@@ -218,7 +221,7 @@ class OuraDataQueries:
             date, activity, intensity, duration_minutes,
             calories, distance_km, source, label
         FROM oura_workouts
-        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        WHERE date BETWEEN :start_date AND :end_date
         ORDER BY date
         """
         
@@ -234,7 +237,7 @@ class OuraDataQueries:
             date, stress_high_minutes, recovery_high_minutes,
             stress_recovery_ratio, day_summary
         FROM oura_stress
-        WHERE date BETWEEN %(start_date)s AND %(end_date)s
+        WHERE date BETWEEN :start_date AND :end_date
         ORDER BY date
         """
         
@@ -256,13 +259,13 @@ class OuraDataQueries:
                 AVG(hrv_avg) as avg_hrv,
                 AVG(heart_rate_avg) as avg_heart_rate
             FROM oura_sleep_periods
-            WHERE date >= CURRENT_DATE - INTERVAL '%(days)s days'
+            WHERE date >= CURRENT_DATE - INTERVAL ':days days'
                 AND type = 'long_sleep'
         )
         SELECT * FROM sleep_stats
         """
         
-        df = self._execute_query(query, {'days': days})
+        df = self._execute_query(query.replace(':days', str(days)))
         if not df.empty:
             result = df.iloc[0].to_dict()
             # Add trend calculations here if needed
@@ -282,12 +285,12 @@ class OuraDataQueries:
                 COUNT(CASE WHEN steps >= 10000 THEN 1 END) as days_above_10k_steps,
                 AVG(sedentary_minutes) / (24 * 60) * 100 as sedentary_percentage
             FROM oura_activity
-            WHERE date >= CURRENT_DATE - INTERVAL '%(days)s days'
+            WHERE date >= CURRENT_DATE - INTERVAL ':days days'
         )
         SELECT * FROM activity_stats
         """
         
-        df = self._execute_query(query, {'days': days})
+        df = self._execute_query(query.replace(':days', str(days)))
         if not df.empty:
             return df.iloc[0].to_dict()
         return {}
@@ -307,10 +310,10 @@ class OuraDataQueries:
         FROM oura_daily_sleep s
         JOIN oura_activity a ON s.date = a.date
         JOIN oura_readiness r ON s.date = r.date
-        WHERE s.date >= CURRENT_DATE - INTERVAL '%(days)s days'
+        WHERE s.date >= CURRENT_DATE - INTERVAL ':days days'
         """
         
-        df = self._execute_query(query, {'days': days})
+        df = self._execute_query(query.replace(':days', str(days)))
         if not df.empty:
             return df.corr()
         return pd.DataFrame()
@@ -333,12 +336,12 @@ class OuraDataQueries:
         JOIN oura_activity a ON s.date = a.date
         JOIN oura_readiness r ON s.date = r.date
         LEFT JOIN oura_daily_summaries ds ON s.date = ds.date
-        WHERE s.date >= CURRENT_DATE - INTERVAL '%(weeks)s weeks'
+        WHERE s.date >= CURRENT_DATE - INTERVAL ':weeks weeks'
         GROUP BY DATE_TRUNC('week', date)
         ORDER BY week_start
         """
         
-        df = self._execute_query(query, {'weeks': weeks})
+        df = self._execute_query(query.replace(':weeks', str(weeks)))
         if not df.empty:
             df['week_start'] = pd.to_datetime(df['week_start'])
         return df
