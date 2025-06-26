@@ -183,7 +183,8 @@ class OuraDataQueries:
             calories_active, calories_total,
             high_activity_minutes, medium_activity_minutes,
             low_activity_minutes, sedentary_minutes,
-            total_active_minutes, met_minutes, inactivity_alerts
+            total_active_minutes, met_minutes, inactivity_alerts,
+            non_wear_minutes, resting_time_minutes
         FROM oura_activity
         WHERE date BETWEEN :start_date AND :end_date
         ORDER BY date
@@ -192,6 +193,11 @@ class OuraDataQueries:
         df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
         if not df.empty:
             df['date'] = pd.to_datetime(df['date'])
+            # Add default values for missing columns
+            if 'non_wear_minutes' not in df.columns:
+                df['non_wear_minutes'] = 0
+            if 'resting_time_minutes' not in df.columns:
+                df['resting_time_minutes'] = 0
         return df
     
     def get_readiness_df(self, start_date: date, end_date: date) -> pd.DataFrame:
@@ -203,7 +209,8 @@ class OuraDataQueries:
             resting_heart_rate, hrv_balance,
             score_activity_balance, score_body_temperature,
             score_hrv_balance, score_previous_night,
-            score_recovery_index, score_resting_heart_rate
+            score_recovery_index, score_resting_heart_rate,
+            score_previous_day_activity, score_sleep_balance
         FROM oura_readiness
         WHERE date BETWEEN :start_date AND :end_date
         ORDER BY date
@@ -212,6 +219,16 @@ class OuraDataQueries:
         df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
         if not df.empty:
             df['date'] = pd.to_datetime(df['date'])
+            # Add default values for missing score columns
+            score_columns = [
+                'score_activity_balance', 'score_body_temperature',
+                'score_hrv_balance', 'score_previous_night',
+                'score_recovery_index', 'score_resting_heart_rate',
+                'score_previous_day_activity', 'score_sleep_balance'
+            ]
+            for col in score_columns:
+                if col not in df.columns:
+                    df[col] = None
         return df
     
     def get_workouts_df(self, start_date: date, end_date: date) -> pd.DataFrame:
@@ -322,7 +339,7 @@ class OuraDataQueries:
         """Get weekly summary statistics"""
         query = """
         SELECT 
-            DATE_TRUNC('week', date)::date as week_start,
+            DATE_TRUNC('week', s.date)::date as week_start,
             AVG(s.sleep_score) as sleep_score,
             AVG(a.activity_score) as activity_score,
             AVG(r.readiness_score) as readiness_score,
@@ -337,7 +354,7 @@ class OuraDataQueries:
         JOIN oura_readiness r ON s.date = r.date
         LEFT JOIN oura_daily_summaries ds ON s.date = ds.date
         WHERE s.date >= CURRENT_DATE - INTERVAL ':weeks weeks'
-        GROUP BY DATE_TRUNC('week', date)
+        GROUP BY DATE_TRUNC('week', s.date)
         ORDER BY week_start
         """
         

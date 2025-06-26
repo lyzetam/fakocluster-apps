@@ -1078,18 +1078,27 @@ elif page == "Detailed Reports":
             st.markdown("### Daily Activity Distribution")
             
             # Calculate percentages
-            total_minutes = 24 * 60
+            total_minutes = 24 * 60            
+            activity_levels = ['High', 'Medium', 'Low', 'Sedentary']
+            minutes_data = [
+                df_activity['high_activity_minutes'].mean(),
+                df_activity['medium_activity_minutes'].mean(),
+                df_activity['low_activity_minutes'].mean(),
+                df_activity['sedentary_minutes'].mean()
+            ]
+
+            # Only add non-wear if column exists
+            if 'non_wear_minutes' in df_activity.columns:
+                activity_levels.append('Non-wear')
+                minutes_data.append(df_activity['non_wear_minutes'].mean())
+
             activity_distribution = pd.DataFrame({
-                'Activity Level': ['High', 'Medium', 'Low', 'Sedentary', 'Non-wear'],
-                'Minutes': [
-                    df_activity['high_activity_minutes'].mean(),
-                    df_activity['medium_activity_minutes'].mean(),
-                    df_activity['low_activity_minutes'].mean(),
-                    df_activity['sedentary_minutes'].mean(),
-                    df_activity['non_wear_minutes'].mean()
-                ]
+                'Activity Level': activity_levels,
+                'Minutes': minutes_data
             })
-            
+
+
+
             fig_dist = px.pie(
                 activity_distribution,
                 values='Minutes',
@@ -1143,13 +1152,25 @@ elif page == "Detailed Reports":
             # Recovery factors
             st.markdown("### Recovery Factor Analysis")
             
-            factors = {
-                'HRV Balance': df_readiness['score_hrv_balance'].mean(),
-                'Recovery Index': df_readiness['score_recovery_index'].mean(),
-                'Resting HR': df_readiness['score_resting_heart_rate'].mean(),
-                'Body Temperature': df_readiness['score_body_temperature'].mean(),
-                'Sleep Balance': df_readiness['score_sleep_balance'].mean()
-            }
+            factors = {}
+            if 'score_hrv_balance' in df_readiness.columns:
+                factors['HRV Balance'] = df_readiness['score_hrv_balance'].mean()
+            if 'score_recovery_index' in df_readiness.columns:
+                factors['Recovery Index'] = df_readiness['score_recovery_index'].mean()
+            if 'score_resting_heart_rate' in df_readiness.columns:
+                factors['Resting HR'] = df_readiness['score_resting_heart_rate'].mean()
+            if 'score_body_temperature' in df_readiness.columns:
+                factors['Body Temperature'] = df_readiness['score_body_temperature'].mean()
+            if 'score_sleep_balance' in df_readiness.columns:
+                factors['Sleep Balance'] = df_readiness['score_sleep_balance'].mean()
+
+            # Add some default factors if none exist
+            if not factors:
+                factors = {
+                    'Readiness Score': df_readiness['readiness_score'].mean(),
+                    'HRV Balance': df_readiness['hrv_balance'].mean() if 'hrv_balance' in df_readiness.columns else 0,
+                    'Resting HR': df_readiness['resting_heart_rate'].mean() if 'resting_heart_rate' in df_readiness.columns else 0
+                }
             
             factors_df = pd.DataFrame(list(factors.items()), columns=['Factor', 'Score'])
             
