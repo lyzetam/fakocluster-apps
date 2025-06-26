@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta, date
 from typing import Dict, Any, Optional, Tuple
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text  # Added text import
 from sqlalchemy.exc import OperationalError
 import logging
 import time
@@ -32,9 +32,9 @@ class OuraDataQueries:
                 pool_pre_ping=True,
                 echo=False
             )
-            # Test connection
+            # Test connection - Fixed to use text()
             with self.engine.connect() as conn:
-                conn.execute("SELECT 1")
+                conn.execute(text("SELECT 1"))
             logger.info("Database connection established")
         except Exception as e:
             logger.error(f"Failed to create database engine: {e}")
@@ -55,7 +55,8 @@ class OuraDataQueries:
         
         for attempt in range(max_retries):
             try:
-                return pd.read_sql_query(query, self.engine, params=params)
+                # Use text() wrapper for SQL queries
+                return pd.read_sql_query(text(query), self.engine, params=params)
             except OperationalError as e:
                 if attempt < max_retries - 1:
                     logger.warning(f"Database query error (attempt {attempt + 1}/{max_retries}): {e}")
