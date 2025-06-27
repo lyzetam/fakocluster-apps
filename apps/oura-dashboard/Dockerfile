@@ -23,7 +23,8 @@ RUN mkdir -p /root/.streamlit
 COPY streamlit_config.toml /root/.streamlit/config.toml
 
 # Set Python path - must include /app for externalconnections to be found
-ENV PYTHONPATH=/app
+# ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app:/app/src
 
 # Default environment variables
 ENV STORAGE_BACKEND=postgres
