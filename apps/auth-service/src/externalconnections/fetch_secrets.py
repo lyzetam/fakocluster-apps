@@ -88,6 +88,12 @@ def get_api_key_config(secret_name: str = "auth-service/api-keys",
     """
     return get_secret(secret_name, region_name)
 
+
+def get_super_user(secret_name: str = "auth-service/super-user",
+                   region_name: str = "us-east-1") -> dict:
+    """Fetch super user credentials from AWS Secrets Manager."""
+    return get_secret(secret_name, region_name)
+
 def build_postgres_connection_string(credentials: dict) -> str:
     """
     Build a PostgreSQL connection string from credentials.

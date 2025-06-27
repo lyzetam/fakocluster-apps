@@ -32,6 +32,24 @@ def request(method: str, path: str, **kwargs):
         st.error(f"Request failed: {e}")
         return None
 
+st.sidebar.text_input("Email", key="login_email")
+st.sidebar.text_input("Password", key="login_password", type="password")
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if st.sidebar.button("Login"):
+    payload = {"email": st.session_state.login_email, "password": st.session_state.login_password}
+    resp = request("POST", "/auth/login", json=payload)
+    if resp and resp.get("authenticated") and resp.get("is_admin"):
+        st.session_state.logged_in = True
+        st.success("Logged in")
+    else:
+        st.error("Invalid credentials")
+
+if not st.session_state.logged_in:
+    st.stop()
+
 
 section = st.sidebar.selectbox(
     "Section",
@@ -50,6 +68,7 @@ if section == "Users":
         with st.form("create_user"):
             email = st.text_input("Email")
             full_name = st.text_input("Full Name")
+            password = st.text_input("Password", type="password")
             is_admin = st.checkbox("Is Admin")
             notes = st.text_area("Notes")
             submitted = st.form_submit_button("Create")
@@ -57,6 +76,7 @@ if section == "Users":
                 payload = {
                     "email": email,
                     "full_name": full_name or None,
+                    "password": password or None,
                     "is_admin": is_admin,
                     "notes": notes or None,
                 }

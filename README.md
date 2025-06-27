@@ -45,6 +45,24 @@ The secret should be a JSON object structured as follows:
 
 On startup the service will insert or update these keys in the database.
 
+### Super User Secret Format
+
+You can optionally create a super user automatically from a separate secret
+referenced by `AUTH_SUPERUSER_SECRETS_NAME` (default
+`auth-service/super-user`).  The secret must contain at least an `email` and
+`password` field and can also include `full_name`.
+
+```json
+{
+  "email": "admin@example.com",
+  "password": "strong password",
+  "full_name": "Admin User"
+}
+```
+
+At startup the service will create or update this account with admin privileges
+and store the hashed password in the database.
+
 ### Environment Variables
 
 When not using AWS Secrets Manager, the auth service can read database
@@ -55,3 +73,5 @@ credentials from the following environment variables:
 * `DATABASE_NAME` – database name (default `auth_service`).
 * `DATABASE_USER` – database username.
 * `DATABASE_PASSWORD` – database password.
+* `PASSWORD_HASH_ITERATIONS` – PBKDF2 iterations for hashing passwords
+  (default `100000`).

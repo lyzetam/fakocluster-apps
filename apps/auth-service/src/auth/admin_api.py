@@ -14,6 +14,7 @@ from database_models import (
     UserAppPermission, ApiKey, AccessLog, AuditLog
 )
 from auth_manager import AuthorizationManager
+from password_utils import hash_password
 import config
 
 # Create admin router
@@ -26,6 +27,7 @@ auth_manager = AuthorizationManager()
 class CreateUserRequest(BaseModel):
     email: EmailStr
     full_name: Optional[str] = None
+    password: Optional[str] = None
     is_admin: bool = False
     notes: Optional[str] = None
     
@@ -33,6 +35,7 @@ class UpdateUserRequest(BaseModel):
     full_name: Optional[str] = None
     is_active: Optional[bool] = None
     is_admin: Optional[bool] = None
+    password: Optional[str] = None
     notes: Optional[str] = None
     
 class CreateApplicationRequest(BaseModel):
@@ -126,6 +129,7 @@ async def create_user(
     user = AuthorizedUser(
         email=request.email.lower(),
         full_name=request.full_name,
+        password_hash=hash_password(request.password, iterations=config.PASSWORD_HASH_ITERATIONS) if request.password else None,
         is_admin=request.is_admin,
         created_by=admin_info["email"],
         notes=request.notes
@@ -213,8 +217,11 @@ async def update_user(
     
     # Update fields
     update_data = request.dict(exclude_unset=True)
+    password = update_data.pop("password", None)
     for field, value in update_data.items():
         setattr(user, field, value)
+    if password is not None:
+        user.password_hash = hash_password(password, iterations=config.PASSWORD_HASH_ITERATIONS)
     
     db.commit()
     
