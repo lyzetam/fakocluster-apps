@@ -381,21 +381,31 @@ class OuraDataQueries:
     
 
     def get_heart_rate_df(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get heart rate data"""
+        """Get daily heart rate aggregates from time-series records"""
+
+        # We store only timestamped heart rate values in ``oura_heart_rate``.
+        # Aggregate them by day so downstream code can work with daily metrics.
         query = """
-        SELECT 
-            date,
-            resting_heart_rate as resting_hr,
-            min_heart_rate as min_hr,
-            max_heart_rate as max_hr,
-            avg_heart_rate as avg_hr,
-            heart_rate_variability as hr_variability
+        SELECT
+            DATE(timestamp) AS date,
+            MIN(heart_rate) FILTER (WHERE source = 'sleep') AS resting_hr,
+            MIN(heart_rate) AS min_hr,
+            MAX(heart_rate) AS max_hr,
+            AVG(heart_rate) AS avg_hr,
+            STDDEV(heart_rate) AS hr_variability
         FROM oura_heart_rate
-        WHERE date BETWEEN :start_date AND :end_date
+        WHERE timestamp >= :start_date AND timestamp < :end_date
+        GROUP BY DATE(timestamp)
         ORDER BY date
         """
-        
-        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+
+        params = {
+            'start_date': start_date,
+            # end_date is made exclusive by adding one day so the full day is included
+            'end_date': end_date + timedelta(days=1)
+        }
+
+        df = self._execute_query(query, params)
         if not df.empty:
             df['date'] = pd.to_datetime(df['date'])
         return df
