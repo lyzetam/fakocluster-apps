@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import uvicorn
 
-from database_models import Base, get_db_session, ApiKey
+from database_models import Base, get_db_session, ApiKey, AuthorizedUser
 from api import router
 from admin_api import admin_router
 from healthcheck import start_health_server
