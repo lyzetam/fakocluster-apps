@@ -6,7 +6,7 @@ import pandas as pd
 from components.metrics import render_sleep_metrics
 from components.charts import create_sleep_analysis_charts, create_sleep_stages_pie
 from utils.recommendations import RecommendationEngine
-from utils.data_processing import calculate_sleep_consistency
+from utils.data_processing import calculate_sleep_consistency, calculate_sleep_quality_score
 
 def render_sleep_analysis_page(queries, start_date, end_date, personal_info):
     """Render the sleep analysis page"""
@@ -83,51 +83,6 @@ def render_sleep_quality_insights(df_main_sleep):
     
     # Detailed sleep metrics
     render_detailed_sleep_metrics(df_main_sleep)
-
-def calculate_sleep_quality_score(df_sleep):
-    """Calculate overall sleep quality score"""
-    # Weighted components
-    weights = {
-        'efficiency': 0.3,
-        'deep_sleep': 0.2,
-        'rem_sleep': 0.2,
-        'duration': 0.2,
-        'latency': 0.1
-    }
-    
-    score = 0
-    
-    # Efficiency component (target: 85%+)
-    avg_efficiency = df_sleep['efficiency_percent'].mean()
-    efficiency_score = min(100, (avg_efficiency / 85) * 100)
-    score += efficiency_score * weights['efficiency']
-    
-    # Deep sleep component (target: 15-20%)
-    avg_deep = df_sleep['deep_percentage'].mean()
-    deep_score = min(100, (avg_deep / 15) * 100) if avg_deep < 20 else max(0, 100 - (avg_deep - 20) * 5)
-    score += deep_score * weights['deep_sleep']
-    
-    # REM sleep component (target: 20-25%)
-    avg_rem = df_sleep['rem_percentage'].mean()
-    rem_score = min(100, (avg_rem / 20) * 100) if avg_rem < 25 else max(0, 100 - (avg_rem - 25) * 4)
-    score += rem_score * weights['rem_sleep']
-    
-    # Duration component (target: 7-9 hours)
-    avg_duration = df_sleep['total_sleep_hours'].mean()
-    if 7 <= avg_duration <= 9:
-        duration_score = 100
-    elif avg_duration < 7:
-        duration_score = (avg_duration / 7) * 100
-    else:
-        duration_score = max(0, 100 - (avg_duration - 9) * 20)
-    score += duration_score * weights['duration']
-    
-    # Latency component (target: <20 min)
-    avg_latency = df_sleep['latency_minutes'].mean()
-    latency_score = max(0, 100 - (avg_latency / 20) * 50) if avg_latency < 40 else 0
-    score += latency_score * weights['latency']
-    
-    return score
 
 def render_quality_gauge(score):
     """Render a simple quality gauge"""
