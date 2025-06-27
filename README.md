@@ -14,3 +14,21 @@ Set the following environment variables to enable authentication:
 
 If `REQUIRE_AUTH` is not set or is `false`, the dashboard behaves as before and
 does not ask for credentials.
+
+## Auth Service Setup
+
+Run the provided scripts to create the database schema and an initial admin user.
+
+1. Initialize the database tables:
+
+   ```bash
+   python apps/auth-service/src/scripts/init_database.py --create-db
+   ```
+
+2. Seed an admin user (replace the email and password as needed):
+
+   ```bash
+   python apps/auth-service/src/scripts/seed_users.py --email admin@example.com --password mypassword
+   ```
+
+The seeding script retrieves database credentials from AWS Secrets Manager by default. A connection string can be supplied with `--connection-string` to override this behaviour.
