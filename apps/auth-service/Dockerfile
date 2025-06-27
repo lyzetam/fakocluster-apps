@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt && \
     pip cache purge
 
 # Copy application code - paths relative to build context (./apps/auth-service)
-COPY externalconnections/ ./externalconnections/
+COPY src/externalconnections/ ./externalconnections/
 COPY src/ ./src/
 
 # Set Python path - must include /app for imports to work

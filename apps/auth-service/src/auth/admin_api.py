@@ -75,7 +75,7 @@ class ApplicationResponse(BaseModel):
 # Admin authentication dependency
 async def verify_admin(
     x_api_key: str = Header(None, alias=config.API_KEY_HEADER),
-    req: Request = None,
+    req: Request | None = None,
     db: Session = Depends(get_db_session)
 ):
     """Verify that the request is from an admin user"""
@@ -87,14 +87,14 @@ async def verify_admin(
     
     # For admin endpoints, we'll check if the API key has admin privileges
     # This would be stored in the API key metadata
-    if not auth_manager.verify_api_key(db, x_api_key):
+    client_ip = req.client.host if req and req.client else None
+    if not auth_manager.verify_api_key(db, x_api_key, ip_address=client_ip):
         raise HTTPException(status_code=401, detail="Invalid API key")
-    
+
     # Get admin email from API key (simplified for this example)
     # In production, you'd look this up from the API key record
     admin_email = config.DEFAULT_ADMIN_EMAIL
-    client_ip = req.client.host if req.client else None
-    
+
     return {"email": admin_email, "ip_address": client_ip}
 
 # User management endpoints
