@@ -10,6 +10,8 @@ API_SECRETS_NAME = os.environ.get('AUTH_API_SECRETS_NAME', 'auth-service/api-key
 DATABASE_HOST = os.environ.get('DATABASE_HOST', None)
 DATABASE_PORT = os.environ.get('DATABASE_PORT', '5432')
 DATABASE_NAME = os.environ.get('DATABASE_NAME', 'auth_service')
+DATABASE_USER = os.environ.get('DATABASE_USER', None)
+DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD', None)
 
 # API Configuration
 API_HOST = os.environ.get('API_HOST', '0.0.0.0')

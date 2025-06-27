@@ -32,3 +32,11 @@ Run the provided scripts to create the database schema and an initial admin user
    ```
 
 The seeding script retrieves database credentials from AWS Secrets Manager by default. A connection string can be supplied with `--connection-string` to override this behaviour.
+
+Alternatively, you can provide the database connection details using environment variables:
+
+* `DATABASE_HOST` – database hostname
+* `DATABASE_PORT` – database port (default `5432`)
+* `DATABASE_NAME` – database name (default `auth_service`)
+* `DATABASE_USER` – database username
+* `DATABASE_PASSWORD` – database user password
