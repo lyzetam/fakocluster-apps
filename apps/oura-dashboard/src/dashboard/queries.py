@@ -379,29 +379,29 @@ class OuraDataQueries:
         else:
             return 'stable'
     
-    def get_heart_rate_df(self, start_date, end_date):
-    """Get heart rate data"""
-    query = """
-    SELECT 
-        date,
-        resting_heart_rate as resting_hr,
-        min_heart_rate as min_hr,
-        max_heart_rate as max_hr,
-        avg_heart_rate as avg_hr,
-        heart_rate_variability as hr_variability
-    FROM oura_heart_rate
-    WHERE date BETWEEN :start_date AND :end_date
-    ORDER BY date
-    """
-    
-    df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
-    if not df.empty:
-        df['date'] = pd.to_datetime(df['date'])
-    return df
-    
+
+    def get_heart_rate_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get heart rate data"""
+        query = """
+        SELECT 
+            date,
+            resting_heart_rate as resting_hr,
+            min_heart_rate as min_hr,
+            max_heart_rate as max_hr,
+            avg_heart_rate as avg_hr,
+            heart_rate_variability as hr_variability
+        FROM oura_heart_rate
+        WHERE date BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
 
 
-    
+
     def close(self):
         """Close database connections"""
         self.engine.dispose()
