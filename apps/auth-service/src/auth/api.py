@@ -40,22 +40,28 @@ class HealthResponse(BaseModel):
     cache_enabled: bool
 
 # Dependency for API key authentication
-async def verify_api_key(x_api_key: str = Header(None, alias=config.API_KEY_HEADER)):
-    """Verify API key for protected endpoints"""
+async def verify_api_key(
+    x_api_key: str = Header(None, alias=config.API_KEY_HEADER),
+    req: Request | None = None,
+):
+    """Verify API key for protected endpoints."""
     if not config.ENABLE_API_KEY_AUTH:
         return True
-        
+
     if not x_api_key:
         raise HTTPException(status_code=401, detail="API key required")
-    
+
     # Get DB session
-    db = next(get_db_session())
+    db_gen = get_db_session()
+    db = next(db_gen)
     try:
-        if not auth_manager.verify_api_key(db, x_api_key):
+        client_ip = req.client.host if req and req.client else None
+        if not auth_manager.verify_api_key(db, x_api_key, ip_address=client_ip):
             raise HTTPException(status_code=401, detail="Invalid API key")
     finally:
         db.close()
-    
+        db_gen.close()
+
     return True
 
 # Public endpoints (used by applications to check authorization)
