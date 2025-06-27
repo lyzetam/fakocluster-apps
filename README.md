@@ -17,21 +17,13 @@ does not ask for credentials.
 
 ## Auth Service Setup
 
-Run the provided scripts to create the database schema and an initial admin user.
+Run the provided initialization script to create the database schema.
 
-1. Initialize the database tables:
+```bash
+python apps/auth-service/src/scripts/init_database.py --create-db
+```
 
-   ```bash
-   python apps/auth-service/src/scripts/init_database.py --create-db
-   ```
-
-2. Seed an admin user (replace the email and password as needed):
-
-   ```bash
-   python apps/auth-service/src/scripts/seed_users.py --email admin@example.com --password mypassword
-   ```
-
-The seeding script retrieves database credentials from AWS Secrets Manager by default. A connection string can be supplied with `--connection-string` to override this behaviour.
+After the database is created, configure your API keys using the secret referenced by `AUTH_API_SECRETS_NAME`. These keys grant access to the admin API for managing users and applications.
 
 ### API Key Secret Format
 
