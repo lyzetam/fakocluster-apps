@@ -18,6 +18,7 @@ from externalconnections.fetch_secrets import (
     get_postgres_credentials,
     build_postgres_connection_string,
     get_api_key_config,
+    get_super_user,
 )
 import hashlib
 
@@ -138,6 +139,44 @@ def setup_database():
 
             session.commit()
             logger.info("API keys synchronized")
+
+            # Create or update super user
+            try:
+                from password_utils import hash_password
+                from externalconnections.fetch_secrets import get_super_user
+
+                super_cfg = get_super_user(
+                    secret_name=config.SUPERUSER_SECRETS_NAME,
+                    region_name=config.AWS_REGION,
+                )
+                email = (super_cfg.get("email") or config.DEFAULT_ADMIN_EMAIL).lower()
+                password = super_cfg.get("password")
+                full_name = super_cfg.get("full_name")
+
+                if not password:
+                    raise ValueError("Super user password not provided")
+
+                user = session.query(AuthorizedUser).filter(AuthorizedUser.email == email).first()
+                pwd_hash = hash_password(password, iterations=config.PASSWORD_HASH_ITERATIONS)
+                if user:
+                    user.password_hash = pwd_hash
+                    user.full_name = full_name or user.full_name
+                    user.is_admin = True
+                    user.is_active = True
+                else:
+                    session.add(
+                        AuthorizedUser(
+                            email=email,
+                            full_name=full_name,
+                            password_hash=pwd_hash,
+                            is_admin=True,
+                            created_by=email,
+                        )
+                    )
+                session.commit()
+                logger.info("Super user synchronized")
+            except Exception as exc:
+                logger.error(f"Failed to create super user: {exc}")
         except Exception as exc:
             logger.error(f"Failed to load API keys: {exc}")
             if 'session' in locals():

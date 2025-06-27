@@ -5,6 +5,7 @@ import os
 AWS_REGION = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
 POSTGRES_SECRETS_NAME = os.environ.get('AUTH_POSTGRES_SECRETS_NAME', 'auth-service/postgres')
 API_SECRETS_NAME = os.environ.get('AUTH_API_SECRETS_NAME', 'auth-service/api-keys')
+SUPERUSER_SECRETS_NAME = os.environ.get('AUTH_SUPERUSER_SECRETS_NAME', 'auth-service/super-user')
 
 # Database Configuration
 DATABASE_HOST = os.environ.get('DATABASE_HOST', None)
@@ -22,6 +23,7 @@ API_PREFIX = os.environ.get('API_PREFIX', '/api/v1')
 ENABLE_API_KEY_AUTH = os.environ.get('ENABLE_API_KEY_AUTH', 'true').lower() == 'true'
 API_KEY_HEADER = os.environ.get('API_KEY_HEADER', 'X-API-Key')
 BCRYPT_ROUNDS = int(os.environ.get('BCRYPT_ROUNDS', '12'))
+PASSWORD_HASH_ITERATIONS = int(os.environ.get('PASSWORD_HASH_ITERATIONS', '100000'))
 
 # Cache Configuration
 ENABLE_CACHING = os.environ.get('ENABLE_CACHING', 'true').lower() == 'true'
