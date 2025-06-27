@@ -21,6 +21,7 @@ from pages.sleep_analysis import render_sleep_analysis_page
 from pages.activity_tracking import render_activity_tracking_page
 from pages.readiness_recovery import render_readiness_recovery_page
 from pages.trends_insights import render_trends_insights_page
+from pages.heart_rate_analysis import render_heart_rate_analysis_page
 from pages.detailed_reports import render_detailed_reports_page
 
 # Page configuration
