@@ -52,7 +52,7 @@ class CreateApiKeyRequest(BaseModel):
     description: Optional[str] = None
     expires_at: Optional[datetime] = None
     allowed_ips: Optional[List[str]] = None
-    is_admin: bool = False
+    is_admin: Optional[bool] = False
     
 class UserResponse(BaseModel):
     id: int
@@ -95,10 +95,11 @@ async def verify_admin(
     key_hash = hashlib.sha256(x_api_key.encode()).hexdigest()
     api_key_record = db.query(ApiKey).filter(
         ApiKey.key_hash == key_hash,
-        ApiKey.is_active == True
+        ApiKey.is_active == True,
+        ApiKey.is_admin == True,
     ).first()
 
-    if not api_key_record or not api_key_record.is_admin:
+    if not api_key_record:
         raise HTTPException(status_code=403, detail="Admin API key required")
 
     admin_email = api_key_record.created_by or config.DEFAULT_ADMIN_EMAIL
@@ -452,7 +453,7 @@ async def create_api_key(
         name=request.name,
         description=request.description,
         created_by=admin_info["email"],
-        is_admin=request.is_admin,
+        is_admin=bool(request.is_admin),
         expires_at=request.expires_at,
         allowed_ips=json.dumps(request.allowed_ips) if request.allowed_ips else None
     )

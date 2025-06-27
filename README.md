@@ -30,5 +30,3 @@ Run the provided scripts to create the database schema and an initial admin user
    ```bash
    python apps/auth-service/src/scripts/seed_users.py --email admin@example.com --create-api-key
    ```
-
-The seeding script retrieves database credentials from AWS Secrets Manager by default. A connection string can be supplied with `--connection-string` to override this behaviour. Use `--postgres-secret-name` or `--aws-region` to customise the secret lookup.
