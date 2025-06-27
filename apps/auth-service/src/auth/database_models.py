@@ -114,6 +114,7 @@ class ApiKey(Base):
     last_used_at = Column(DateTime)
     expires_at = Column(DateTime)
     allowed_ips = Column(Text)  # JSON array of allowed IP addresses/ranges
+    is_admin = Column(Boolean, default=False, nullable=False)
     
     __table_args__ = (
         Index('idx_api_key_active', 'key_hash', 'is_active'),

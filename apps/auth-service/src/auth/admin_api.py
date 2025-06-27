@@ -52,6 +52,7 @@ class CreateApiKeyRequest(BaseModel):
     description: Optional[str] = None
     expires_at: Optional[datetime] = None
     allowed_ips: Optional[List[str]] = None
+    is_admin: bool = False
     
 class UserResponse(BaseModel):
     id: int
@@ -91,9 +92,16 @@ async def verify_admin(
     if not auth_manager.verify_api_key(db, x_api_key, ip_address=client_ip):
         raise HTTPException(status_code=401, detail="Invalid API key")
 
-    # Get admin email from API key (simplified for this example)
-    # In production, you'd look this up from the API key record
-    admin_email = config.DEFAULT_ADMIN_EMAIL
+    key_hash = hashlib.sha256(x_api_key.encode()).hexdigest()
+    api_key_record = db.query(ApiKey).filter(
+        ApiKey.key_hash == key_hash,
+        ApiKey.is_active == True
+    ).first()
+
+    if not api_key_record or not api_key_record.is_admin:
+        raise HTTPException(status_code=403, detail="Admin API key required")
+
+    admin_email = api_key_record.created_by or config.DEFAULT_ADMIN_EMAIL
 
     return {"email": admin_email, "ip_address": client_ip}
 
@@ -444,6 +452,7 @@ async def create_api_key(
         name=request.name,
         description=request.description,
         created_by=admin_info["email"],
+        is_admin=request.is_admin,
         expires_at=request.expires_at,
         allowed_ips=json.dumps(request.allowed_ips) if request.allowed_ips else None
     )
