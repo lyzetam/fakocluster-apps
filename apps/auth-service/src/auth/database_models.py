@@ -114,6 +114,7 @@ class ApiKey(Base):
     last_used_at = Column(DateTime)
     expires_at = Column(DateTime)
     allowed_ips = Column(Text)  # JSON array of allowed IP addresses/ranges
+    # Whether this key grants access to admin APIs
     is_admin = Column(Boolean, default=False, nullable=False)
     
     __table_args__ = (
