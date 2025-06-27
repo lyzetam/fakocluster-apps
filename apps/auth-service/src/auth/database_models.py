@@ -35,6 +35,7 @@ class AuthorizedUser(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String(255), unique=True, nullable=False, index=True)
     full_name = Column(String(255))
+    password_hash = Column(String(512))
     is_active = Column(Boolean, default=True, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)  # Can manage other users
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

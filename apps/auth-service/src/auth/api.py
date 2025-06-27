@@ -10,6 +10,7 @@ import logging
 
 from database_models import get_db_session, AuthorizedUser, Application, AccessLog
 from auth_manager import AuthorizationManager
+from password_utils import verify_password
 import config
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,16 @@ auth_manager = AuthorizationManager()
 class AuthCheckRequest(BaseModel):
     email: EmailStr
     app_name: str
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class LoginResponse(BaseModel):
+    authenticated: bool
+    is_admin: Optional[bool] = None
     
 class AuthCheckResponse(BaseModel):
     authorized: bool
@@ -94,6 +105,26 @@ async def check_authorization(
         authorized=is_authorized,
         denial_reason=denial_reason
     )
+
+
+@router.post("/auth/login", response_model=LoginResponse)
+async def login_user(
+    request: LoginRequest,
+    api_key_valid: bool = Depends(verify_api_key),
+    db: Session = Depends(get_db_session),
+):
+    """Validate user credentials."""
+    user = db.query(AuthorizedUser).filter(
+        and_(AuthorizedUser.email == request.email.lower(), AuthorizedUser.is_active == True)
+    ).first()
+
+    if not user or not user.password_hash:
+        return LoginResponse(authenticated=False)
+
+    if not verify_password(request.password, user.password_hash):
+        return LoginResponse(authenticated=False)
+
+    return LoginResponse(authenticated=True, is_admin=user.is_admin)
 
 @router.get("/users/{email}/applications", response_model=UserAppsResponse)
 async def get_user_applications(
