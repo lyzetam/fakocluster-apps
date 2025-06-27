@@ -52,3 +52,14 @@ The secret should be a JSON object structured as follows:
 ```
 
 On startup the service will insert or update these keys in the database.
+
+### Environment Variables
+
+When not using AWS Secrets Manager, the auth service can read database
+credentials from the following environment variables:
+
+* `DATABASE_HOST` – database host name.
+* `DATABASE_PORT` – database port (default `5432`).
+* `DATABASE_NAME` – database name (default `auth_service`).
+* `DATABASE_USER` – database username.
+* `DATABASE_PASSWORD` – database password.
