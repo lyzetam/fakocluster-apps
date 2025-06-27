@@ -9,7 +9,6 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 from sqlalchemy import create_engine, inspect
-from src.dashboard.database_models import Base
 from src.dashboard.config import get_database_connection_string
 from externalconnections.fetch_oura_secrets import get_postgres_credentials, build_postgres_connection_string
 
