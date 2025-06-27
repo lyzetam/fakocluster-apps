@@ -12,7 +12,6 @@ RUN apt-get update && \
 # Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir streamlit requests && \
     pip cache purge
 
 # Copy application code - paths relative to build context (./apps/auth-service)

@@ -52,3 +52,13 @@ The secret should be a JSON object structured as follows:
 ```
 
 On startup the service will insert or update these keys in the database.
+
+### Building the Auth Service Docker image
+
+The Dockerfile for the authentication service lives in `apps/auth-service` and
+installs all Python dependencies from `requirements.txt`. Rebuild the image from
+the repository root whenever the dependency list changes:
+
+```bash
+docker build -t auth-service ./apps/auth-service
+```
