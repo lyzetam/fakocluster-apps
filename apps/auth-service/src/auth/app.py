@@ -9,12 +9,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import uvicorn
 
-from database_models import Base, get_db_session
+from database_models import Base, get_db_session, ApiKey
 from api import router
 from admin_api import admin_router
 from healthcheck import start_health_server
 import config
-from externalconnections.fetch_secrets import get_postgres_credentials, build_postgres_connection_string
+from externalconnections.fetch_secrets import (
+    get_postgres_credentials,
+    build_postgres_connection_string,
+    get_api_key_config,
+)
+import hashlib
 
 # Configure logging
 if config.LOG_FORMAT == 'json':
@@ -92,6 +97,55 @@ def setup_database():
             conn.execute("SELECT 1")
         
         logger.info("Database connection established")
+
+        # Load API keys from secrets and ensure they exist in the database
+        try:
+            api_config = get_api_key_config(
+                secret_name=config.API_SECRETS_NAME,
+                region_name=config.AWS_REGION,
+            )
+            session = SessionLocal()
+
+            def upsert_key(raw_key: str, meta: dict, is_admin: bool):
+                key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
+                record = session.query(ApiKey).filter(ApiKey.key_hash == key_hash).first()
+                if record:
+                    record.name = meta.get("name", record.name)
+                    record.description = meta.get("description", record.description)
+                    record.created_by = meta.get("email", record.created_by)
+                    record.is_admin = is_admin
+                    record.is_active = True
+                else:
+                    session.add(
+                        ApiKey(
+                            key_hash=key_hash,
+                            name=meta.get("name", "API Key"),
+                            description=meta.get("description"),
+                            created_by=meta.get("email", config.DEFAULT_ADMIN_EMAIL),
+                            is_admin=is_admin,
+                            is_active=True,
+                        )
+                    )
+
+            # Master key (non-admin)
+            master_key = api_config.get("master_api_key")
+            if master_key:
+                upsert_key(master_key, {"name": "Master API Key"}, False)
+
+            # Admin keys
+            for key, meta in api_config.get("admin_api_keys", {}).items():
+                upsert_key(key, meta or {}, meta.get("is_admin", True))
+
+            session.commit()
+            logger.info("API keys synchronized")
+        except Exception as exc:
+            logger.error(f"Failed to load API keys: {exc}")
+            if 'session' in locals():
+                session.rollback()
+        finally:
+            if 'session' in locals():
+                session.close()
+
         return engine
         
     except Exception as e:

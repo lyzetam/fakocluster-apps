@@ -32,3 +32,23 @@ Run the provided scripts to create the database schema and an initial admin user
    ```
 
 The seeding script retrieves database credentials from AWS Secrets Manager by default. A connection string can be supplied with `--connection-string` to override this behaviour.
+
+### API Key Secret Format
+
+The auth service can seed initial API keys from the secret referenced by `AUTH_API_SECRETS_NAME` (default `auth-service/api-keys`).
+The secret should be a JSON object structured as follows:
+
+```json
+{
+  "master_api_key": "your-master-key",
+  "admin_api_keys": {
+    "some-admin-key": {
+      "name": "Main Admin Key",
+      "email": "admin@example.com",
+      "is_admin": true
+    }
+  }
+}
+```
+
+On startup the service will insert or update these keys in the database.
