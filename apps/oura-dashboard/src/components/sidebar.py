@@ -46,6 +46,7 @@ def render_sidebar(queries):
         "Overview",
         "Sleep Analysis",
         "Activity Tracking",
+        "Heart Rate Analysis",
         "Readiness & Recovery",
         "Trends & Insights",
         "Detailed Reports"
