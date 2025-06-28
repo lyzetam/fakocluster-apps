@@ -71,7 +71,6 @@ async def verify_api_key(
         if not auth_manager.verify_api_key(db, x_api_key, ip_address=client_ip):
             raise HTTPException(status_code=401, detail="Invalid API key")
     finally:
-        db.close()
         db_gen.close()
 
     return True

@@ -114,7 +114,7 @@ elif section == "Permissions":
     with st.form("grant_perm"):
         user_email = st.text_input("User Email")
         app_name = st.text_input("Application Name")
-        expires = st.date_input("Expires At", value=None)
+        expires = st.date_input("Expires At", datetime.today())
         notes = st.text_area("Notes")
         submitted = st.form_submit_button("Grant Permission")
         if submitted:
@@ -133,7 +133,7 @@ elif section == "API Keys":
     with st.form("create_key"):
         name = st.text_input("Key Name")
         description = st.text_input("Description")
-        expires = st.date_input("Expires At", value=None)
+        expires = st.date_input("Expires At", datetime.today())
         allowed_ips = st.text_input("Allowed IPs (comma separated)")
         submitted = st.form_submit_button("Create API Key")
         if submitted:

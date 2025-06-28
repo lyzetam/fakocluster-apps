@@ -36,8 +36,9 @@ def create_database_if_not_exists(connection_string: str, database_name: str):
         )
         
         if not result.fetchone():
-            # Create database
-            conn.execute(text(f"CREATE DATABASE {database_name}"))
+            # Create database using bind parameters to avoid SQL injection
+            create_stmt = text("CREATE DATABASE :dbname").bindparams(dbname=database_name)
+            conn.execute(create_stmt)
             logger.info(f"Created database: {database_name}")
         else:
             logger.info(f"Database already exists: {database_name}")
