@@ -81,7 +81,9 @@ class ApplicationResponse(BaseModel):
 async def verify_admin(
     x_api_key: str = Header(None, alias=config.API_KEY_HEADER),
     req: Request = None,
+
     db: Session = Depends(database_models.get_db_session)
+
 ):
     """Verify that the request is from an admin user"""
     if not config.ENABLE_API_KEY_AUTH:
