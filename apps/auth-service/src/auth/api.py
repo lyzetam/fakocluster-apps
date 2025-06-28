@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Header, Request
 from fastapi.responses import PlainTextResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from sqlalchemy import and_, text
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, timedelta
@@ -145,7 +145,7 @@ async def health_check(db: Session = Depends(get_db_session)):
     """Health check endpoint"""
     try:
         # Test database connection
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         db_status = "healthy"
     except Exception:
         db_status = "unhealthy"
