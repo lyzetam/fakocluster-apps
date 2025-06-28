@@ -191,10 +191,17 @@ class AuthorizationManager:
             return False
         
         # Check IP restrictions if configured
-        if api_key_record.allowed_ips and ip_address:
+        if api_key_record.allowed_ips:
+            if not ip_address:
+                logger.warning(
+                    f"API key {api_key_record.name} used without IP address but IP restrictions are set"
+                )
+                return False
             allowed = self._check_ip_allowed(ip_address, json.loads(api_key_record.allowed_ips))
             if not allowed:
-                logger.warning(f"API key {api_key_record.name} used from unauthorized IP: {ip_address}")
+                logger.warning(
+                    f"API key {api_key_record.name} used from unauthorized IP: {ip_address}"
+                )
                 return False
         
         # Update last used timestamp
