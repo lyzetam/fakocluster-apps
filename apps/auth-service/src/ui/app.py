@@ -115,10 +115,11 @@ elif section == "Permissions":
         user_email = st.text_input("User Email")
         app_name = st.text_input("Application Name")
         expires = st.date_input("Expires At", datetime.today())
+        no_expiration = st.checkbox("No expiration", value=False)
         notes = st.text_area("Notes")
         submitted = st.form_submit_button("Grant Permission")
         if submitted:
-            expires_at = datetime.combine(expires, datetime.min.time()) if expires else None
+            expires_at = None if no_expiration else datetime.combine(expires, datetime.min.time())
             payload = {
                 "user_email": user_email,
                 "app_name": app_name,
@@ -134,10 +135,11 @@ elif section == "API Keys":
         name = st.text_input("Key Name")
         description = st.text_input("Description")
         expires = st.date_input("Expires At", datetime.today())
+        no_expiration = st.checkbox("No expiration", value=False)
         allowed_ips = st.text_input("Allowed IPs (comma separated)")
         submitted = st.form_submit_button("Create API Key")
         if submitted:
-            expires_at = datetime.combine(expires, datetime.min.time()) if expires else None
+            expires_at = None if no_expiration else datetime.combine(expires, datetime.min.time())
             payload = {
                 "name": name,
                 "description": description or None,
