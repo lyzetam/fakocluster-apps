@@ -3,12 +3,8 @@ Oura Health Dashboard - Main Application Entry Point
 """
 import streamlit as st
 from datetime import datetime
-import os
-
-import streamlit_authenticator as stauth
-
 # Import configuration
-from config import get_database_connection_string, REQUIRE_AUTH
+from config import get_database_connection_string
 
 # Import queries
 from queries import OuraDataQueries
@@ -38,33 +34,7 @@ st.set_page_config(
 # Apply custom CSS
 apply_custom_styles()
 
-# Authentication
-if REQUIRE_AUTH:
-    creds = {
-        "usernames": {
-            os.environ.get("DASHBOARD_USERNAME", "admin"): {
-                "email": os.environ.get("DASHBOARD_EMAIL", "admin@example.com"),
-                "name": os.environ.get("DASHBOARD_NAME", "Admin"),
-                "password": stauth.Hasher([
-                    os.environ.get("DASHBOARD_PASSWORD", "changeme")
-                ]).generate()[0],
-            }
-        }
-    }
-    authenticator = stauth.Authenticate(
-        creds,
-        cookie_name="oura_dashboard",
-        key=os.environ.get("AUTH_COOKIE_KEY", "auth_key"),
-        cookie_expiry_days=1,
-    )
-    name, auth_status, username = authenticator.login("Login", "main")
-    if auth_status is False:
-        st.error("Username or password is incorrect")
-        st.stop()
-    elif auth_status is None:
-        st.warning("Please enter your username and password")
-        st.stop()
-    authenticator.logout("Logout", "sidebar")
+
 
 # Initialize session state
 if 'queries' not in st.session_state:

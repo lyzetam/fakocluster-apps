@@ -53,10 +53,6 @@ MAX_WORKERS = int(os.environ.get('MAX_WORKERS', '4'))
 CONNECTION_POOL_SIZE = int(os.environ.get('CONNECTION_POOL_SIZE', '5'))
 CONNECTION_POOL_OVERFLOW = int(os.environ.get('CONNECTION_POOL_OVERFLOW', '10'))
 
-# Security settings
-REQUIRE_AUTH = os.environ.get('REQUIRE_AUTH', 'false').lower() == 'true'
-SESSION_TIMEOUT_MINUTES = int(os.environ.get('SESSION_TIMEOUT_MINUTES', '60'))
-
 def get_database_connection_string() -> str:
     """
     Get database connection string, either from environment or AWS Secrets Manager.
