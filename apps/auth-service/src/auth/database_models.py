@@ -44,7 +44,12 @@ class AuthorizedUser(Base):
     notes = Column(Text)  # Admin notes about this user
     
     # Relationships
-    permissions = relationship("UserAppPermission", back_populates="user", cascade="all, delete-orphan")
+    permissions = relationship(
+        "UserAppPermission",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="UserAppPermission.user_id",
+    )
     granted_permissions = relationship("UserAppPermission", foreign_keys="UserAppPermission.granted_by_user_id")
     
     __table_args__ = (
