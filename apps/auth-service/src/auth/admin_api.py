@@ -79,7 +79,7 @@ class ApplicationResponse(BaseModel):
 # Admin authentication dependency
 async def verify_admin(
     x_api_key: str = Header(None, alias=config.API_KEY_HEADER),
-    req: Request | None = None,
+    req: Request = None,
     db: Session = Depends(get_db_session)
 ):
     """Verify that the request is from an admin user"""
