@@ -8,7 +8,8 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime, timedelta
 import logging
 
-from database_models import get_db_session, AuthorizedUser, Application, AccessLog
+import database_models
+from database_models import AuthorizedUser, Application, AccessLog
 from auth_manager import AuthorizationManager
 from password_utils import verify_password
 import config
@@ -63,7 +64,7 @@ async def verify_api_key(
         raise HTTPException(status_code=401, detail="API key required")
 
     # Get DB session
-    db_gen = get_db_session()
+    db_gen = database_models.get_db_session()
     db = next(db_gen)
     try:
         client_ip = req.client.host if req and req.client else None
@@ -81,7 +82,7 @@ async def check_authorization(
     request: AuthCheckRequest,
     req: Request,
     api_key_valid: bool = Depends(verify_api_key),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """
     Check if a user is authorized to access an application
@@ -111,7 +112,7 @@ async def check_authorization(
 async def login_user(
     request: LoginRequest,
     api_key_valid: bool = Depends(verify_api_key),
-    db: Session = Depends(get_db_session),
+    db: Session = Depends(database_models.get_db_session),
 ):
     """Validate user credentials."""
     user = db.query(AuthorizedUser).filter(
@@ -130,7 +131,7 @@ async def login_user(
 async def get_user_applications(
     email: EmailStr,
     api_key_valid: bool = Depends(verify_api_key),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Get list of applications a user has access to"""
     apps = auth_manager.get_user_applications(db, email)
@@ -141,7 +142,7 @@ async def get_user_applications(
     )
 
 @router.get("/health", response_model=HealthResponse)
-async def health_check(db: Session = Depends(get_db_session)):
+async def health_check(db: Session = Depends(database_models.get_db_session)):
     """Health check endpoint"""
     try:
         # Test database connection
@@ -176,7 +177,7 @@ async def clear_cache(
 
 # Metrics endpoint (Prometheus format)
 @router.get("/metrics", response_class=PlainTextResponse)
-async def get_metrics(db: Session = Depends(get_db_session)):
+async def get_metrics(db: Session = Depends(database_models.get_db_session)):
     """Export metrics in Prometheus format"""
     metrics = []
     

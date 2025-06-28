@@ -9,9 +9,10 @@ import hashlib
 import secrets
 import json
 
+import database_models
 from database_models import (
-    get_db_session, AuthorizedUser, Application, 
-    UserAppPermission, ApiKey, AccessLog, AuditLog
+    AuthorizedUser, Application, UserAppPermission,
+    ApiKey, AccessLog, AuditLog
 )
 from auth_manager import AuthorizationManager
 from password_utils import hash_password
@@ -80,7 +81,7 @@ class ApplicationResponse(BaseModel):
 async def verify_admin(
     x_api_key: str = Header(None, alias=config.API_KEY_HEADER),
     req: Request = None,
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Verify that the request is from an admin user"""
     if not config.ENABLE_API_KEY_AUTH:
@@ -114,7 +115,7 @@ async def verify_admin(
 async def create_user(
     request: CreateUserRequest,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Create a new authorized user"""
     # Check if user already exists
@@ -165,7 +166,7 @@ async def list_users(
     skip: int = 0,
     limit: int = 100,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """List authorized users"""
     query = db.query(AuthorizedUser)
@@ -205,7 +206,7 @@ async def update_user(
     email: EmailStr,
     request: UpdateUserRequest,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Update user details"""
     user = db.query(AuthorizedUser).filter(
@@ -243,7 +244,7 @@ async def update_user(
 async def create_application(
     request: CreateApplicationRequest,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Create a new application"""
     # Check if app already exists
@@ -289,7 +290,7 @@ async def list_applications(
     skip: int = 0,
     limit: int = 100,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """List applications"""
     query = db.query(Application)
@@ -325,7 +326,7 @@ async def list_applications(
 async def grant_permission(
     request: GrantPermissionRequest,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Grant user permission to access an application"""
     # Get user
@@ -402,7 +403,7 @@ async def revoke_permission(
     user_email: EmailStr,
     app_name: str,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Revoke user permission for an application"""
     # Get user and app
@@ -447,7 +448,7 @@ async def revoke_permission(
 async def create_api_key(
     request: CreateApiKeyRequest,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Create a new API key"""
     # Generate a secure random key
@@ -493,7 +494,7 @@ async def get_access_logs(
     skip: int = 0,
     limit: int = 100,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Get access logs"""
     query = db.query(AccessLog)
@@ -540,7 +541,7 @@ async def get_audit_logs(
     skip: int = 0,
     limit: int = 100,
     admin_info: dict = Depends(verify_admin),
-    db: Session = Depends(get_db_session)
+    db: Session = Depends(database_models.get_db_session)
 ):
     """Get audit logs"""
     query = db.query(AuditLog)
