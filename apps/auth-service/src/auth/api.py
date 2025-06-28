@@ -53,7 +53,7 @@ class HealthResponse(BaseModel):
 # Dependency for API key authentication
 async def verify_api_key(
     x_api_key: str = Header(None, alias=config.API_KEY_HEADER),
-    req: Request | None = None,
+    req: Request = None,
 ):
     """Verify API key for protected endpoints."""
     if not config.ENABLE_API_KEY_AUTH:
