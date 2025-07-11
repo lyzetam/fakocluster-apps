@@ -13,7 +13,17 @@ def render_heart_rate_analysis_page(queries, start_date, end_date, personal_info
     """Render the heart rate analysis page"""
     st.title("💓 Heart Rate Analysis")
     
-    # Get heart rate data (assuming we add this query method)
+    # Info about data sources
+    st.info("""
+    **Note**: This analysis uses heart rate data from:
+    - 🛌 **Sleep periods**: Average, minimum, and maximum heart rate during sleep
+    - 💚 **Readiness data**: Daily resting heart rate measurements
+    - 📊 **HRV metrics**: Heart rate variability from sleep periods
+    
+    Continuous daytime heart rate monitoring requires an Oura Ring Gen 3 with the feature enabled.
+    """)
+    
+    # Get heart rate data from sleep and readiness tables
     df_hr = queries.get_heart_rate_df(start_date, end_date)
     
     if df_hr.empty:
@@ -133,15 +143,81 @@ def render_daily_patterns_tab(df_hr):
 
 def render_zone_analysis_tab(df_hr):
     """Render heart rate zone analysis"""
-    st.subheader("Heart Rate Zone Distribution")
+    st.subheader("Sleep Heart Rate Patterns")
     
-    # Calculate zone percentages (example)
+    # Since we only have sleep data, show sleep-specific analysis
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # HRV analysis
+        if 'hrv_avg' in df_hr.columns and df_hr['hrv_avg'].notna().any():
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatter(
+                x=df_hr['date'],
+                y=df_hr['hrv_avg'],
+                mode='lines+markers',
+                name='HRV Average',
+                line=dict(color=COLORS['sleep'], width=2)
+            ))
+            
+            if 'hrv_min' in df_hr.columns and 'hrv_max' in df_hr.columns:
+                fig.add_trace(go.Scatter(
+                    x=df_hr['date'],
+                    y=df_hr['hrv_max'],
+                    mode='lines',
+                    name='HRV Max',
+                    line=dict(color='rgba(0,0,0,0)'),
+                    showlegend=False
+                ))
+                
+                fig.add_trace(go.Scatter(
+                    x=df_hr['date'],
+                    y=df_hr['hrv_min'],
+                    mode='lines',
+                    name='HRV Range',
+                    fill='tonexty',
+                    fillcolor='rgba(70, 130, 180, 0.2)',
+                    line=dict(color='rgba(0,0,0,0)')
+                ))
+            
+            fig.update_layout(
+                title="Heart Rate Variability (HRV)",
+                xaxis_title="Date",
+                yaxis_title="HRV (ms)",
+                height=350
+            )
+            
+            st.plotly_chart(apply_chart_theme(fig), use_container_width=True)
+    
+    with col2:
+        # Respiratory rate if available
+        if 'respiratory_rate' in df_hr.columns and df_hr['respiratory_rate'].notna().any():
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatter(
+                x=df_hr['date'],
+                y=df_hr['respiratory_rate'],
+                mode='lines+markers',
+                name='Respiratory Rate',
+                line=dict(color=COLORS['readiness'], width=2)
+            ))
+            
+            fig.update_layout(
+                title="Respiratory Rate During Sleep",
+                xaxis_title="Date",
+                yaxis_title="Breaths per Minute",
+                height=350
+            )
+            
+            st.plotly_chart(apply_chart_theme(fig), use_container_width=True)
+    
+    # Sleep stage heart rate zones info
     zones = {
-        'Rest': 30,
-        'Light': 40,
-        'Moderate': 20,
-        'Hard': 8,
-        'Maximum': 2
+        'Deep Sleep': 'Lowest HR, maximum recovery',
+        'REM Sleep': 'Variable HR, similar to waking',
+        'Light Sleep': 'Moderate HR, transitional',
+        'Awake': 'Elevated HR, brief awakenings'
     }
     
     colors = ['#4ECDC4', '#45B7D1', '#FFD93D', '#FF6B6B', '#8B0000']
@@ -160,31 +236,11 @@ def render_zone_analysis_tab(df_hr):
     
     st.plotly_chart(apply_chart_theme(fig), use_container_width=True)
     
-    # Zone descriptions
-    st.markdown("### Zone Definitions")
-    col1, col2 = st.columns(2)
+    # Sleep stage descriptions
+    st.markdown("### Sleep Stage Heart Rate Patterns")
     
-    with col1:
-        st.info("""
-        **🟦 Rest Zone (50-60% max HR)**
-        - Normal daily activities
-        - Recovery state
-        
-        **🟩 Light Zone (60-70% max HR)**
-        - Easy exercise
-        - Fat burning zone
-        """)
-    
-    with col2:
-        st.info("""
-        **🟡 Moderate Zone (70-80% max HR)**
-        - Cardio training
-        - Improved fitness
-        
-        **🟥 Hard/Maximum Zone (80-100% max HR)**
-        - High intensity training
-        - Performance improvement
-        """)
+    for stage, description in zones.items():
+        st.markdown(f"**{stage}**: {description}")
 
 def render_hr_trends_tab(df_hr):
     """Render heart rate trends"""

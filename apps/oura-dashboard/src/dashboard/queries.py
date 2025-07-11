@@ -381,33 +381,60 @@ class OuraDataQueries:
     
 
     def get_heart_rate_df(self, start_date: date, end_date: date) -> pd.DataFrame:
-        """Get daily heart rate aggregates from time-series records"""
-
-        # We store only timestamped heart rate values in ``oura_heart_rate``.
-        # Aggregate them by day so downstream code can work with daily metrics.
+        """Get daily heart rate data from sleep periods and readiness tables
+        
+        Since continuous heart rate monitoring is not available, we use:
+        - Sleep heart rate data (average, min, max) from sleep periods
+        - Resting heart rate from readiness data
+        - HRV metrics from sleep periods
+        """
+        
         query = """
-        SELECT
-            DATE(timestamp) AS date,
-            MIN(heart_rate) FILTER (WHERE source = 'sleep') AS resting_hr,
-            MIN(heart_rate) AS min_hr,
-            MAX(heart_rate) AS max_hr,
-            AVG(heart_rate) AS avg_hr,
-            STDDEV(heart_rate) AS hr_variability
-        FROM oura_heart_rate
-        WHERE timestamp >= :start_date AND timestamp < :end_date
-        GROUP BY DATE(timestamp)
+        SELECT 
+            COALESCE(sp.date, r.date) as date,
+            r.resting_heart_rate as resting_hr,
+            sp.heart_rate_min as min_hr,
+            sp.heart_rate_avg as avg_hr,
+            sp.heart_rate_max as max_hr,
+            sp.hrv_avg as hrv_avg,
+            sp.hrv_max as hrv_max,
+            sp.hrv_min as hrv_min,
+            sp.hrv_stdev as hr_variability,
+            sp.respiratory_rate
+        FROM oura_readiness r
+        FULL OUTER JOIN (
+            SELECT 
+                date,
+                AVG(heart_rate_avg) as heart_rate_avg,
+                MIN(heart_rate_min) as heart_rate_min,
+                MAX(heart_rate_max) as heart_rate_max,
+                AVG(hrv_avg) as hrv_avg,
+                MAX(hrv_max) as hrv_max,
+                MIN(hrv_min) as hrv_min,
+                AVG(hrv_stdev) as hrv_stdev,
+                AVG(respiratory_rate) as respiratory_rate
+            FROM oura_sleep_periods
+            WHERE type = 'long_sleep'  -- Focus on main sleep periods
+            GROUP BY date
+        ) sp ON r.date = sp.date
+        WHERE COALESCE(sp.date, r.date) BETWEEN :start_date AND :end_date
         ORDER BY date
         """
-
-        params = {
-            'start_date': start_date,
-            # end_date is made exclusive by adding one day so the full day is included
-            'end_date': end_date + timedelta(days=1)
-        }
-
-        df = self._execute_query(query, params)
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
         if not df.empty:
             df['date'] = pd.to_datetime(df['date'])
+            
+            # Fill missing values with reasonable defaults
+            if 'resting_hr' not in df.columns:
+                df['resting_hr'] = None
+            if 'min_hr' not in df.columns:
+                df['min_hr'] = df['resting_hr']  # Use resting HR as minimum if not available
+            if 'max_hr' not in df.columns:
+                df['max_hr'] = df['avg_hr'] * 1.2 if 'avg_hr' in df.columns else None
+            if 'hr_variability' not in df.columns:
+                df['hr_variability'] = 0
+                
         return df
 
 
@@ -415,4 +442,3 @@ class OuraDataQueries:
     def close(self):
         """Close database connections"""
         self.engine.dispose()
-
