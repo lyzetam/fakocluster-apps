@@ -384,7 +384,7 @@ class OuraDataQueries:
         """Get daily heart rate data from sleep periods and readiness tables
         
         Since continuous heart rate monitoring is not available, we use:
-        - Sleep heart rate data (average, min, max) from sleep periods
+        - Sleep heart rate data (average and min) from sleep periods
         - Resting heart rate from readiness data
         - HRV metrics from sleep periods
         """
@@ -395,7 +395,12 @@ class OuraDataQueries:
             r.resting_heart_rate as resting_hr,
             sp.heart_rate_min as min_hr,
             sp.heart_rate_avg as avg_hr,
-            sp.heart_rate_max as max_hr,
+            -- Estimate max HR as avg + 20% since we don't have actual max
+            CASE 
+                WHEN sp.heart_rate_avg IS NOT NULL 
+                THEN sp.heart_rate_avg * 1.2 
+                ELSE NULL 
+            END as max_hr,
             sp.hrv_avg as hrv_avg,
             sp.hrv_max as hrv_max,
             sp.hrv_min as hrv_min,
@@ -407,7 +412,6 @@ class OuraDataQueries:
                 date,
                 AVG(heart_rate_avg) as heart_rate_avg,
                 MIN(heart_rate_min) as heart_rate_min,
-                MAX(heart_rate_max) as heart_rate_max,
                 AVG(hrv_avg) as hrv_avg,
                 MAX(hrv_max) as hrv_max,
                 MIN(hrv_min) as hrv_min,
@@ -431,7 +435,7 @@ class OuraDataQueries:
             if 'min_hr' not in df.columns:
                 df['min_hr'] = df['resting_hr']  # Use resting HR as minimum if not available
             if 'max_hr' not in df.columns:
-                df['max_hr'] = df['avg_hr'] * 1.2 if 'avg_hr' in df.columns else None
+                df['max_hr'] = None
             if 'hr_variability' not in df.columns:
                 df['hr_variability'] = 0
                 
