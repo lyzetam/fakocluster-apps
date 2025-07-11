@@ -73,7 +73,7 @@ def get_database_connection_string() -> str:
         from urllib.parse import quote_plus
         encoded_password = quote_plus(DATABASE_PASSWORD)
         connection_string = f"postgresql://{DATABASE_USER}:{encoded_password}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
-        logger.info(f"Using database connection from environment variables: {DATABASE_USER}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}")
+        logger.info(f"Using database connection from environment variables: [REDACTED]@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}")
         return connection_string
     
     # Otherwise, try to fetch from AWS Secrets Manager
