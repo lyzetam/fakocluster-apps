@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enhanced Oura data collector with PostgreSQL support"""
+"""Enhanced Oura data collector with PostgreSQL support - FIXED VERSION"""
 import sys
 import os
 import logging
@@ -114,11 +114,42 @@ class OuraCollector:
             logger.error(f"Failed to load configuration: {e}")
             raise
     
-    def collect_data(self, days_back: Optional[int] = None) -> Dict[str, Any]:
+    def get_last_collection_date(self) -> Optional[datetime]:
+        """Get the date of the most recent data in the database
+        
+        Returns:
+            The most recent date with data, or None if no data exists
+        """
+        try:
+            # This method should be implemented in the storage classes
+            # For now, we'll use a simple query approach
+            if hasattr(self.storage, 'get_session'):
+                with self.storage.get_session() as session:
+                    # Query for the most recent date across key tables
+                    from sqlalchemy import func
+                    from database_models import Activity, Readiness, DailySleep
+                    
+                    max_activity = session.query(func.max(Activity.date)).scalar()
+                    max_readiness = session.query(func.max(Readiness.date)).scalar()
+                    max_sleep = session.query(func.max(DailySleep.date)).scalar()
+                    
+                    dates = [d for d in [max_activity, max_readiness, max_sleep] if d is not None]
+                    if dates:
+                        most_recent = max(dates)
+                        logger.info(f"Most recent data found: {most_recent}")
+                        return datetime.combine(most_recent, datetime.min.time())
+            
+            return None
+        except Exception as e:
+            logger.warning(f"Could not determine last collection date: {e}")
+            return None
+    
+    def collect_data(self, days_back: Optional[int] = None, use_smart_backfill: bool = True) -> Dict[str, Any]:
         """Collect all data types for the specified period
         
         Args:
             days_back: Number of days to collect (None uses config default)
+            use_smart_backfill: If True, only collect data since last collection
             
         Returns:
             Summary of collection results
@@ -128,11 +159,39 @@ class OuraCollector:
         error_msg = None
         
         try:
-            if days_back is None:
-                days_back = self.config['days_to_backfill']
-            
             end_date = datetime.now().date()
-            start_date = end_date - timedelta(days=days_back)
+            
+            # Determine start date based on smart backfill
+            if use_smart_backfill and days_back is None:
+                last_collection = self.get_last_collection_date()
+                if last_collection:
+                    # Add 1 day to avoid re-collecting the last day
+                    start_date = (last_collection + timedelta(days=1)).date()
+                    # But don't go further back than the configured backfill days
+                    max_backfill_date = end_date - timedelta(days=self.config['days_to_backfill'])
+                    if start_date < max_backfill_date:
+                        start_date = max_backfill_date
+                    logger.info(f"Smart backfill: collecting from {start_date} (last data: {last_collection.date()})")
+                else:
+                    # No existing data, use configured backfill
+                    days_back = self.config['days_to_backfill']
+                    start_date = end_date - timedelta(days=days_back)
+                    logger.info(f"No existing data found, collecting last {days_back} days")
+            else:
+                # Manual days_back specified or smart backfill disabled
+                if days_back is None:
+                    days_back = self.config['days_to_backfill']
+                start_date = end_date - timedelta(days=days_back)
+            
+            # Don't collect future data
+            if start_date > end_date:
+                logger.info("All data is up to date, nothing to collect")
+                return {
+                    'start_date': str(start_date),
+                    'end_date': str(end_date),
+                    'collection_time': datetime.now().isoformat(),
+                    'results': {'status': 'up_to_date'}
+                }
             
             logger.info(f"Starting comprehensive data collection from {start_date} to {end_date}")
             
@@ -143,6 +202,7 @@ class OuraCollector:
                 'results': {}
             }
             
+            # [Rest of the collection logic remains the same...]
             # Collect personal info first (not date-based)
             try:
                 logger.info("Collecting personal info...")
@@ -401,7 +461,9 @@ class OuraCollector:
             days_back: Number of days to collect
         """
         logger.info("Running single comprehensive collection")
-        summary = self.collect_data(days_back)
+        # For run_once, don't use smart backfill if days_back is specified
+        use_smart = days_back is None
+        summary = self.collect_data(days_back, use_smart_backfill=use_smart)
         
         # Log summary statistics
         total_records = 0
@@ -424,12 +486,12 @@ class OuraCollector:
     
     def run_continuous(self):
         """Run continuous collection on schedule"""
-        # Run initial collection
-        self.collect_data()
+        # Run initial collection with smart backfill
+        self.collect_data(use_smart_backfill=True)
         
-        # Schedule periodic collections
+        # Schedule periodic collections with smart backfill
         interval = self.config['collection_interval']
-        schedule.every(interval).seconds.do(self.collect_data)
+        schedule.every(interval).seconds.do(lambda: self.collect_data(use_smart_backfill=True))
         
         logger.info(f"Starting continuous collection every {interval} seconds")
         
