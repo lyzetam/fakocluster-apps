@@ -415,6 +415,57 @@ class OuraCollector:
                 except Exception as e:
                     logger.error(f"Failed to collect tags data: {e}")
                     summary['results']['tags'] = {'error': str(e)}
+                
+                # VO2 Max data
+                try:
+                    logger.info("Collecting VO2 max data...")
+                    raw_vo2_max = self.oura_client.get_vo2_max(start_date, end_date)
+                    
+                    # Save raw data
+                    count = self.storage.save_data(raw_vo2_max, 'vo2_max')
+                    
+                    summary['results']['vo2_max'] = {
+                        'records_collected': len(raw_vo2_max),
+                        'records_saved': count
+                    }
+                    
+                except Exception as e:
+                    logger.error(f"Failed to collect VO2 max data: {e}")
+                    summary['results']['vo2_max'] = {'error': str(e)}
+                
+                # Cardiovascular Age data
+                try:
+                    logger.info("Collecting cardiovascular age data...")
+                    raw_cardio_age = self.oura_client.get_daily_cardiovascular_age(start_date, end_date)
+                    
+                    # Save raw data
+                    count = self.storage.save_data(raw_cardio_age, 'cardiovascular_age')
+                    
+                    summary['results']['cardiovascular_age'] = {
+                        'records_collected': len(raw_cardio_age),
+                        'records_saved': count
+                    }
+                    
+                except Exception as e:
+                    logger.error(f"Failed to collect cardiovascular age data: {e}")
+                    summary['results']['cardiovascular_age'] = {'error': str(e)}
+                
+                # Resilience data
+                try:
+                    logger.info("Collecting resilience data...")
+                    raw_resilience = self.oura_client.get_daily_resilience(start_date, end_date)
+                    
+                    # Save raw data
+                    count = self.storage.save_data(raw_resilience, 'resilience')
+                    
+                    summary['results']['resilience'] = {
+                        'records_collected': len(raw_resilience),
+                        'records_saved': count
+                    }
+                    
+                except Exception as e:
+                    logger.error(f"Failed to collect resilience data: {e}")
+                    summary['results']['resilience'] = {'error': str(e)}
             
             # Create comprehensive daily summaries
             if all(k in collected_data for k in ['sleep_periods', 'daily_sleep', 'activity', 'readiness']):

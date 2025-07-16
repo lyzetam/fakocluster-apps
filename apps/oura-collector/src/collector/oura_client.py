@@ -535,6 +535,75 @@ class OuraAPIClient:
         logger.info(f"Fetching sleep time data from {start_str} to {end_str}")
         return self._make_paginated_request('usercollection/sleep_time', params)
     
+    def get_vo2_max(self, start_date: Optional[Union[str, date]] = None,
+                    end_date: Optional[Union[str, date]] = None,
+                    document_id: Optional[str] = None) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
+        """Get VO2 max data
+        
+        Args:
+            start_date: Start date
+            end_date: End date
+            document_id: Specific document ID to fetch
+            
+        Returns:
+            List of VO2 max records or single record if document_id provided
+        """
+        if document_id:
+            logger.info(f"Fetching VO2 max document: {document_id}")
+            return self._make_request(f'usercollection/vO2_max/{document_id}')
+            
+        start_str, end_str = self._format_dates(start_date, end_date)
+        params = {'start_date': start_str, 'end_date': end_str}
+        
+        logger.info(f"Fetching VO2 max data from {start_str} to {end_str}")
+        return self._make_paginated_request('usercollection/vO2_max', params)
+    
+    def get_daily_cardiovascular_age(self, start_date: Optional[Union[str, date]] = None,
+                                   end_date: Optional[Union[str, date]] = None,
+                                   document_id: Optional[str] = None) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
+        """Get daily cardiovascular age data
+        
+        Args:
+            start_date: Start date
+            end_date: End date
+            document_id: Specific document ID to fetch
+            
+        Returns:
+            List of cardiovascular age records or single record if document_id provided
+        """
+        if document_id:
+            logger.info(f"Fetching cardiovascular age document: {document_id}")
+            return self._make_request(f'usercollection/daily_cardiovascular_age/{document_id}')
+            
+        start_str, end_str = self._format_dates(start_date, end_date)
+        params = {'start_date': start_str, 'end_date': end_str}
+        
+        logger.info(f"Fetching cardiovascular age data from {start_str} to {end_str}")
+        return self._make_paginated_request('usercollection/daily_cardiovascular_age', params)
+    
+    def get_daily_resilience(self, start_date: Optional[Union[str, date]] = None,
+                           end_date: Optional[Union[str, date]] = None,
+                           document_id: Optional[str] = None) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
+        """Get daily resilience data
+        
+        Args:
+            start_date: Start date
+            end_date: End date
+            document_id: Specific document ID to fetch
+            
+        Returns:
+            List of resilience records or single record if document_id provided
+        """
+        if document_id:
+            logger.info(f"Fetching resilience document: {document_id}")
+            return self._make_request(f'usercollection/daily_resilience/{document_id}')
+            
+        start_str, end_str = self._format_dates(start_date, end_date)
+        params = {'start_date': start_str, 'end_date': end_str}
+        
+        logger.info(f"Fetching resilience data from {start_str} to {end_str}")
+        return self._make_paginated_request('usercollection/daily_resilience', params)
+    
     def test_connection(self) -> bool:
         """Test API connection and token validity
         

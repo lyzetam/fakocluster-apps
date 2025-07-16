@@ -12,7 +12,9 @@ from sqlalchemy.exc import IntegrityError, OperationalError
 
 from database_models import (
     Base, PersonalInfo, SleepPeriod, DailySleep, Activity, 
-    Readiness, Workout, Stress, HeartRate, DailySummary, CollectionLog
+    Readiness, Workout, Stress, HeartRate, DailySummary, CollectionLog,
+    Session, VO2Max, CardiovascularAge, Resilience, SpO2, Tag, 
+    SleepTime, RestModePeriod, RingConfiguration
 )
 
 logger = logging.getLogger(__name__)
@@ -85,12 +87,15 @@ class PostgresStorage:
             'stress': self._save_stress,
             'heart_rate': self._save_heart_rate,
             'daily_summaries': self._save_daily_summaries,
-            'spo2': self._save_raw_data,
-            'sessions': self._save_raw_data,
-            'tags': self._save_raw_data,
-            'ring_configuration': self._save_raw_data,
-            'sleep_time': self._save_raw_data,
-            'rest_mode_period': self._save_raw_data
+            'spo2': self._save_spo2,
+            'sessions': self._save_sessions,
+            'tags': self._save_tags,
+            'ring_configuration': self._save_ring_configuration,
+            'sleep_time': self._save_sleep_time,
+            'rest_mode_periods': self._save_rest_mode_periods,
+            'vo2_max': self._save_vo2_max,
+            'cardiovascular_age': self._save_cardiovascular_age,
+            'resilience': self._save_resilience_data
         }
         
         save_method = save_methods.get(data_type)
@@ -371,8 +376,31 @@ class PostgresStorage:
             count = 0
             for record in data:
                 try:
-                    # Heart rate data might come in different formats
-                    if 'timestamp' in record and 'heart_rate' in record:
+                    # Handle the Oura API response format
+                    if 'data' in record:
+                        # This is a full API response with nested data
+                        for data_item in record['data']:
+                            timestamp = data_item.get('timestamp')
+                            bpm = data_item.get('bpm')
+                            if timestamp and bpm is not None:
+                                hr_record = HeartRate(
+                                    timestamp=timestamp,
+                                    heart_rate=bpm,
+                                    source=data_item.get('source', 'oura')
+                                )
+                                session.add(hr_record)
+                                count += 1
+                    elif 'timestamp' in record and 'bpm' in record:
+                        # Direct heart rate record
+                        hr_record = HeartRate(
+                            timestamp=record['timestamp'],
+                            heart_rate=record['bpm'],
+                            source=record.get('source', 'oura')
+                        )
+                        session.add(hr_record)
+                        count += 1
+                    elif 'timestamp' in record and 'heart_rate' in record:
+                        # Alternative format
                         hr_record = HeartRate(
                             timestamp=record['timestamp'],
                             heart_rate=record['heart_rate'],
@@ -380,19 +408,9 @@ class PostgresStorage:
                         )
                         session.add(hr_record)
                         count += 1
-                    elif 'items' in record:
-                        # Handle time series format
-                        for item in record.get('items', []):
-                            if item:
-                                hr_record = HeartRate(
-                                    timestamp=item.get('timestamp'),
-                                    heart_rate=item.get('value'),
-                                    source='oura'
-                                )
-                                session.add(hr_record)
-                                count += 1
                 except Exception as e:
                     logger.error(f"Error saving heart rate data: {e}")
+                    logger.debug(f"Record structure: {record}")
             
             logger.info(f"Saved {count} heart rate records")
             return count
@@ -426,6 +444,284 @@ class PostgresStorage:
                     logger.error(f"Error saving daily summary for {record.get('date')}: {e}")
             
             logger.info(f"Saved {count} daily summary records")
+            return count
+    
+    def _save_sessions(self, data: List[Dict], data_type: str) -> int:
+        """Save session data (breathing, meditation, etc.)"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    # Process the session data if needed
+                    if 'session_id' in record:
+                        # Already processed
+                        session_data = record
+                    else:
+                        # Raw data from API
+                        session_data = {
+                            'session_id': record.get('id'),
+                            'date': record.get('day'),
+                            'type': record.get('type'),
+                            'mood': record.get('mood'),
+                            'start_datetime': record.get('start_datetime'),
+                            'end_datetime': record.get('end_datetime'),
+                            'heart_rate_data': record.get('heart_rate', {}),
+                            'hrv_data': record.get('heart_rate_variability', {}),
+                            'motion_count_data': record.get('motion_count', {}),
+                            'raw_data': record
+                        }
+                        
+                        # Calculate duration if possible
+                        if record.get('start_datetime') and record.get('end_datetime'):
+                            try:
+                                start = datetime.fromisoformat(record['start_datetime'].replace('Z', '+00:00'))
+                                end = datetime.fromisoformat(record['end_datetime'].replace('Z', '+00:00'))
+                                session_data['duration_minutes'] = round((end - start).total_seconds() / 60, 1)
+                            except:
+                                pass
+                    
+                    stmt = insert(Session).values(
+                        session_id=session_data.get('session_id'),
+                        date=session_data.get('date'),
+                        type=session_data.get('type'),
+                        mood=session_data.get('mood'),
+                        start_datetime=session_data.get('start_datetime'),
+                        end_datetime=session_data.get('end_datetime'),
+                        duration_minutes=session_data.get('duration_minutes'),
+                        heart_rate_data=session_data.get('heart_rate_data'),
+                        hrv_data=session_data.get('hrv_data'),
+                        motion_count_data=session_data.get('motion_count_data'),
+                        raw_data=session_data.get('raw_data', record)
+                    )
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['session_id'],
+                        set_=dict(stmt.excluded)
+                    )
+                    session.execute(stmt)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving session {record.get('id')}: {e}")
+            
+            logger.info(f"Saved {count} session records")
+            return count
+    
+    def _save_vo2_max(self, data: List[Dict], data_type: str) -> int:
+        """Save VO2 max data"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    stmt = insert(VO2Max).values(
+                        date=record.get('day'),
+                        vo2_max=record.get('vo2_max'),
+                        raw_data=record
+                    )
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['date'],
+                        set_=dict(stmt.excluded)
+                    )
+                    session.execute(stmt)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving VO2 max for {record.get('day')}: {e}")
+            
+            logger.info(f"Saved {count} VO2 max records")
+            return count
+    
+    def _save_cardiovascular_age(self, data: List[Dict], data_type: str) -> int:
+        """Save cardiovascular age data"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    stmt = insert(CardiovascularAge).values(
+                        date=record.get('day'),
+                        cardiovascular_age=record.get('vascular_age'),  # Fixed column name
+                        raw_data=record
+                    )
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['date'],
+                        set_=dict(stmt.excluded)
+                    )
+                    session.execute(stmt)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving cardiovascular age for {record.get('day')}: {e}")
+            
+            logger.info(f"Saved {count} cardiovascular age records")
+            return count
+    
+    def _save_resilience_data(self, data: List[Dict], data_type: str) -> int:
+        """Save resilience data"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    contributors = record.get('contributors', {})
+                    
+                    stmt = insert(Resilience).values(
+                        resilience_id=record.get('id', f"unknown_{count}"),
+                        date=record.get('day'),
+                        resilience_level=record.get('level'),  # Fixed column name
+                        sleep_recovery=contributors.get('sleep_recovery'),
+                        daytime_recovery=contributors.get('daytime_recovery'),
+                        stress=contributors.get('stress'),
+                        raw_data=record
+                    )
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['resilience_id'],
+                        set_=dict(stmt.excluded)
+                    )
+                    session.execute(stmt)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving resilience for {record.get('day')}: {e}")
+            
+            logger.info(f"Saved {count} resilience records")
+            return count
+    
+    def _save_spo2(self, data: List[Dict], data_type: str) -> int:
+        """Save SpO2 (blood oxygen) data"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    # Extract SpO2 percentage average
+                    spo2_avg = None
+                    if 'spo2_percentage' in record:
+                        spo2_data = record['spo2_percentage']
+                        if isinstance(spo2_data, dict):
+                            spo2_avg = spo2_data.get('average')
+                    
+                    # Extract breathing disturbance index
+                    bdi = None
+                    if 'breathing_disturbance_index' in record:
+                        bdi = record['breathing_disturbance_index']
+                    
+                    stmt = insert(SpO2).values(
+                        date=record.get('day'),
+                        spo2_percentage_avg=spo2_avg,
+                        breathing_disturbance_index=bdi,
+                        raw_data=record
+                    )
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['date'],
+                        set_=dict(stmt.excluded)
+                    )
+                    session.execute(stmt)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving SpO2 for {record.get('day')}: {e}")
+            
+            logger.info(f"Saved {count} SpO2 records")
+            return count
+    
+    def _save_tags(self, data: List[Dict], data_type: str) -> int:
+        """Save enhanced tags data"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    # Tags might come as a list or string
+                    tags = record.get('tags', [])
+                    if isinstance(tags, list):
+                        tags_str = json.dumps(tags)
+                    else:
+                        tags_str = str(tags)
+                    
+                    tag_record = Tag(
+                        date=record.get('day'),
+                        tag_type=record.get('tag_type_code', 'general'),
+                        tags=tags_str,
+                        raw_data=record
+                    )
+                    session.add(tag_record)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving tags for {record.get('day')}: {e}")
+            
+            logger.info(f"Saved {count} tag records")
+            return count
+    
+    def _save_sleep_time(self, data: List[Dict], data_type: str) -> int:
+        """Save sleep time recommendations"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    # Extract recommendation text
+                    recommendation = record.get('recommendation', '')
+                    if isinstance(recommendation, dict):
+                        recommendation = json.dumps(recommendation)
+                    
+                    stmt = insert(SleepTime).values(
+                        date=record.get('day'),
+                        recommendation=recommendation,
+                        raw_data=record
+                    )
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['date'],
+                        set_=dict(stmt.excluded)
+                    )
+                    session.execute(stmt)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving sleep time for {record.get('day')}: {e}")
+            
+            logger.info(f"Saved {count} sleep time records")
+            return count
+    
+    def _save_rest_mode_periods(self, data: List[Dict], data_type: str) -> int:
+        """Save rest mode periods"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    stmt = insert(RestModePeriod).values(
+                        rest_mode_period_id=record.get('id', f"unknown_{count}"),
+                        start_date=record.get('start_day'),
+                        end_date=record.get('end_day'),
+                        rest_mode_state=record.get('rest_mode_state'),
+                        raw_data=record
+                    )
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['rest_mode_period_id'],
+                        set_=dict(stmt.excluded)
+                    )
+                    session.execute(stmt)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving rest mode period {record.get('id')}: {e}")
+            
+            logger.info(f"Saved {count} rest mode period records")
+            return count
+    
+    def _save_ring_configuration(self, data: List[Dict], data_type: str) -> int:
+        """Save ring configuration data"""
+        with self.get_session() as session:
+            count = 0
+            for record in data:
+                try:
+                    stmt = insert(RingConfiguration).values(
+                        ring_id=record.get('id', f"unknown_{count}"),
+                        color=record.get('color'),
+                        design=record.get('design'),
+                        firmware_version=record.get('firmware_version'),
+                        hardware_type=record.get('hardware_type'),
+                        set_up_at=record.get('set_up_at'),
+                        size=record.get('size'),
+                        raw_data=record
+                    )
+                    stmt = stmt.on_conflict_do_update(
+                        index_elements=['ring_id'],
+                        set_=dict(stmt.excluded)
+                    )
+                    session.execute(stmt)
+                    count += 1
+                except Exception as e:
+                    logger.error(f"Error saving ring configuration {record.get('id')}: {e}")
+            
+            logger.info(f"Saved {count} ring configuration records")
             return count
     
     def _save_raw_data(self, data: List[Dict], data_type: str) -> int:

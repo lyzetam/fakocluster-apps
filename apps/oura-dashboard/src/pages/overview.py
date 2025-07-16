@@ -12,8 +12,8 @@ def render_overview_page(queries, start_date, end_date, personal_info):
     st.title("Health Overview Dashboard")
     st.markdown(f"**Date Range:** {start_date} to {end_date}")
     
-    # Get summary data
-    df_summary = queries.get_daily_summary_df(start_date, end_date)
+    # Get enhanced summary data with new metrics
+    df_summary = queries.get_enhanced_daily_summary_df(start_date, end_date)
     
     if df_summary.empty:
         st.warning("No data available for the selected date range.")
@@ -24,6 +24,9 @@ def render_overview_page(queries, start_date, end_date, personal_info):
     
     # Render key metrics
     render_health_score_metrics(df_summary)
+    
+    # Add advanced metrics summary if available
+    render_advanced_metrics_summary(df_summary)
     
     st.markdown("---")
     
@@ -47,6 +50,37 @@ def render_overview_page(queries, start_date, end_date, personal_info):
     
     # Quick insights
     render_quick_insights(df_summary)
+
+def render_advanced_metrics_summary(df_summary):
+    """Render summary of advanced metrics if available"""
+    advanced_metrics = []
+    
+    # Check for VO2 Max
+    if 'vo2_max' in df_summary.columns and df_summary['vo2_max'].notna().any():
+        latest_vo2 = df_summary[df_summary['vo2_max'].notna()]['vo2_max'].iloc[-1]
+        advanced_metrics.append(("VO2 Max", f"{latest_vo2:.1f} mL/kg/min", "🏃"))
+    
+    # Check for Cardiovascular Age
+    if 'cardiovascular_age' in df_summary.columns and df_summary['cardiovascular_age'].notna().any():
+        latest_cardio = df_summary[df_summary['cardiovascular_age'].notna()]['cardiovascular_age'].iloc[-1]
+        advanced_metrics.append(("Cardio Age", f"{latest_cardio:.0f} years", "❤️"))
+    
+    # Check for SpO2
+    if 'spo2_percentage_avg' in df_summary.columns and df_summary['spo2_percentage_avg'].notna().any():
+        avg_spo2 = df_summary['spo2_percentage_avg'].mean()
+        advanced_metrics.append(("Avg SpO2", f"{avg_spo2:.1f}%", "🫁"))
+    
+    # Check for Resilience
+    if 'resilience_level' in df_summary.columns and df_summary['resilience_level'].notna().any():
+        latest_resilience = df_summary[df_summary['resilience_level'].notna()]['resilience_level'].iloc[-1]
+        advanced_metrics.append(("Resilience", latest_resilience.title() if isinstance(latest_resilience, str) else latest_resilience, "💪"))
+    
+    if advanced_metrics:
+        st.subheader("Advanced Health Metrics")
+        cols = st.columns(len(advanced_metrics))
+        for i, (metric, value, icon) in enumerate(advanced_metrics):
+            with cols[i]:
+                st.metric(f"{icon} {metric}", value)
 
 def render_quick_insights(df_summary):
     """Render quick insights section"""

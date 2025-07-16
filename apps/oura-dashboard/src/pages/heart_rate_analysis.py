@@ -42,7 +42,7 @@ def render_heart_rate_analysis_page(queries, start_date, end_date, personal_info
         render_daily_patterns_tab(df_hr)
     
     with tab2:
-        render_zone_analysis_tab(df_hr)
+        render_zone_analysis_tab(df_hr, queries, start_date, end_date)
     
     with tab3:
         render_hr_trends_tab(df_hr)
@@ -159,7 +159,7 @@ def render_daily_patterns_tab(df_hr):
     
     st.plotly_chart(apply_chart_theme(fig), use_container_width=True)
 
-def render_zone_analysis_tab(df_hr):
+def render_zone_analysis_tab(df_hr, queries=None, start_date=None, end_date=None):
     """Render heart rate zone analysis"""
     st.subheader("Sleep Heart Rate Patterns")
     
@@ -230,35 +230,97 @@ def render_zone_analysis_tab(df_hr):
             
             st.plotly_chart(apply_chart_theme(fig), use_container_width=True)
     
-    # Sleep stage heart rate zones info
-    zones = {
-        'Deep Sleep': 'Lowest HR, maximum recovery',
-        'REM Sleep': 'Variable HR, similar to waking',
-        'Light Sleep': 'Moderate HR, transitional',
-        'Awake': 'Elevated HR, brief awakenings'
-    }
-    
-    colors = ['#4ECDC4', '#45B7D1', '#FFD93D', '#FF6B6B', '#8B0000']
-    
-    fig = go.Figure(data=[go.Pie(
-        labels=list(zones.keys()),
-        values=list(zones.values()),
-        hole=.3,
-        marker_colors=colors
-    )])
-    
-    fig.update_layout(
-        title="Time in Heart Rate Zones",
-        height=400
-    )
-    
-    st.plotly_chart(apply_chart_theme(fig), use_container_width=True)
-    
     # Sleep stage descriptions
     st.markdown("### Sleep Stage Heart Rate Patterns")
     
-    for stage, description in zones.items():
-        st.markdown(f"**{stage}**: {description}")
+    # Get sleep stage data if available
+    if queries and start_date and end_date:
+        sleep_df = queries.get_sleep_periods_df(start_date, end_date)
+        
+        if not sleep_df.empty and all(col in sleep_df.columns for col in ['deep_percentage', 'rem_percentage', 'light_percentage']):
+            # Calculate average sleep stage percentages
+            avg_deep = sleep_df['deep_percentage'].mean()
+            avg_rem = sleep_df['rem_percentage'].mean()
+            avg_light = sleep_df['light_percentage'].mean()
+            avg_awake = 100 - (avg_deep + avg_rem + avg_light)  # Calculate awake percentage
+            
+            # Create pie chart with actual data
+            stages = ['Deep Sleep', 'REM Sleep', 'Light Sleep', 'Awake']
+            percentages = [avg_deep, avg_rem, avg_light, max(0, avg_awake)]
+            colors = ['#4B0082', '#4169E1', '#87CEEB', '#FFB6C1']
+            
+            fig = go.Figure(data=[go.Pie(
+                labels=stages,
+                values=percentages,
+                hole=.3,
+                marker_colors=colors,
+                textinfo='label+percent',
+                textposition='auto'
+            )])
+            
+            fig.update_layout(
+                title="Average Sleep Stage Distribution",
+                height=400,
+                showlegend=True
+            )
+            
+            st.plotly_chart(apply_chart_theme(fig), use_container_width=True)
+            
+            # Sleep stage info with actual percentages
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown(f"""
+                **🟣 Deep Sleep ({avg_deep:.1f}%)**
+                - Lowest heart rate
+                - Physical recovery
+                - Target: 15-20%
+                
+                **🔵 REM Sleep ({avg_rem:.1f}%)**
+                - Variable heart rate
+                - Mental recovery
+                - Target: 20-25%
+                """)
+            
+            with col2:
+                st.markdown(f"""
+                **🟦 Light Sleep ({avg_light:.1f}%)**
+                - Moderate heart rate
+                - Transition stage
+                - Target: 50-60%
+                
+                **🟥 Awake Time ({avg_awake:.1f}%)**
+                - Brief awakenings
+                - Should be minimal
+                """)
+        else:
+            # If no sleep stage data, show informational content
+            st.info("Sleep stage distribution data not available. This requires detailed sleep tracking from your Oura ring.")
+            
+            # Show general information about sleep stages
+            stages_info = {
+                '🟣 Deep Sleep': 'Lowest HR, maximum physical recovery (Target: 15-20%)',
+                '🔵 REM Sleep': 'Variable HR, mental recovery (Target: 20-25%)',
+                '🟦 Light Sleep': 'Moderate HR, transitional stage (Target: 50-60%)',
+                '🟥 Awake Time': 'Brief awakenings during sleep (Should be minimal)'
+            }
+            
+            for stage, description in stages_info.items():
+                st.markdown(f"**{stage}**: {description}")
+    else:
+        # If queries not available, show informational content
+        st.info("Sleep stage distribution requires access to detailed sleep data.")
+        
+        # Show general information about sleep stages
+        stages_info = {
+            '🟣 Deep Sleep': 'Lowest HR, maximum physical recovery (Target: 15-20%)',
+            '🔵 REM Sleep': 'Variable HR, mental recovery (Target: 20-25%)',
+            '🟦 Light Sleep': 'Moderate HR, transitional stage (Target: 50-60%)',
+            '🟥 Awake Time': 'Brief awakenings during sleep (Should be minimal)'
+        }
+        
+        for stage, description in stages_info.items():
+            st.markdown(f"**{stage}**: {description}")
 
 def render_hr_trends_tab(df_hr):
     """Render heart rate trends"""

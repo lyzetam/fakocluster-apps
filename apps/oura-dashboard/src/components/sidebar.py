@@ -48,6 +48,7 @@ def render_sidebar(queries):
         "Activity Tracking",
         "Heart Rate Analysis",
         "Readiness & Recovery",
+        "Advanced Metrics",
         "Trends & Insights",
         "Detailed Reports"
     ]
@@ -92,7 +93,14 @@ def render_personal_info(queries):
     return personal_info
 
 def calculate_bmi(weight_kg, height_cm):
-    """Calculate BMI from weight and height"""
+    """Calculate BMI from weight and height
+    
+    Note: Oura API returns height in millimeters, but we expect centimeters
+    """
+    # If height seems to be in millimeters (> 1000), convert to cm
+    if height_cm > 1000:
+        height_cm = height_cm / 10
+    
     height_m = height_cm / 100
     return weight_kg / (height_m ** 2)
 

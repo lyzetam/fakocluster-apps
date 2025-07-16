@@ -16,6 +16,7 @@ NAV_ICONS = {
     "readiness": "💪",
     "trends": "📈",
     "heart_rate": "💓",
+    "advanced_metrics": "🔬",
     "reports": "📋"
 }
 

@@ -337,17 +337,23 @@ class DataProcessor:
         
         for record in raw_data:
             try:
+                # Convert from seconds to minutes
+                stress_seconds = record.get('stress_high', 0)
+                recovery_seconds = record.get('recovery_high', 0)
+                stress_minutes = round(stress_seconds / 60, 1) if stress_seconds else 0
+                recovery_minutes = round(recovery_seconds / 60, 1) if recovery_seconds else 0
+                
                 processed_record = {
                     'date': record.get('day'),
-                    'stress_high_minutes': record.get('stress_high', 0),
-                    'recovery_high_minutes': record.get('recovery_high', 0),
+                    'stress_high_minutes': stress_minutes,
+                    'recovery_high_minutes': recovery_minutes,
                     'day_summary': record.get('day_summary'),
                     
                     # Calculate stress/recovery ratio
                     'stress_recovery_ratio': round(
-                        record.get('stress_high', 0) / record.get('recovery_high', 1),
+                        stress_minutes / recovery_minutes,
                         2
-                    ) if record.get('recovery_high', 0) > 0 else None,
+                    ) if recovery_minutes > 0 else None,
                     
                     'raw_data': record
                 }
@@ -358,6 +364,50 @@ class DataProcessor:
                 logger.error(f"Error processing stress record for {record.get('day')}: {e}")
                 
         logger.info(f"Processed {len(processed)} stress records")
+        return processed
+    
+    @staticmethod
+    def process_session_data(raw_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Process session data (breathing, meditation, etc.)
+        
+        Args:
+            raw_data: Raw session records from Oura API
+            
+        Returns:
+            Processed session records with extracted time series
+        """
+        processed = []
+        
+        for record in raw_data:
+            try:
+                processed_record = {
+                    'session_id': record.get('id'),
+                    'date': record.get('day'),
+                    'type': record.get('type'),  # breathing, meditation, etc.
+                    'start_datetime': record.get('start_datetime'),
+                    'end_datetime': record.get('end_datetime'),
+                    'mood': record.get('mood'),
+                    
+                    # Extract time series data
+                    'heart_rate_data': record.get('heart_rate', {}),
+                    'hrv_data': record.get('heart_rate_variability', {}),
+                    'motion_count_data': record.get('motion_count', {}),
+                    
+                    'raw_data': record
+                }
+                
+                # Calculate duration if start and end times available
+                if record.get('start_datetime') and record.get('end_datetime'):
+                    start = datetime.fromisoformat(record['start_datetime'].replace('Z', '+00:00'))
+                    end = datetime.fromisoformat(record['end_datetime'].replace('Z', '+00:00'))
+                    processed_record['duration_minutes'] = round((end - start).total_seconds() / 60, 1)
+                
+                processed.append(processed_record)
+                
+            except Exception as e:
+                logger.error(f"Error processing session record: {e}")
+                
+        logger.info(f"Processed {len(processed)} session records")
         return processed
     
     @staticmethod

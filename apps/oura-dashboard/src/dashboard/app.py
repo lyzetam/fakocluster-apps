@@ -21,6 +21,7 @@ from pages.activity_tracking import render_activity_tracking_page
 from pages.readiness_recovery import render_readiness_recovery_page
 from pages.trends_insights import render_trends_insights_page
 from pages.heart_rate_analysis import render_heart_rate_analysis_page
+from pages.advanced_metrics import render_advanced_metrics_page
 from pages.detailed_reports import render_detailed_reports_page
 
 # Page configuration
@@ -55,6 +56,7 @@ page_routes = {
     "Activity Tracking": render_activity_tracking_page,
     "Heart Rate Analysis": render_heart_rate_analysis_page,
     "Readiness & Recovery": render_readiness_recovery_page,
+    "Advanced Metrics": render_advanced_metrics_page,
     "Trends & Insights": render_trends_insights_page,
     "Detailed Reports": render_detailed_reports_page
 }

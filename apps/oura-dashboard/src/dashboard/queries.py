@@ -440,6 +440,229 @@ class OuraDataQueries:
                 df['hr_variability'] = 0
                 
         return df
+    
+    def get_vo2_max_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get VO2 Max data"""
+        query = """
+        SELECT 
+            date,
+            vo2_max,
+            raw_data
+        FROM oura_vo2_max
+        WHERE date BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
+    
+    def get_cardiovascular_age_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get Cardiovascular Age data"""
+        query = """
+        SELECT 
+            date,
+            cardiovascular_age,
+            raw_data
+        FROM oura_cardiovascular_age
+        WHERE date BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
+    
+    def get_resilience_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get Resilience data"""
+        query = """
+        SELECT 
+            date,
+            resilience_level,
+            raw_data
+        FROM oura_resilience
+        WHERE date BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
+    
+    def get_spo2_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get SpO2 (blood oxygen) data"""
+        query = """
+        SELECT 
+            date,
+            spo2_percentage_avg,
+            breathing_disturbance_index,
+            raw_data
+        FROM oura_spo2
+        WHERE date BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+            # Extract average SpO2 from raw_data if not in dedicated column
+            if 'spo2_percentage_avg' not in df.columns and 'raw_data' in df.columns:
+                import json
+                def extract_spo2(raw):
+                    try:
+                        data = json.loads(raw) if isinstance(raw, str) else raw
+                        return data.get('spo2_percentage', {}).get('average')
+                    except:
+                        return None
+                df['spo2_percentage_avg'] = df['raw_data'].apply(extract_spo2)
+        return df
+    
+    def get_sessions_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get meditation/breathing sessions data"""
+        query = """
+        SELECT 
+            date,
+            type,
+            duration_minutes,
+            mood_start,
+            mood_end,
+            raw_data
+        FROM oura_sessions
+        WHERE date BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
+    
+    def get_tags_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get enhanced tags data"""
+        query = """
+        SELECT 
+            date,
+            tag_type,
+            tags,
+            raw_data
+        FROM oura_tags
+        WHERE date BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
+    
+    def get_sleep_time_recommendations_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get sleep time recommendations"""
+        query = """
+        SELECT 
+            date,
+            recommendation,
+            raw_data
+        FROM oura_sleep_time
+        WHERE date BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+        return df
+    
+    def get_rest_mode_periods_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get rest mode periods data"""
+        query = """
+        SELECT 
+            start_date,
+            end_date,
+            rest_mode_state,
+            raw_data
+        FROM oura_rest_mode_periods
+        WHERE start_date <= :end_date AND (end_date >= :start_date OR end_date IS NULL)
+        ORDER BY start_date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['start_date'] = pd.to_datetime(df['start_date'])
+            df['end_date'] = pd.to_datetime(df['end_date'])
+        return df
+    
+    def get_ring_configuration_df(self) -> pd.DataFrame:
+        """Get ring configuration data"""
+        query = """
+        SELECT 
+            id,
+            color,
+            design,
+            firmware_version,
+            hardware_type,
+            set_up_at,
+            size,
+            raw_data
+        FROM oura_ring_configuration
+        ORDER BY set_up_at DESC
+        """
+        
+        df = self._execute_query(query)
+        if not df.empty and 'set_up_at' in df.columns:
+            df['set_up_at'] = pd.to_datetime(df['set_up_at'])
+        return df
+    
+    def get_enhanced_daily_summary_df(self, start_date: date, end_date: date) -> pd.DataFrame:
+        """Get enhanced daily summary with all new metrics"""
+        query = """
+        SELECT 
+            COALESCE(ds.date, s.date, a.date, r.date) as date,
+            ds.overall_health_score,
+            s.sleep_score,
+            a.activity_score,
+            a.steps,
+            a.calories_total,
+            a.total_active_minutes,
+            r.readiness_score,
+            r.temperature_deviation,
+            r.hrv_balance,
+            r.resting_heart_rate,
+            st.stress_high_minutes,
+            st.recovery_high_minutes,
+            st.stress_recovery_ratio,
+            v.vo2_max,
+            ca.cardiovascular_age,
+            res.resilience_level,
+            spo2.spo2_percentage_avg,
+            spo2.breathing_disturbance_index
+        FROM oura_daily_summaries ds
+        FULL OUTER JOIN oura_daily_sleep s ON ds.date = s.date
+        FULL OUTER JOIN oura_activity a ON ds.date = a.date
+        FULL OUTER JOIN oura_readiness r ON ds.date = r.date
+        LEFT JOIN oura_stress st ON ds.date = st.date
+        LEFT JOIN oura_vo2_max v ON ds.date = v.date
+        LEFT JOIN oura_cardiovascular_age ca ON ds.date = ca.date
+        LEFT JOIN oura_resilience res ON ds.date = res.date
+        LEFT JOIN oura_spo2 spo2 ON ds.date = spo2.date
+        WHERE COALESCE(ds.date, s.date, a.date, r.date) BETWEEN :start_date AND :end_date
+        ORDER BY date
+        """
+        
+        df = self._execute_query(query, {'start_date': start_date, 'end_date': end_date})
+        if not df.empty:
+            df['date'] = pd.to_datetime(df['date'])
+            
+            # Calculate overall health score if missing
+            if 'overall_health_score' not in df.columns or df['overall_health_score'].isna().all():
+                score_cols = ['sleep_score', 'activity_score', 'readiness_score']
+                existing_cols = [col for col in score_cols if col in df.columns]
+                if existing_cols:
+                    df['overall_health_score'] = df[existing_cols].mean(axis=1)
+        
+        return df
 
 
 

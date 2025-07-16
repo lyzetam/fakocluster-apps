@@ -228,6 +228,148 @@ class HeartRate(Base):
     
     __table_args__ = (Index('idx_heart_rate_timestamp', 'timestamp'),)
 
+class Session(Base):
+    """Session data (breathing, meditation, etc.)"""
+    __tablename__ = 'oura_sessions'
+    
+    id = Column(Integer, primary_key=True)
+    session_id = Column(String(50), unique=True, nullable=False)
+    date = Column(Date, nullable=False)
+    type = Column(String(50))  # breathing, meditation, etc.
+    mood = Column(String(50))
+    
+    # Time metrics
+    start_datetime = Column(DateTime)
+    end_datetime = Column(DateTime)
+    duration_minutes = Column(Float)
+    
+    # Time series data stored as JSON
+    heart_rate_data = Column(JSON)
+    hrv_data = Column(JSON)
+    motion_count_data = Column(JSON)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+    
+    __table_args__ = (Index('idx_session_date', 'date'),)
+
+class VO2Max(Base):
+    """VO2 Max data"""
+    __tablename__ = 'oura_vo2_max'
+    
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, unique=True, nullable=False)
+    vo2_max = Column(Float)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+    
+    __table_args__ = (Index('idx_vo2_max_date', 'date'),)
+
+class CardiovascularAge(Base):
+    """Cardiovascular Age data"""
+    __tablename__ = 'oura_cardiovascular_age'
+    
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, unique=True, nullable=False)
+    cardiovascular_age = Column(Integer)  # Fixed column name
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+    
+    __table_args__ = (Index('idx_cardiovascular_age_date', 'date'),)
+
+class Resilience(Base):
+    """Daily Resilience data"""
+    __tablename__ = 'oura_resilience'
+    
+    id = Column(Integer, primary_key=True)
+    resilience_id = Column(String(50), unique=True, nullable=False)
+    date = Column(Date, unique=True, nullable=False)
+    resilience_level = Column(String(50))  # limited, adequate, solid, strong
+    
+    # Contributors
+    sleep_recovery = Column(Float)
+    daytime_recovery = Column(Float)
+    stress = Column(Float)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+    
+    __table_args__ = (Index('idx_resilience_date', 'date'),)
+
+class SpO2(Base):
+    """Daily SpO2 (blood oxygen) data"""
+    __tablename__ = 'oura_spo2'
+    
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, unique=True, nullable=False)
+    spo2_percentage_avg = Column(Float)
+    breathing_disturbance_index = Column(Float)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+    
+    __table_args__ = (Index('idx_spo2_date', 'date'),)
+
+class Tag(Base):
+    """Enhanced tags data"""
+    __tablename__ = 'oura_tags'
+    
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, nullable=False)
+    tag_type = Column(String(50))
+    tags = Column(Text)  # Comma-separated or JSON array
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+    
+    __table_args__ = (Index('idx_tags_date', 'date'),)
+
+class SleepTime(Base):
+    """Sleep time recommendations"""
+    __tablename__ = 'oura_sleep_time'
+    
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, unique=True, nullable=False)
+    recommendation = Column(Text)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+    
+    __table_args__ = (Index('idx_sleep_time_date', 'date'),)
+
+class RestModePeriod(Base):
+    """Rest mode periods"""
+    __tablename__ = 'oura_rest_mode_periods'
+    
+    id = Column(Integer, primary_key=True)
+    rest_mode_period_id = Column(String(50), unique=True, nullable=False)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date)  # Nullable for ongoing periods
+    rest_mode_state = Column(String(50))
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+    
+    __table_args__ = (Index('idx_rest_mode_start', 'start_date'),)
+
+class RingConfiguration(Base):
+    """Ring configuration data"""
+    __tablename__ = 'oura_ring_configuration'
+    
+    id = Column(Integer, primary_key=True)
+    ring_id = Column(String(50), unique=True, nullable=False)
+    color = Column(String(50))
+    design = Column(String(50))
+    firmware_version = Column(String(50))
+    hardware_type = Column(String(50))
+    set_up_at = Column(DateTime)
+    size = Column(Integer)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+
 class DailySummary(Base):
     """Comprehensive daily summaries"""
     __tablename__ = 'oura_daily_summaries'
