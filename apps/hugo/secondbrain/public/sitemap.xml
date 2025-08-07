@@ -17,6 +17,12 @@
     <loc>http://localhost:1313/pages/projects/oura-dashboard/</loc>
     <lastmod>2025-01-07T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2025-08-07T08:39:05-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2025-08-07T08:39:05-04:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/pages/about/</loc>
     <lastmod>2025-01-07T00:00:00+00:00</lastmod>
   </url><url>
@@ -53,9 +59,6 @@
     <loc>http://localhost:1313/categories/health-tech/</loc>
     <lastmod>2025-01-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/</loc>
-    <lastmod>2025-01-07T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/tags/integration/</loc>
     <lastmod>2025-01-07T00:00:00+00:00</lastmod>
   </url><url>
@@ -83,9 +86,6 @@
     <loc>http://localhost:1313/tags/postgresql/</loc>
     <lastmod>2025-01-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2025-01-07T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/categories/projects/</loc>
     <lastmod>2025-01-07T00:00:00+00:00</lastmod>
   </url><url>
@@ -93,6 +93,9 @@
     <lastmod>2025-01-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/local-ai-with-ollama/</loc>
+    <lastmod>2025-01-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/secondbrain/</loc>
     <lastmod>2025-01-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/self-hosting/</loc>
@@ -191,7 +194,5 @@
     <loc>http://localhost:1313/pages/services/whisper/readme/</loc>
   </url><url>
     <loc>http://localhost:1313/pages/use-cases/readme/</loc>
-  </url><url>
-    <loc>http://localhost:1313/secondbrain/</loc>
   </url>
 </urlset>

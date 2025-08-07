@@ -6,7 +6,7 @@
     <description>Recent content in Home on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 07 Aug 2025 08:39:05 -0400</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fako Cluster Architecture Overview</title>
       <link>http://localhost:1313/pages/architecture/overview/</link>
@@ -439,12 +439,20 @@
       
       <description>&lt;h1 id=&#34;projects&#34;&gt;Projects&lt;/h1&gt;
 &lt;p&gt;Welcome to the projects section! Here you&amp;rsquo;ll find detailed documentation about the various services and applications running on the Fako Cluster. Each project represents a real-world implementation of modern cloud-native technologies.&lt;/p&gt;
+&lt;h2 id=&#34;the-kubernetes-cluster&#34;&gt;The Kubernetes Cluster&lt;/h2&gt;
+&lt;h3 id=&#34;fako-cluster-infrastructure&#34;&gt;Fako Cluster Infrastructure&lt;/h3&gt;
+&lt;p&gt;The foundation of everything - a personal Kubernetes cluster built with:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;K3s&lt;/strong&gt;: Lightweight Kubernetes distribution&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;3 Nodes&lt;/strong&gt;: Master and worker nodes configuration&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GPU Support&lt;/strong&gt;: NVIDIA RTX 5070 for AI workloads&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GitOps&lt;/strong&gt;: FluxCD for automated deployments&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Monitoring&lt;/strong&gt;: Prometheus, Grafana, and Loki stack&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;featured-projects&#34;&gt;Featured Projects&lt;/h2&gt;
 &lt;h3 id=&#34;ai--machine-learning&#34;&gt;AI &amp;amp; Machine Learning&lt;/h3&gt;
 &lt;h4 id=&#34;ollama-ai-model-server&#34;&gt;&lt;a href=&#34;http://localhost:1313/pages/projects/ollama&#34;&gt;Ollama AI Model Server&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Run large language models locally with GPU acceleration. This project showcases how to self-host AI models for privacy, cost savings, and unlimited usage.&lt;/p&gt;
-&lt;h4 id=&#34;open-webui---ai-chat-interface&#34;&gt;&lt;a href=&#34;http://localhost:1313/pages/projects/open-webui&#34;&gt;Open WebUI - AI Chat Interface&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A ChatGPT-like web interface for interacting with local AI models. Features user management, conversation history, and seamless integration with GPUStack.&lt;/p&gt;</description>
+&lt;p&gt;Run large language models locally with GPU acceleration. This project showcases how to self-host AI models for privacy, cost savings, and unlimited usage.&lt;/p&gt;</description>
       
     </item>
     
@@ -464,6 +472,50 @@
 &lt;li&gt;&lt;strong&gt;Memory&lt;/strong&gt;: 36GB RAM allocated to the Ollama pod&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;This configuration allows me to run models up to 32B parameters, though performance varies significantly based on model size.&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>Second Brain</title>
+      <link>http://localhost:1313/secondbrain/</link>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/secondbrain/</guid>
+      
+      <description>&lt;h1 id=&#34;second-brain&#34;&gt;Second Brain&lt;/h1&gt;
+&lt;p&gt;Welcome to my digital second brain! This is where I document daily thoughts, technical explorations, ideas, and continuous learning. Think of it as my public notebook where curiosity meets documentation.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-a-second-brain&#34;&gt;What is a Second Brain?&lt;/h2&gt;
+&lt;p&gt;A second brain is a personal knowledge management system - a place to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Capture&lt;/strong&gt;: Document ideas as they come&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Organize&lt;/strong&gt;: Structure thoughts and learnings&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Connect&lt;/strong&gt;: Link related concepts and discoveries&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Create&lt;/strong&gt;: Transform notes into actionable insights&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;topics-i-explore&#34;&gt;Topics I Explore&lt;/h2&gt;
+&lt;h3 id=&#34;technical-deep-dives&#34;&gt;Technical Deep Dives&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Kubernetes patterns and best practices&lt;/li&gt;
+&lt;li&gt;AI/ML experiments and findings&lt;/li&gt;
+&lt;li&gt;Infrastructure automation techniques&lt;/li&gt;
+&lt;li&gt;Security implementations and lessons&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;daily-learnings&#34;&gt;Daily Learnings&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;New tools and technologies discovered&lt;/li&gt;
+&lt;li&gt;Problem-solving approaches&lt;/li&gt;
+&lt;li&gt;Code snippets and solutions&lt;/li&gt;
+&lt;li&gt;Configuration optimizations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;ideas--projects&#34;&gt;Ideas &amp;amp; Projects&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Future project concepts&lt;/li&gt;
+&lt;li&gt;Architecture brainstorming&lt;/li&gt;
+&lt;li&gt;Integration possibilities&lt;/li&gt;
+&lt;li&gt;Innovation experiments&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;why-share-my-second-brain&#34;&gt;Why Share My Second Brain?&lt;/h2&gt;
+&lt;p&gt;By making my second brain public, I aim to:&lt;/p&gt;</description>
       
     </item>
     

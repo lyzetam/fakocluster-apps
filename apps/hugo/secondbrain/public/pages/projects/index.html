@@ -112,16 +112,12 @@ stroke-linejoin="round" class="feather feather-home">
                         Projects
                     </a>
                     
-                    <ul>
-                        
-                        <li>
-                            <a class="menu-link "
-                                href="/pages/projects/oura-dashboard/">
-                                Oura Dashboard
-                            </a>
-                        </li>
-                        
-                    </ul>
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/secondbrain/">
+                        Second Brain
+                    </a>
                     
                 </li>
                 
@@ -158,27 +154,97 @@ stroke-linejoin="round" class="feather feather-home">
             <div class="page-content">
                 <h1 id="projects">Projects</h1>
 <p>Welcome to the projects section! Here you&rsquo;ll find detailed documentation about the various services and applications running on the Fako Cluster. Each project represents a real-world implementation of modern cloud-native technologies.</p>
+<h2 id="the-kubernetes-cluster">The Kubernetes Cluster</h2>
+<h3 id="fako-cluster-infrastructure">Fako Cluster Infrastructure</h3>
+<p>The foundation of everything - a personal Kubernetes cluster built with:</p>
+<ul>
+<li><strong>K3s</strong>: Lightweight Kubernetes distribution</li>
+<li><strong>3 Nodes</strong>: Master and worker nodes configuration</li>
+<li><strong>GPU Support</strong>: NVIDIA RTX 5070 for AI workloads</li>
+<li><strong>GitOps</strong>: FluxCD for automated deployments</li>
+<li><strong>Monitoring</strong>: Prometheus, Grafana, and Loki stack</li>
+</ul>
 <h2 id="featured-projects">Featured Projects</h2>
 <h3 id="ai--machine-learning">AI &amp; Machine Learning</h3>
 <h4 id="ollama-ai-model-server"><a href="/pages/projects/ollama">Ollama AI Model Server</a></h4>
 <p>Run large language models locally with GPU acceleration. This project showcases how to self-host AI models for privacy, cost savings, and unlimited usage.</p>
 <h4 id="open-webui---ai-chat-interface"><a href="/pages/projects/open-webui">Open WebUI - AI Chat Interface</a></h4>
 <p>A ChatGPT-like web interface for interacting with local AI models. Features user management, conversation history, and seamless integration with GPUStack.</p>
+<h4 id="voice-pipeline">Voice Pipeline</h4>
+<p>Complete voice assistant infrastructure:</p>
+<ul>
+<li><strong>Whisper</strong>: OpenAI&rsquo;s speech-to-text engine</li>
+<li><strong>Piper</strong>: Fast, local text-to-speech system</li>
+<li><strong>OpenWakeWord</strong>: Wake word detection service</li>
+</ul>
 <h3 id="automation--integration">Automation &amp; Integration</h3>
 <h4 id="n8n-workflow-automation"><a href="/pages/projects/n8n">N8N Workflow Automation</a></h4>
 <p>Visual workflow automation platform with 200+ integrations. Create complex automations without coding, from simple webhooks to sophisticated data pipelines.</p>
 <h3 id="health--analytics">Health &amp; Analytics</h3>
 <h4 id="oura-dashboard"><a href="/pages/projects/oura-dashboard">Oura Dashboard</a></h4>
 <p>Interactive health data visualization platform for Oura Ring metrics. Features OAuth2 authentication, real-time charts, and comprehensive health insights.</p>
-<h2 id="additional-services">Additional Services</h2>
-<p>Beyond these featured projects, the Fako Cluster runs many other services:</p>
+<h4 id="oura-collector">Oura Collector</h4>
+<p>Backend service that continuously syncs data from Oura Ring API to PostgreSQL database.</p>
+<h2 id="infrastructure-services">Infrastructure Services</h2>
+<h3 id="core-platform">Core Platform</h3>
 <ul>
-<li><strong>Keycloak</strong>: Identity and access management</li>
-<li><strong>Linkding</strong>: Bookmark management system</li>
-<li><strong>Audiobookshelf</strong>: Personal audiobook and podcast server</li>
-<li><strong>Whisper &amp; Piper</strong>: Speech-to-text and text-to-speech services</li>
-<li><strong>PostgreSQL Cluster</strong>: Managed database infrastructure</li>
-<li><strong>Prometheus &amp; Grafana</strong>: Monitoring and observability stack</li>
+<li><strong>Keycloak</strong>: Identity and access management platform</li>
+<li><strong>PostgreSQL Cluster</strong>: High-availability database with automatic backups</li>
+<li><strong>PgAdmin</strong>: Web-based PostgreSQL administration tool</li>
+<li><strong>NGINX Ingress</strong>: Load balancing and SSL termination</li>
+<li><strong>Cert-Manager</strong>: Automated TLS certificate management</li>
+</ul>
+<h3 id="monitoring--observability">Monitoring &amp; Observability</h3>
+<ul>
+<li><strong>Prometheus</strong>: Metrics collection and alerting</li>
+<li><strong>Grafana</strong>: Beautiful dashboards and data visualization</li>
+<li><strong>Loki</strong>: Log aggregation and querying system</li>
+<li><strong>Headlamp</strong>: Kubernetes cluster UI dashboard</li>
+</ul>
+<h3 id="security--compliance">Security &amp; Compliance</h3>
+<ul>
+<li><strong>Gitleaks</strong>: Automated secret scanning in Git repositories</li>
+<li><strong>Kubescape</strong>: Kubernetes security compliance scanning</li>
+<li><strong>Kube-bench</strong>: CIS Kubernetes benchmark assessments</li>
+<li><strong>External Secrets Operator</strong>: AWS Secrets Manager integration</li>
+</ul>
+<h2 id="personal-services">Personal Services</h2>
+<h3 id="knowledge-management">Knowledge Management</h3>
+<ul>
+<li><strong>Linkding</strong>: Self-hosted bookmark manager with tagging</li>
+<li><strong>Hugo Blog</strong>: This documentation site you&rsquo;re reading</li>
+<li><strong>MCP Servers</strong>: Model Context Protocol servers for AI tools</li>
+</ul>
+<h3 id="media--entertainment">Media &amp; Entertainment</h3>
+<ul>
+<li><strong>Audiobookshelf</strong>: Personal audiobook and podcast library</li>
+<li><strong>Wger</strong>: Workout manager and fitness tracker</li>
+</ul>
+<h3 id="development-tools">Development Tools</h3>
+<ul>
+<li><strong>GitLab Runner</strong>: CI/CD pipeline execution (planned)</li>
+<li><strong>Code Server</strong>: VS Code in the browser (planned)</li>
+</ul>
+<h2 id="automation--agents">Automation &amp; Agents</h2>
+<ul>
+<li><strong>Kagent</strong>: Kubernetes agent for automated operations</li>
+<li><strong>Node Labeling</strong>: Automatic node labeling based on hardware</li>
+<li><strong>Housekeeping</strong>: Automated cluster maintenance tasks</li>
+</ul>
+<h2 id="supporting-services">Supporting Services</h2>
+<ul>
+<li><strong>GPUStack Proxy</strong>: GPU resource management</li>
+<li><strong>Blog</strong>: Technical blog platform</li>
+<li><strong>Ollama WebUI</strong>: Alternative UI for Ollama</li>
+</ul>
+<h2 id="coming-soon">Coming Soon</h2>
+<p>Planned additions to the cluster:</p>
+<ul>
+<li><strong>Vector Database</strong>: Milvus or Qdrant for AI/RAG applications</li>
+<li><strong>Jupyter Hub</strong>: Collaborative data science platform</li>
+<li><strong>Mastodon Instance</strong>: Federated social media</li>
+<li><strong>Home Assistant</strong>: Smart home automation</li>
+<li><strong>Vaultwarden</strong>: Self-hosted password manager</li>
 </ul>
 <h2 id="technology-stack">Technology Stack</h2>
 <p>All projects share common infrastructure patterns:</p>

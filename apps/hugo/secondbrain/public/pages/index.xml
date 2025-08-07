@@ -439,12 +439,20 @@
       
       <description>&lt;h1 id=&#34;projects&#34;&gt;Projects&lt;/h1&gt;
 &lt;p&gt;Welcome to the projects section! Here you&amp;rsquo;ll find detailed documentation about the various services and applications running on the Fako Cluster. Each project represents a real-world implementation of modern cloud-native technologies.&lt;/p&gt;
+&lt;h2 id=&#34;the-kubernetes-cluster&#34;&gt;The Kubernetes Cluster&lt;/h2&gt;
+&lt;h3 id=&#34;fako-cluster-infrastructure&#34;&gt;Fako Cluster Infrastructure&lt;/h3&gt;
+&lt;p&gt;The foundation of everything - a personal Kubernetes cluster built with:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;K3s&lt;/strong&gt;: Lightweight Kubernetes distribution&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;3 Nodes&lt;/strong&gt;: Master and worker nodes configuration&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GPU Support&lt;/strong&gt;: NVIDIA RTX 5070 for AI workloads&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GitOps&lt;/strong&gt;: FluxCD for automated deployments&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Monitoring&lt;/strong&gt;: Prometheus, Grafana, and Loki stack&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;featured-projects&#34;&gt;Featured Projects&lt;/h2&gt;
 &lt;h3 id=&#34;ai--machine-learning&#34;&gt;AI &amp;amp; Machine Learning&lt;/h3&gt;
 &lt;h4 id=&#34;ollama-ai-model-server&#34;&gt;&lt;a href=&#34;http://localhost:1313/pages/projects/ollama&#34;&gt;Ollama AI Model Server&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Run large language models locally with GPU acceleration. This project showcases how to self-host AI models for privacy, cost savings, and unlimited usage.&lt;/p&gt;
-&lt;h4 id=&#34;open-webui---ai-chat-interface&#34;&gt;&lt;a href=&#34;http://localhost:1313/pages/projects/open-webui&#34;&gt;Open WebUI - AI Chat Interface&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A ChatGPT-like web interface for interacting with local AI models. Features user management, conversation history, and seamless integration with GPUStack.&lt;/p&gt;</description>
+&lt;p&gt;Run large language models locally with GPU acceleration. This project showcases how to self-host AI models for privacy, cost savings, and unlimited usage.&lt;/p&gt;</description>
       
     </item>
     

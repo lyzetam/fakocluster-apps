@@ -13,10 +13,6 @@ menu:
 
 Welcome to my digital second brain! This is where I document daily thoughts, technical explorations, ideas, and continuous learning. Think of it as my public notebook where curiosity meets documentation.
 
-## Recent Posts
-
-{{< recent-posts limit="10" >}}
-
 ## What is a Second Brain?
 
 A second brain is a personal knowledge management system - a place to:
