@@ -1,3 +1,18 @@
+---
+title: "Oura Dashboard - Health Data Visualization"
+date: 2025-01-07
+draft: false
+description: "Interactive health data visualization platform for Oura Ring metrics with OAuth2 authentication"
+tags: ["Health", "Data Visualization", "Streamlit", "OAuth2", "PostgreSQL", "Kubernetes"]
+categories: ["Projects", "Health Tech"]
+weight: 40
+menu:
+  main:
+    parent: "Projects"
+    name: "Oura Dashboard"
+    weight: 4
+---
+
 # Oura Dashboard - Health Data Visualization Platform
 
 ## Overview

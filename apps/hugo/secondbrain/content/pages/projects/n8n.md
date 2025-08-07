@@ -1,3 +1,18 @@
+---
+title: "N8N Workflow Automation"
+date: 2025-01-07
+draft: false
+description: "Open-source workflow automation tool with visual interface for creating complex automations"
+tags: ["Automation", "Workflows", "Integration", "No-Code", "Kubernetes"]
+categories: ["Projects", "Automation"]
+weight: 30
+menu:
+  main:
+    parent: "Projects"
+    name: "N8N Automation"
+    weight: 3
+---
+
 # N8N Workflow Automation Service
 
 ## Overview

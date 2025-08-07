@@ -1,3 +1,16 @@
+---
+title: "Fako Cluster Architecture Overview"
+date: 2025-01-07
+draft: false
+description: "High-level overview of the Fako Cluster architecture and core components"
+weight: 10
+menu:
+  main:
+    parent: "Architecture"
+    name: "Overview"
+    weight: 1
+---
+
 # Fako Cluster Architecture Overview
 
 ## Introduction
