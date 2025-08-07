@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/pgadmin/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/pgadmin/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="pgAdmin PostgreSQL Management Tool Overview pgAdmin is a comprehensive web-based management tool for PostgreSQL deployed in the Fako cluster. It provides a graphical interface for database administration, query execution, and monitoring. This deployment is pre-configured to connect to the PostgreSQL cluster with both read-write and read-only endpoints, making database management accessible through a web browser.
+Key Features Web-Based Interface: Full-featured PostgreSQL management from browser Pre-Configured Servers: Automatic connection to cluster databases Query Tool: Advanced SQL editor with syntax highlighting Visual Database Designer: ERD and schema visualization Backup/Restore: GUI for database backup operations Server Monitoring: Real-time database statistics User Management: Graphical user and role administration Architecture Components Deployment: Single-replica deployment Service: ClusterIP service on port 80 Ingress: HTTPS access (when configured) Storage: PersistentVolumeClaim for pgAdmin data ConfigMap: Server configuration and connection settings External Secrets: Database passwords from AWS Secrets Manager Resource Requirements Memory: 256Mi (request), 512Mi (limit) CPU: 250m (request), 500m (limit) Storage: Persistent volume for pgAdmin data and sessions Configuration Environment Settings Parameter Value Description PGADMIN_DEFAULT_EMAIL 85landry@gmail.com Admin login email PGADMIN_CONFIG_SERVER_MODE False Desktop mode (single user) PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED False No master password needed PGADMIN_SERVER_JSON_FILE /pgadmin4/servers.json Pre-configured servers Pre-Configured Database Servers PostgreSQL Cluster (Read-Write)">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="pgAdmin PostgreSQL Management Tool Overview pgAdmin is a comprehensive web-based management tool for PostgreSQL deployed in the Fako cluster. It provides a graphical interface for database administration, query execution, and monitoring. This deployment is pre-configured to connect to the PostgreSQL cluster with both read-write and read-only endpoints, making database management accessible through a web browser.
+Key Features Web-Based Interface: Full-featured PostgreSQL management from browser Pre-Configured Servers: Automatic connection to cluster databases Query Tool: Advanced SQL editor with syntax highlighting Visual Database Designer: ERD and schema visualization Backup/Restore: GUI for database backup operations Server Monitoring: Real-time database statistics User Management: Graphical user and role administration Architecture Components Deployment: Single-replica deployment Service: ClusterIP service on port 80 Ingress: HTTPS access (when configured) Storage: PersistentVolumeClaim for pgAdmin data ConfigMap: Server configuration and connection settings External Secrets: Database passwords from AWS Secrets Manager Resource Requirements Memory: 256Mi (request), 512Mi (limit) CPU: 250m (request), 500m (limit) Storage: Persistent volume for pgAdmin data and sessions Configuration Environment Settings Parameter Value Description PGADMIN_DEFAULT_EMAIL 85landry@gmail.com Admin login email PGADMIN_CONFIG_SERVER_MODE False Desktop mode (single user) PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED False No master password needed PGADMIN_SERVER_JSON_FILE /pgadmin4/servers.json Pre-configured servers Pre-Configured Database Servers PostgreSQL Cluster (Read-Write)">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/pgadmin/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="pgadmin-postgresql-management-tool">pgAdmin PostgreSQL Management Tool</h1>
+<h2 id="overview">Overview</h2>
+<p>pgAdmin is a comprehensive web-based management tool for PostgreSQL deployed in the Fako cluster. It provides a graphical interface for database administration, query execution, and monitoring. This deployment is pre-configured to connect to the PostgreSQL cluster with both read-write and read-only endpoints, making database management accessible through a web browser.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Web-Based Interface</strong>: Full-featured PostgreSQL management from browser</li>
+<li><strong>Pre-Configured Servers</strong>: Automatic connection to cluster databases</li>
+<li><strong>Query Tool</strong>: Advanced SQL editor with syntax highlighting</li>
+<li><strong>Visual Database Designer</strong>: ERD and schema visualization</li>
+<li><strong>Backup/Restore</strong>: GUI for database backup operations</li>
+<li><strong>Server Monitoring</strong>: Real-time database statistics</li>
+<li><strong>User Management</strong>: Graphical user and role administration</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>Deployment</strong>: Single-replica deployment</li>
+<li><strong>Service</strong>: ClusterIP service on port 80</li>
+<li><strong>Ingress</strong>: HTTPS access (when configured)</li>
+<li><strong>Storage</strong>: PersistentVolumeClaim for pgAdmin data</li>
+<li><strong>ConfigMap</strong>: Server configuration and connection settings</li>
+<li><strong>External Secrets</strong>: Database passwords from AWS Secrets Manager</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>Memory</strong>: 256Mi (request), 512Mi (limit)</li>
+<li><strong>CPU</strong>: 250m (request), 500m (limit)</li>
+<li><strong>Storage</strong>: Persistent volume for pgAdmin data and sessions</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="environment-settings">Environment Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>PGADMIN_DEFAULT_EMAIL</code></td>
+          <td><code>85landry@gmail.com</code></td>
+          <td>Admin login email</td>
+      </tr>
+      <tr>
+          <td><code>PGADMIN_CONFIG_SERVER_MODE</code></td>
+          <td><code>False</code></td>
+          <td>Desktop mode (single user)</td>
+      </tr>
+      <tr>
+          <td><code>PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED</code></td>
+          <td><code>False</code></td>
+          <td>No master password needed</td>
+      </tr>
+      <tr>
+          <td><code>PGADMIN_SERVER_JSON_FILE</code></td>
+          <td><code>/pgadmin4/servers.json</code></td>
+          <td>Pre-configured servers</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="pre-configured-database-servers">Pre-Configured Database Servers</h3>
+<ol>
+<li>
+<p><strong>PostgreSQL Cluster (Read-Write)</strong></p>
+<ul>
+<li>Host: <code>postgres-cluster-rw.postgres.svc.cluster.local</code></li>
+<li>Port: 5432</li>
+<li>Database: <code>app</code></li>
+<li>User: <code>app</code></li>
+</ul>
+</li>
+<li>
+<p><strong>PostgreSQL Cluster (Read-Only)</strong></p>
+<ul>
+<li>Host: <code>postgres-cluster-ro.postgres.svc.cluster.local</code></li>
+<li>Port: 5432</li>
+<li>Database: <code>app</code></li>
+<li>User: <code>app</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="usage">Usage</h2>
+<h3 id="accessing-pgadmin">Accessing pgAdmin</h3>
+<p>External access (requires ingress):</p>
+<pre tabindex="0"><code>https://pgadmin.your-domain.com
+</code></pre><p>Internal access:</p>
+<pre tabindex="0"><code>http://pgadmin.pgadmin.svc.cluster.local
+</code></pre><p>Port forwarding for local access:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl port-forward -n pgadmin svc/pgadmin 8080:80
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Access at http://localhost:8080</span>
+</span></span></code></pre></div><h3 id="initial-login">Initial Login</h3>
+<ol>
+<li>Navigate to pgAdmin URL</li>
+<li>Login with:
+<ul>
+<li>Email: <code>85landry@gmail.com</code></li>
+<li>Password: From <code>pgadmin-secret</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="common-tasks">Common Tasks</h3>
+<h4 id="connect-to-database">Connect to Database</h4>
+<ol>
+<li>Servers are pre-configured</li>
+<li>Click on &ldquo;PostgreSQL Cluster&rdquo; in left panel</li>
+<li>Enter password when prompted</li>
+<li>Browse databases, schemas, tables</li>
+</ol>
+<h4 id="execute-queries">Execute Queries</h4>
+<ol>
+<li>Right-click on database</li>
+<li>Select &ldquo;Query Tool&rdquo;</li>
+<li>Write and execute SQL</li>
+<li>View results in grid or chart</li>
+</ol>
+<h4 id="create-database-backup">Create Database Backup</h4>
+<ol>
+<li>Right-click on database</li>
+<li>Select &ldquo;Backup&hellip;&rdquo;</li>
+<li>Configure backup options</li>
+<li>Save to pgAdmin storage</li>
+</ol>
+<h4 id="monitor-database-activity">Monitor Database Activity</h4>
+<ol>
+<li>Select server in tree</li>
+<li>Click &ldquo;Dashboard&rdquo; tab</li>
+<li>View real-time metrics:
+<ul>
+<li>Active connections</li>
+<li>Transaction rates</li>
+<li>Database sizes</li>
+<li>Query performance</li>
+</ul>
+</li>
+</ol>
+<h2 id="operations">Operations</h2>
+<h3 id="checking-service-status">Checking Service Status</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check pod status</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n pgadmin
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n pgadmin deployment/pgadmin
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check storage usage</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n pgadmin deployment/pgadmin -- df -h /var/lib/pgadmin
+</span></span></code></pre></div><h3 id="managing-server-connections">Managing Server Connections</h3>
+<h4 id="add-new-server">Add New Server</h4>
+<ol>
+<li>Right-click &ldquo;Servers&rdquo; → &ldquo;Create&rdquo; → &ldquo;Server&rdquo;</li>
+<li>Configure connection details</li>
+<li>Save password (optional)</li>
+</ol>
+<h4 id="export-server-list">Export Server List</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Get current server configuration</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n pgadmin deployment/pgadmin -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  cat /var/lib/pgadmin/pgadmin4.db
+</span></span></code></pre></div><h3 id="password-management">Password Management</h3>
+<p>Passwords are stored via:</p>
+<ul>
+<li><code>.pgpass</code> file for automatic authentication</li>
+<li>External Secrets from AWS Secrets Manager</li>
+<li>pgAdmin&rsquo;s internal password storage</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="cannot-login">Cannot Login</h3>
+<ol>
+<li><strong>Check secret</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get secret pgadmin-secret -n pgadmin -o yaml
+</span></span></code></pre></div><ol start="2">
+<li><strong>Reset admin password</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -it -n pgadmin deployment/pgadmin -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  python /pgadmin4/setup.py --email 85landry@gmail.com --password NewPassword
+</span></span></code></pre></div><h3 id="connection-failed-to-database">Connection Failed to Database</h3>
+<ol>
+<li><strong>Test connectivity</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n pgadmin deployment/pgadmin -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  nc -zv postgres-cluster-rw.postgres.svc.cluster.local <span style="color:#ae81ff">5432</span>
+</span></span></code></pre></div><ol start="2">
+<li><strong>Check pgpass file</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n pgadmin deployment/pgadmin -- cat /var/lib/pgadmin/.pgpass
+</span></span></code></pre></div><ol start="3">
+<li><strong>Verify credentials</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get secret -n pgadmin pgadmin-pgpass -o yaml
+</span></span></code></pre></div><h3 id="performance-issues">Performance Issues</h3>
+<ol>
+<li><strong>Check resource usage</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl top pod -n pgadmin
+</span></span></code></pre></div><ol start="2">
+<li>
+<p><strong>Clear query history</strong>:</p>
+<ul>
+<li>Settings → Clear Query History</li>
+<li>Remove old backup files</li>
+</ul>
+</li>
+<li>
+<p><strong>Restart pod</strong>:</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl rollout restart deployment/pgadmin -n pgadmin
+</span></span></code></pre></div><h3 id="storage-full">Storage Full</h3>
+<ol>
+<li><strong>Check usage</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n pgadmin deployment/pgadmin -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  du -sh /var/lib/pgadmin/*
+</span></span></code></pre></div><ol start="2">
+<li><strong>Clean up</strong>:
+<ul>
+<li>Remove old backups</li>
+<li>Clear session data</li>
+<li>Delete query history</li>
+</ul>
+</li>
+</ol>
+<h2 id="security-considerations">Security Considerations</h2>
+<h3 id="authentication">Authentication</h3>
+<ul>
+<li>Default setup uses single admin account</li>
+<li>Consider implementing:
+<ul>
+<li>LDAP/AD integration</li>
+<li>OAuth with Keycloak</li>
+<li>Multi-user mode</li>
+</ul>
+</li>
+</ul>
+<h3 id="network-security">Network Security</h3>
+<ul>
+<li>No TLS by default (use ingress)</li>
+<li>Implement network policies</li>
+<li>Restrict database access</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Change default email</strong>: Update admin email</li>
+<li><strong>Strong passwords</strong>: Use complex passwords</li>
+<li><strong>Regular updates</strong>: Keep pgAdmin updated</li>
+<li><strong>Audit logs</strong>: Enable and monitor logs</li>
+<li><strong>Backup pgAdmin data</strong>: Include in backup strategy</li>
+</ol>
+<h2 id="advanced-configuration">Advanced Configuration</h2>
+<h3 id="enable-multi-user-mode">Enable Multi-User Mode</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># In configmap</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">PGADMIN_CONFIG_SERVER_MODE</span>: <span style="color:#e6db74">&#34;True&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">PGADMIN_CONFIG_MAIL_SERVER</span>: <span style="color:#e6db74">&#34;smtp.example.com&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">PGADMIN_CONFIG_MAIL_PORT</span>: <span style="color:#e6db74">&#34;587&#34;</span>
+</span></span></code></pre></div><h3 id="add-ssltls">Add SSL/TLS</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># In deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">PGADMIN_ENABLE_TLS</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#34;True&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">volumeMounts</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">certs</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/certs</span>
+</span></span></code></pre></div><h3 id="configure-external-authentication">Configure External Authentication</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># OAuth2 with Keycloak</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">PGADMIN_CONFIG_AUTHENTICATION_SOURCES</span>: [<span style="color:#e6db74">&#34;oauth2&#34;</span>]
+</span></span><span style="display:flex;"><span><span style="color:#f92672">PGADMIN_CONFIG_OAUTH2_CLIENT_ID</span>: <span style="color:#e6db74">&#34;pgadmin&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">PGADMIN_CONFIG_OAUTH2_CLIENT_SECRET</span>: <span style="color:#e6db74">&#34;${CLIENT_SECRET}&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">PGADMIN_CONFIG_OAUTH2_TOKEN_URL</span>: <span style="color:#e6db74">&#34;https://auth.landryzetam.net/realms/master/protocol/openid-connect/token&#34;</span>
+</span></span></code></pre></div><h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li>Login success/failure rates</li>
+<li>Query execution times</li>
+<li>Active user sessions</li>
+<li>Storage usage</li>
+<li>Memory consumption</li>
+</ul>
+<h3 id="health-checks">Health Checks</h3>
+<p>Add health check endpoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">livenessProbe</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">httpGet</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/misc/ping</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">10</span>
+</span></span></code></pre></div><h2 id="integration-examples">Integration Examples</h2>
+<h3 id="with-grafana">With Grafana</h3>
+<p>Create PostgreSQL datasource:</p>
+<ol>
+<li>Use connection details from pgAdmin</li>
+<li>Configure in Grafana</li>
+<li>Build dashboards</li>
+</ol>
+<h3 id="with-backup-tools">With Backup Tools</h3>
+<p>Configure pgAdmin for automated backups:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Backup script</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> subprocess
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>subprocess<span style="color:#f92672">.</span>run([
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;pg_dump&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;-h&#34;</span>, <span style="color:#e6db74">&#34;postgres-cluster-rw.postgres.svc.cluster.local&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;-U&#34;</span>, <span style="color:#e6db74">&#34;app&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;-d&#34;</span>, <span style="color:#e6db74">&#34;mydb&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;-f&#34;</span>, <span style="color:#e6db74">&#34;/backups/mydb.sql&#34;</span>
+</span></span><span style="display:flex;"><span>])
+</span></span></code></pre></div><h3 id="with-cicd">With CI/CD</h3>
+<p>Use pgAdmin for database migrations:</p>
+<ol>
+<li>Store migration scripts</li>
+<li>Execute via Query Tool</li>
+<li>Track schema versions</li>
+</ol>
+<h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Monitor active connections</li>
+<li>Check for failed queries</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Review storage usage</li>
+<li>Clean old session data</li>
+<li>Check for updates</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Audit user access</li>
+<li>Review server configurations</li>
+<li>Update pgAdmin version</li>
+</ul>
+</li>
+</ol>
+<h3 id="upgrade-procedure">Upgrade Procedure</h3>
+<ol>
+<li><strong>Backup pgAdmin data</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n pgadmin deployment/pgadmin -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  tar -czf /tmp/pgadmin-backup.tar.gz /var/lib/pgadmin
+</span></span></code></pre></div><ol start="2">
+<li><strong>Update image</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">image</span>: <span style="color:#ae81ff">dpage/pgadmin4:9.7.0</span>
+</span></span></code></pre></div><ol start="3">
+<li><strong>Verify functionality</strong>:
+<ul>
+<li>Test login</li>
+<li>Check server connections</li>
+<li>Verify saved queries</li>
+</ul>
+</li>
+</ol>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="query-performance">Query Performance</h3>
+<ul>
+<li>Use EXPLAIN ANALYZE</li>
+<li>Create appropriate indexes</li>
+<li>Monitor slow queries</li>
+<li>Optimize query plans</li>
+</ul>
+<h3 id="pgadmin-performance">pgAdmin Performance</h3>
+<ul>
+<li>Limit query result size</li>
+<li>Use pagination</li>
+<li>Clear old data regularly</li>
+<li>Increase resources if needed</li>
+</ul>
+<h3 id="database-connection">Database Connection</h3>
+<ul>
+<li>Use connection pooling</li>
+<li>Set appropriate timeouts</li>
+<li>Monitor connection count</li>
+<li>Close idle connections</li>
+</ul>
+<h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Implement SSO with Keycloak</li>
+<li><input disabled="" type="checkbox"> Add automated backup scheduling</li>
+<li><input disabled="" type="checkbox"> Create custom dashboards</li>
+<li><input disabled="" type="checkbox"> Implement query approval workflow</li>
+<li><input disabled="" type="checkbox"> Add database migration tracking</li>
+<li><input disabled="" type="checkbox"> Configure email notifications</li>
+<li><input disabled="" type="checkbox"> Create user access reports</li>
+<li><input disabled="" type="checkbox"> Add query performance analytics</li>
+<li><input disabled="" type="checkbox"> Implement schema version control</li>
+<li><input disabled="" type="checkbox"> Add cost tracking for queries</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

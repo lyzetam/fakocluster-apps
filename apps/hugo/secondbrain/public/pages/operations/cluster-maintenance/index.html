@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/operations/cluster-maintenance/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/operations/cluster-maintenance/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="Cluster Maintenance Operations Overview This document outlines standard maintenance procedures for the Fako Cluster, including routine tasks, troubleshooting steps, and emergency procedures.
+Daily Operations Health Checks Check Cluster Status kubectl get nodes kubectl get pods --all-namespaces | grep -v Running kubectl top nodes kubectl top pods --all-namespaces Check FluxCD Sync Status flux get all flux logs --all-namespaces Log Review Check for any failed pods or containers Review ingress logs for unusual traffic patterns Monitor resource usage trends Weekly Maintenance Backup Verification Verify all PVC backups are current Test restore procedures for critical services Document any backup failures Certificate Status kubectl get certificates --all-namespaces kubectl describe certificate -n cert-manager Security Scans # Run Gitleaks scan kubectl create job --from=cronjob/gitleaks-scan -n gitleaks manual-scan-$(date &#43;%s) # Check Kubescape results kubectl logs -n kubescape-operator -l app=kubescape Monthly Tasks Updates and Patches Update Flux Components flux check --pre flux install --export &gt; flux-system/gotk-components.yaml git add flux-system/gotk-components.yaml git commit -m &#34;Update Flux components&#34; git push Update Container Images Review container image versions Test updates in staging environment Apply updates through Git commits Resource Optimization # Check resource requests vs actual usage kubectl top pods --all-namespaces --sort-by=cpu kubectl top pods --all-namespaces --sort-by=memory Troubleshooting Procedures Pod Issues Pod Stuck in Pending kubectl describe pod &lt;pod-name&gt; -n &lt;namespace&gt; kubectl get events -n &lt;namespace&gt; --sort-by=&#39;.lastTimestamp&#39; Pod CrashLoopBackOff kubectl logs &lt;pod-name&gt; -n &lt;namespace&gt; --previous kubectl describe pod &lt;pod-name&gt; -n &lt;namespace&gt; Storage Issues PVC Not Binding kubectl get pv kubectl get pvc -n &lt;namespace&gt; kubectl describe pvc &lt;pvc-name&gt; -n &lt;namespace&gt; NFS Mount Issues # Check NFS server connectivity showmount -e &lt;nfs-server-ip&gt; # Check mount inside pod kubectl exec -it &lt;pod-name&gt; -n &lt;namespace&gt; -- df -h Networking Issues Service Not Accessible kubectl get svc -n &lt;namespace&gt; kubectl get endpoints -n &lt;namespace&gt; kubectl describe ingress -n &lt;namespace&gt; DNS Resolution kubectl run -it --rm debug --image=busybox --restart=Never -- nslookup &lt;service-name&gt;.&lt;namespace&gt; Emergency Procedures Cluster Recovery Node Failure Cordon the node: kubectl cordon &lt;node-name&gt; Drain workloads: kubectl drain &lt;node-name&gt; --ignore-daemonsets Fix node issues Uncordon node: kubectl uncordon &lt;node-name&gt; Etcd Backup and Restore # Backup etcd ETCDCTL_API=3 etcdctl snapshot save backup.db \ --endpoints=https://127.0.0.1:2379 \ --cacert=/etc/kubernetes/pki/etcd/ca.crt \ --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt \ --key=/etc/kubernetes/pki/etcd/healthcheck-client.key # Verify backup ETCDCTL_API=3 etcdctl --write-out=table snapshot status backup.db Disaster Recovery Full Cluster Restore Restore etcd from backup Re-apply Flux bootstrap Wait for GitOps reconciliation Verify all services are running Restore persistent data from backups Monitoring and Alerts Key Metrics to Monitor CPU and Memory usage per node Disk usage on persistent volumes Network ingress/egress rates Pod restart counts Certificate expiration dates Alert Response High Resource Usage Identify resource-consuming pods Check for memory leaks or runaway processes Scale horizontally if needed Consider resource limit adjustments Service Degradation Check pod health and logs Verify external dependencies Review recent changes via Git history Rollback if necessary using Flux Documentation Updates After Each Incident Document root cause Update runbooks Create or update alerts Share lessons learned Regular Reviews Monthly review of procedures Quarterly disaster recovery drills Annual security audit">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="Cluster Maintenance Operations Overview This document outlines standard maintenance procedures for the Fako Cluster, including routine tasks, troubleshooting steps, and emergency procedures.
+Daily Operations Health Checks Check Cluster Status kubectl get nodes kubectl get pods --all-namespaces | grep -v Running kubectl top nodes kubectl top pods --all-namespaces Check FluxCD Sync Status flux get all flux logs --all-namespaces Log Review Check for any failed pods or containers Review ingress logs for unusual traffic patterns Monitor resource usage trends Weekly Maintenance Backup Verification Verify all PVC backups are current Test restore procedures for critical services Document any backup failures Certificate Status kubectl get certificates --all-namespaces kubectl describe certificate -n cert-manager Security Scans # Run Gitleaks scan kubectl create job --from=cronjob/gitleaks-scan -n gitleaks manual-scan-$(date &#43;%s) # Check Kubescape results kubectl logs -n kubescape-operator -l app=kubescape Monthly Tasks Updates and Patches Update Flux Components flux check --pre flux install --export &gt; flux-system/gotk-components.yaml git add flux-system/gotk-components.yaml git commit -m &#34;Update Flux components&#34; git push Update Container Images Review container image versions Test updates in staging environment Apply updates through Git commits Resource Optimization # Check resource requests vs actual usage kubectl top pods --all-namespaces --sort-by=cpu kubectl top pods --all-namespaces --sort-by=memory Troubleshooting Procedures Pod Issues Pod Stuck in Pending kubectl describe pod &lt;pod-name&gt; -n &lt;namespace&gt; kubectl get events -n &lt;namespace&gt; --sort-by=&#39;.lastTimestamp&#39; Pod CrashLoopBackOff kubectl logs &lt;pod-name&gt; -n &lt;namespace&gt; --previous kubectl describe pod &lt;pod-name&gt; -n &lt;namespace&gt; Storage Issues PVC Not Binding kubectl get pv kubectl get pvc -n &lt;namespace&gt; kubectl describe pvc &lt;pvc-name&gt; -n &lt;namespace&gt; NFS Mount Issues # Check NFS server connectivity showmount -e &lt;nfs-server-ip&gt; # Check mount inside pod kubectl exec -it &lt;pod-name&gt; -n &lt;namespace&gt; -- df -h Networking Issues Service Not Accessible kubectl get svc -n &lt;namespace&gt; kubectl get endpoints -n &lt;namespace&gt; kubectl describe ingress -n &lt;namespace&gt; DNS Resolution kubectl run -it --rm debug --image=busybox --restart=Never -- nslookup &lt;service-name&gt;.&lt;namespace&gt; Emergency Procedures Cluster Recovery Node Failure Cordon the node: kubectl cordon &lt;node-name&gt; Drain workloads: kubectl drain &lt;node-name&gt; --ignore-daemonsets Fix node issues Uncordon node: kubectl uncordon &lt;node-name&gt; Etcd Backup and Restore # Backup etcd ETCDCTL_API=3 etcdctl snapshot save backup.db \ --endpoints=https://127.0.0.1:2379 \ --cacert=/etc/kubernetes/pki/etcd/ca.crt \ --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt \ --key=/etc/kubernetes/pki/etcd/healthcheck-client.key # Verify backup ETCDCTL_API=3 etcdctl --write-out=table snapshot status backup.db Disaster Recovery Full Cluster Restore Restore etcd from backup Re-apply Flux bootstrap Wait for GitOps reconciliation Verify all services are running Restore persistent data from backups Monitoring and Alerts Key Metrics to Monitor CPU and Memory usage per node Disk usage on persistent volumes Network ingress/egress rates Pod restart counts Certificate expiration dates Alert Response High Resource Usage Identify resource-consuming pods Check for memory leaks or runaway processes Scale horizontally if needed Consider resource limit adjustments Service Degradation Check pod health and logs Verify external dependencies Review recent changes via Git history Rollback if necessary using Flux Documentation Updates After Each Incident Document root cause Update runbooks Create or update alerts Share lessons learned Regular Reviews Monthly review of procedures Quarterly disaster recovery drills Annual security audit">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/operations/cluster-maintenance/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="cluster-maintenance-operations">Cluster Maintenance Operations</h1>
+<h2 id="overview">Overview</h2>
+<p>This document outlines standard maintenance procedures for the Fako Cluster, including routine tasks, troubleshooting steps, and emergency procedures.</p>
+<h2 id="daily-operations">Daily Operations</h2>
+<h3 id="health-checks">Health Checks</h3>
+<h4 id="check-cluster-status">Check Cluster Status</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get nodes
+</span></span><span style="display:flex;"><span>kubectl get pods --all-namespaces | grep -v Running
+</span></span><span style="display:flex;"><span>kubectl top nodes
+</span></span><span style="display:flex;"><span>kubectl top pods --all-namespaces
+</span></span></code></pre></div><h4 id="check-fluxcd-sync-status">Check FluxCD Sync Status</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>flux get all
+</span></span><span style="display:flex;"><span>flux logs --all-namespaces
+</span></span></code></pre></div><h3 id="log-review">Log Review</h3>
+<ul>
+<li>Check for any failed pods or containers</li>
+<li>Review ingress logs for unusual traffic patterns</li>
+<li>Monitor resource usage trends</li>
+</ul>
+<h2 id="weekly-maintenance">Weekly Maintenance</h2>
+<h3 id="backup-verification">Backup Verification</h3>
+<ol>
+<li>Verify all PVC backups are current</li>
+<li>Test restore procedures for critical services</li>
+<li>Document any backup failures</li>
+</ol>
+<h3 id="certificate-status">Certificate Status</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get certificates --all-namespaces
+</span></span><span style="display:flex;"><span>kubectl describe certificate -n cert-manager
+</span></span></code></pre></div><h3 id="security-scans">Security Scans</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Run Gitleaks scan</span>
+</span></span><span style="display:flex;"><span>kubectl create job --from<span style="color:#f92672">=</span>cronjob/gitleaks-scan -n gitleaks manual-scan-<span style="color:#66d9ef">$(</span>date +%s<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check Kubescape results</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n kubescape-operator -l app<span style="color:#f92672">=</span>kubescape
+</span></span></code></pre></div><h2 id="monthly-tasks">Monthly Tasks</h2>
+<h3 id="updates-and-patches">Updates and Patches</h3>
+<h4 id="update-flux-components">Update Flux Components</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>flux check --pre
+</span></span><span style="display:flex;"><span>flux install --export &gt; flux-system/gotk-components.yaml
+</span></span><span style="display:flex;"><span>git add flux-system/gotk-components.yaml
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;Update Flux components&#34;</span>
+</span></span><span style="display:flex;"><span>git push
+</span></span></code></pre></div><h4 id="update-container-images">Update Container Images</h4>
+<ul>
+<li>Review container image versions</li>
+<li>Test updates in staging environment</li>
+<li>Apply updates through Git commits</li>
+</ul>
+<h3 id="resource-optimization">Resource Optimization</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check resource requests vs actual usage</span>
+</span></span><span style="display:flex;"><span>kubectl top pods --all-namespaces --sort-by<span style="color:#f92672">=</span>cpu
+</span></span><span style="display:flex;"><span>kubectl top pods --all-namespaces --sort-by<span style="color:#f92672">=</span>memory
+</span></span></code></pre></div><h2 id="troubleshooting-procedures">Troubleshooting Procedures</h2>
+<h3 id="pod-issues">Pod Issues</h3>
+<h4 id="pod-stuck-in-pending">Pod Stuck in Pending</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe pod &lt;pod-name&gt; -n &lt;namespace&gt;
+</span></span><span style="display:flex;"><span>kubectl get events -n &lt;namespace&gt; --sort-by<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.lastTimestamp&#39;</span>
+</span></span></code></pre></div><h4 id="pod-crashloopbackoff">Pod CrashLoopBackOff</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs &lt;pod-name&gt; -n &lt;namespace&gt; --previous
+</span></span><span style="display:flex;"><span>kubectl describe pod &lt;pod-name&gt; -n &lt;namespace&gt;
+</span></span></code></pre></div><h3 id="storage-issues">Storage Issues</h3>
+<h4 id="pvc-not-binding">PVC Not Binding</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get pv
+</span></span><span style="display:flex;"><span>kubectl get pvc -n &lt;namespace&gt;
+</span></span><span style="display:flex;"><span>kubectl describe pvc &lt;pvc-name&gt; -n &lt;namespace&gt;
+</span></span></code></pre></div><h4 id="nfs-mount-issues">NFS Mount Issues</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check NFS server connectivity</span>
+</span></span><span style="display:flex;"><span>showmount -e &lt;nfs-server-ip&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check mount inside pod</span>
+</span></span><span style="display:flex;"><span>kubectl exec -it &lt;pod-name&gt; -n &lt;namespace&gt; -- df -h
+</span></span></code></pre></div><h3 id="networking-issues">Networking Issues</h3>
+<h4 id="service-not-accessible">Service Not Accessible</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get svc -n &lt;namespace&gt;
+</span></span><span style="display:flex;"><span>kubectl get endpoints -n &lt;namespace&gt;
+</span></span><span style="display:flex;"><span>kubectl describe ingress -n &lt;namespace&gt;
+</span></span></code></pre></div><h4 id="dns-resolution">DNS Resolution</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl run -it --rm debug --image<span style="color:#f92672">=</span>busybox --restart<span style="color:#f92672">=</span>Never -- nslookup &lt;service-name&gt;.&lt;namespace&gt;
+</span></span></code></pre></div><h2 id="emergency-procedures">Emergency Procedures</h2>
+<h3 id="cluster-recovery">Cluster Recovery</h3>
+<h4 id="node-failure">Node Failure</h4>
+<ol>
+<li>Cordon the node: <code>kubectl cordon &lt;node-name&gt;</code></li>
+<li>Drain workloads: <code>kubectl drain &lt;node-name&gt; --ignore-daemonsets</code></li>
+<li>Fix node issues</li>
+<li>Uncordon node: <code>kubectl uncordon &lt;node-name&gt;</code></li>
+</ol>
+<h4 id="etcd-backup-and-restore">Etcd Backup and Restore</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Backup etcd</span>
+</span></span><span style="display:flex;"><span>ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl snapshot save backup.db <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --endpoints<span style="color:#f92672">=</span>https://127.0.0.1:2379 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --cacert<span style="color:#f92672">=</span>/etc/kubernetes/pki/etcd/ca.crt <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --cert<span style="color:#f92672">=</span>/etc/kubernetes/pki/etcd/healthcheck-client.crt <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --key<span style="color:#f92672">=</span>/etc/kubernetes/pki/etcd/healthcheck-client.key
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Verify backup</span>
+</span></span><span style="display:flex;"><span>ETCDCTL_API<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> etcdctl --write-out<span style="color:#f92672">=</span>table snapshot status backup.db
+</span></span></code></pre></div><h3 id="disaster-recovery">Disaster Recovery</h3>
+<h4 id="full-cluster-restore">Full Cluster Restore</h4>
+<ol>
+<li>Restore etcd from backup</li>
+<li>Re-apply Flux bootstrap</li>
+<li>Wait for GitOps reconciliation</li>
+<li>Verify all services are running</li>
+<li>Restore persistent data from backups</li>
+</ol>
+<h2 id="monitoring-and-alerts">Monitoring and Alerts</h2>
+<h3 id="key-metrics-to-monitor">Key Metrics to Monitor</h3>
+<ul>
+<li>CPU and Memory usage per node</li>
+<li>Disk usage on persistent volumes</li>
+<li>Network ingress/egress rates</li>
+<li>Pod restart counts</li>
+<li>Certificate expiration dates</li>
+</ul>
+<h3 id="alert-response">Alert Response</h3>
+<h4 id="high-resource-usage">High Resource Usage</h4>
+<ol>
+<li>Identify resource-consuming pods</li>
+<li>Check for memory leaks or runaway processes</li>
+<li>Scale horizontally if needed</li>
+<li>Consider resource limit adjustments</li>
+</ol>
+<h4 id="service-degradation">Service Degradation</h4>
+<ol>
+<li>Check pod health and logs</li>
+<li>Verify external dependencies</li>
+<li>Review recent changes via Git history</li>
+<li>Rollback if necessary using Flux</li>
+</ol>
+<h2 id="documentation-updates">Documentation Updates</h2>
+<h3 id="after-each-incident">After Each Incident</h3>
+<ol>
+<li>Document root cause</li>
+<li>Update runbooks</li>
+<li>Create or update alerts</li>
+<li>Share lessons learned</li>
+</ol>
+<h3 id="regular-reviews">Regular Reviews</h3>
+<ul>
+<li>Monthly review of procedures</li>
+<li>Quarterly disaster recovery drills</li>
+<li>Annual security audit</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ollama on My New Hugo Site</title>
+    <link>http://localhost:1313/tags/ollama/</link>
+    <description>Recent content in Ollama on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 07 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/ollama/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Running Local AI: My Experience with Ollama and GPU Acceleration</title>
+      <link>http://localhost:1313/posts/local-ai-with-ollama/</link>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/local-ai-with-ollama/</guid>
+      
+      <description>&lt;p&gt;One of the most exciting aspects of the Fako Cluster is the ability to run large language models locally. With privacy concerns around cloud AI services and the desire for unlimited API usage, I decided to dive deep into self-hosting LLMs using Ollama. Here&amp;rsquo;s what I&amp;rsquo;ve learned.&lt;/p&gt;
+&lt;h2 id=&#34;the-hardware-foundation&#34;&gt;The Hardware Foundation&lt;/h2&gt;
+&lt;p&gt;Running LLMs locally requires serious GPU power. My setup:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;GPU&lt;/strong&gt;: NVIDIA RTX 5070 with 12GB VRAM&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Node&lt;/strong&gt;: Dedicated &lt;code&gt;yeezyai&lt;/code&gt; node in the cluster&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Memory&lt;/strong&gt;: 36GB RAM allocated to the Ollama pod&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This configuration allows me to run models up to 32B parameters, though performance varies significantly based on model size.&lt;/p&gt;</description>
+      
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/gpustack-proxy/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/gpustack-proxy/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="GPUStack Proxy - Secure Tunnel Access Service Overview GPUStack Proxy is a Cloudflare Tunnel-based proxy service deployed in the Fako cluster that provides secure external access to the GPUStack AI inference platform. It uses Cloudflare’s cloudflared to create an encrypted tunnel between the cluster and Cloudflare’s edge network, eliminating the need for exposed public IPs or open inbound ports. The service includes automatic endpoint synchronization with AWS Secrets Manager for seamless integration with AI applications.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="GPUStack Proxy - Secure Tunnel Access Service Overview GPUStack Proxy is a Cloudflare Tunnel-based proxy service deployed in the Fako cluster that provides secure external access to the GPUStack AI inference platform. It uses Cloudflare’s cloudflared to create an encrypted tunnel between the cluster and Cloudflare’s edge network, eliminating the need for exposed public IPs or open inbound ports. The service includes automatic endpoint synchronization with AWS Secrets Manager for seamless integration with AI applications.">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/gpustack-proxy/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="gpustack-proxy---secure-tunnel-access-service">GPUStack Proxy - Secure Tunnel Access Service</h1>
+<h2 id="overview">Overview</h2>
+<p>GPUStack Proxy is a Cloudflare Tunnel-based proxy service deployed in the Fako cluster that provides secure external access to the GPUStack AI inference platform. It uses Cloudflare&rsquo;s cloudflared to create an encrypted tunnel between the cluster and Cloudflare&rsquo;s edge network, eliminating the need for exposed public IPs or open inbound ports. The service includes automatic endpoint synchronization with AWS Secrets Manager for seamless integration with AI applications.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Cloudflare Tunnel</strong>: Zero-trust secure access without exposed ports</li>
+<li><strong>High Availability</strong>: Multi-replica cloudflared deployment</li>
+<li><strong>Automatic Failover</strong>: Built-in redundancy and health checks</li>
+<li><strong>Endpoint Sync</strong>: Automated endpoint updates to AWS Secrets Manager</li>
+<li><strong>SSL/TLS Termination</strong>: Handled by Cloudflare edge</li>
+<li><strong>DDoS Protection</strong>: Cloudflare&rsquo;s built-in protection</li>
+<li><strong>No Public IP Required</strong>: Works behind NAT/firewall</li>
+<li><strong>Metrics &amp; Monitoring</strong>: Built-in metrics endpoint</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>Cloudflared Deployment</strong>: 2 replicas for HA</li>
+<li><strong>Service</strong>: ClusterIP routing to GPUStack</li>
+<li><strong>ConfigMap</strong>: Tunnel configuration</li>
+<li><strong>External Secrets</strong>: Tunnel credentials from AWS</li>
+<li><strong>Endpoint Sync Job</strong>: Updates AWS with tunnel info</li>
+<li><strong>Ingress</strong>: Optional Kubernetes ingress</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>Memory</strong>: 128Mi (request), 256Mi (limit)</li>
+<li><strong>CPU</strong>: 250m (request), 500m (limit)</li>
+<li><strong>Replicas</strong>: 2 for high availability</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="tunnel-configuration">Tunnel Configuration</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Tunnel Name</td>
+          <td><code>audiobooks</code></td>
+          <td>Cloudflare tunnel identifier</td>
+      </tr>
+      <tr>
+          <td>Hostname</td>
+          <td><code>gpustack.landryzetam.net</code></td>
+          <td>External access URL</td>
+      </tr>
+      <tr>
+          <td>Target</td>
+          <td><code>http://gpustack:80</code></td>
+          <td>Internal GPUStack service</td>
+      </tr>
+      <tr>
+          <td>Metrics Port</td>
+          <td><code>2000</code></td>
+          <td>Health and metrics endpoint</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="service-routing">Service Routing</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">ingress</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">gpustack.landryzetam.net</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">http://gpustack:80</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">hello.example.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">hello_world </span> <span style="color:#75715e"># Debug endpoint</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">service</span>: <span style="color:#ae81ff">http_status:404 </span> <span style="color:#75715e"># Catch-all</span>
+</span></span></code></pre></div><h2 id="usage">Usage</h2>
+<h3 id="accessing-gpustack">Accessing GPUStack</h3>
+<p>External access via Cloudflare:</p>
+<pre tabindex="0"><code>https://gpustack.landryzetam.net
+</code></pre><p>Internal cluster access:</p>
+<pre tabindex="0"><code>http://gpustack.gpustack-proxy.svc.cluster.local
+</code></pre><h3 id="api-access">API Access</h3>
+<p>For AI applications:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> openai
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configure OpenAI client for GPUStack</span>
+</span></span><span style="display:flex;"><span>client <span style="color:#f92672">=</span> openai<span style="color:#f92672">.</span>OpenAI(
+</span></span><span style="display:flex;"><span>    base_url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://gpustack.landryzetam.net/v1&#34;</span>,
+</span></span><span style="display:flex;"><span>    api_key<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;your-api-key&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h3 id="health-monitoring">Health Monitoring</h3>
+<p>Check tunnel status:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check cloudflared health</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n gpustack-proxy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View tunnel metrics</span>
+</span></span><span style="display:flex;"><span>kubectl port-forward -n gpustack-proxy deployment/cloudflared 2000:2000
+</span></span><span style="display:flex;"><span>curl http://localhost:2000/metrics
+</span></span></code></pre></div><h2 id="operations">Operations</h2>
+<h3 id="tunnel-management">Tunnel Management</h3>
+<h4 id="check-tunnel-status">Check Tunnel Status</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># View cloudflared logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n gpustack-proxy -l app<span style="color:#f92672">=</span>cloudflared
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check connection status</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n gpustack-proxy deployment/cloudflared -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  cloudflared tunnel info audiobooks
+</span></span></code></pre></div><h4 id="restart-tunnel">Restart Tunnel</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Rolling restart</span>
+</span></span><span style="display:flex;"><span>kubectl rollout restart deployment/cloudflared -n gpustack-proxy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Monitor restart</span>
+</span></span><span style="display:flex;"><span>kubectl rollout status deployment/cloudflared -n gpustack-proxy
+</span></span></code></pre></div><h3 id="endpoint-synchronization">Endpoint Synchronization</h3>
+<p>The endpoint sync job updates AWS Secrets Manager:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check sync job</span>
+</span></span><span style="display:flex;"><span>kubectl get jobs -n gpustack-proxy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View sync logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n gpustack-proxy job/endpoint-sync
+</span></span></code></pre></div><h3 id="credential-rotation">Credential Rotation</h3>
+<p>Update tunnel credentials:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Update secret in AWS</span>
+</span></span><span style="display:flex;"><span>aws secretsmanager update-secret <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --secret-id cloudflare/tunnel-credentials <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --secret-string file://new-credentials.json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Restart cloudflared</span>
+</span></span><span style="display:flex;"><span>kubectl rollout restart deployment/cloudflared -n gpustack-proxy
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="tunnel-not-connecting">Tunnel Not Connecting</h3>
+<ol>
+<li><strong>Check credentials</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get secret tunnel-credentials -n gpustack-proxy
+</span></span><span style="display:flex;"><span>kubectl describe externalsecret -n gpustack-proxy
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify tunnel exists</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># List tunnels (requires Cloudflare API token)</span>
+</span></span><span style="display:flex;"><span>cloudflared tunnel list
+</span></span></code></pre></div><ol start="3">
+<li><strong>Check DNS</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Verify DNS points to tunnel</span>
+</span></span><span style="display:flex;"><span>dig gpustack.landryzetam.net
+</span></span></code></pre></div><h3 id="connection-issues">Connection Issues</h3>
+<ol>
+<li><strong>Test internal service</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Port forward to GPUStack directly</span>
+</span></span><span style="display:flex;"><span>kubectl port-forward -n gpustack-proxy svc/gpustack 8080:80
+</span></span><span style="display:flex;"><span>curl http://localhost:8080/health
+</span></span></code></pre></div><ol start="2">
+<li><strong>Check cloudflared health</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n gpustack-proxy deployment/cloudflared -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  curl -s http://localhost:2000/ready
+</span></span></code></pre></div><h3 id="high-latency">High Latency</h3>
+<ol>
+<li><strong>Check metrics</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl http://localhost:2000/metrics | grep cloudflared_tunnel_
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify closest Cloudflare PoP</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -s https://gpustack.landryzetam.net/cdn-cgi/trace | grep colo
+</span></span></code></pre></div><h2 id="security-considerations">Security Considerations</h2>
+<h3 id="zero-trust-architecture">Zero Trust Architecture</h3>
+<ul>
+<li>No inbound ports required</li>
+<li>All traffic encrypted via Cloudflare</li>
+<li>Authentication at edge possible</li>
+</ul>
+<h3 id="access-control">Access Control</h3>
+<ul>
+<li>Cloudflare Access policies</li>
+<li>API key authentication</li>
+<li>IP allowlisting available</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Rotate credentials</strong>: Regular tunnel credential rotation</li>
+<li><strong>Monitor access</strong>: Review Cloudflare analytics</li>
+<li><strong>Enable WAF</strong>: Use Cloudflare WAF rules</li>
+<li><strong>Rate limiting</strong>: Configure at Cloudflare edge</li>
+<li><strong>Audit logs</strong>: Enable Cloudflare audit logs</li>
+</ol>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="cloudflare-settings">Cloudflare Settings</h3>
+<p>Optimize for API traffic:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;cache_level&#34;</span>: <span style="color:#e6db74">&#34;bypass&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;websockets&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;http2&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;http3&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;0rtt&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="connection-pooling">Connection Pooling</h3>
+<p>cloudflared configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">originRequest</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">connectTimeout</span>: <span style="color:#ae81ff">30s</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">noTLSVerify</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">keepAliveConnections</span>: <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">keepAliveTimeout</span>: <span style="color:#ae81ff">90s</span>
+</span></span></code></pre></div><h3 id="load-balancing">Load Balancing</h3>
+<p>With multiple replicas:</p>
+<ul>
+<li>Automatic failover</li>
+<li>Connection distribution</li>
+<li>Health-based routing</li>
+</ul>
+<h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li><code>cloudflared_tunnel_ha_connections</code>: Active connections</li>
+<li><code>cloudflared_tunnel_request_errors</code>: Error rate</li>
+<li><code>cloudflared_tunnel_response_time</code>: Latency</li>
+<li><code>cloudflared_tunnel_concurrent_requests</code>: Current load</li>
+<li><code>cloudflared_tunnel_authentication_success</code>: Auth metrics</li>
+</ul>
+<h3 id="cloudflare-analytics">Cloudflare Analytics</h3>
+<p>Available metrics:</p>
+<ul>
+<li>Request volume</li>
+<li>Response times</li>
+<li>Error rates</li>
+<li>Bandwidth usage</li>
+<li>Security events</li>
+</ul>
+<h3 id="alerts">Alerts</h3>
+<p>Configure alerts:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Tunnel down alert</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">CloudflaredTunnelDown</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">up{job=&#34;cloudflared&#34;} == 0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">for</span>: <span style="color:#ae81ff">5m</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;Cloudflare tunnel is down&#34;</span>
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Monitor tunnel health</li>
+<li>Check error logs</li>
+<li>Review traffic patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Analyze performance metrics</li>
+<li>Review security events</li>
+<li>Check certificate status</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Update cloudflared version</li>
+<li>Rotate credentials</li>
+<li>Review access policies</li>
+</ul>
+</li>
+</ol>
+<h3 id="version-updates">Version Updates</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Update cloudflared image</span>
+</span></span><span style="display:flex;"><span>kubectl set image deployment/cloudflared <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  cloudflared<span style="color:#f92672">=</span>cloudflare/cloudflared:2025.8.0 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -n gpustack-proxy
+</span></span></code></pre></div><h3 id="backup-configuration">Backup Configuration</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Export tunnel config</span>
+</span></span><span style="display:flex;"><span>kubectl get configmap cloudflared -n gpustack-proxy -o yaml &gt; tunnel-config-backup.yaml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Backup credentials (encrypted)</span>
+</span></span><span style="display:flex;"><span>kubectl get secret tunnel-credentials -n gpustack-proxy -o yaml &gt; tunnel-creds-backup.yaml
+</span></span></code></pre></div><h2 id="advanced-configuration">Advanced Configuration</h2>
+<h3 id="multiple-backends">Multiple Backends</h3>
+<p>Route to different services:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">ingress</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">api.domain.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">http://api-service:80</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">app.domain.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">http://app-service:3000</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">gpustack.domain.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">http://gpustack:80</span>
+</span></span></code></pre></div><h3 id="custom-headers">Custom Headers</h3>
+<p>Add headers for backend:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">originRequest</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">httpHostHeader</span>: <span style="color:#e6db74">&#34;gpustack.internal&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">originServerName</span>: <span style="color:#e6db74">&#34;gpustack.internal&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">caPool</span>: <span style="color:#e6db74">&#34;/etc/cloudflared/certs/ca.crt&#34;</span>
+</span></span></code></pre></div><h3 id="access-policies">Access Policies</h3>
+<p>Integrate with Cloudflare Access:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Require authentication</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">gpustack.landryzetam.net</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">service</span>: <span style="color:#ae81ff">http://gpustack:80</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">originRequest</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">access</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">required</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">teamDomain</span>: <span style="color:#e6db74">&#34;your-team&#34;</span>
+</span></span></code></pre></div><h2 id="integration-examples">Integration Examples</h2>
+<h3 id="with-open-webui">With Open WebUI</h3>
+<p>Configure Open WebUI to use proxy:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">OPENAI_API_BASE_URL</span>: <span style="color:#e6db74">&#34;https://gpustack.landryzetam.net/v1&#34;</span>
+</span></span></code></pre></div><h3 id="with-n8n-workflows">With n8n Workflows</h3>
+<p>AI nodes configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;baseURL&#34;</span>: <span style="color:#e6db74">&#34;https://gpustack.landryzetam.net/v1&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;apiKey&#34;</span>: <span style="color:#e6db74">&#34;{{$credentials.gpustack.apiKey}}&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="with-python-applications">With Python Applications</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;https://gpustack.landryzetam.net/v1/chat/completions&#34;</span>,
+</span></span><span style="display:flex;"><span>    headers<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;Authorization&#34;</span>: <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Bearer </span><span style="color:#e6db74">{</span>api_key<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>},
+</span></span><span style="display:flex;"><span>    json<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;llama2&#34;</span>, <span style="color:#e6db74">&#34;messages&#34;</span>: messages}
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h2 id="cost-considerations">Cost Considerations</h2>
+<h3 id="cloudflare-costs">Cloudflare Costs</h3>
+<ul>
+<li>Free tier: 50 concurrent connections</li>
+<li>Pro tier: Higher limits</li>
+<li>Enterprise: Custom limits</li>
+</ul>
+<h3 id="bandwidth">Bandwidth</h3>
+<ul>
+<li>No bandwidth charges from Cloudflare</li>
+<li>Standard Kubernetes egress applies</li>
+</ul>
+<h3 id="optimization">Optimization</h3>
+<ul>
+<li>Enable compression</li>
+<li>Use HTTP/2 multiplexing</li>
+<li>Implement caching where appropriate</li>
+</ul>
+<h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Implement multi-region tunnels</li>
+<li><input disabled="" type="checkbox"> Add automatic failover between regions</li>
+<li><input disabled="" type="checkbox"> Create terraform module for tunnel setup</li>
+<li><input disabled="" type="checkbox"> Implement request queuing</li>
+<li><input disabled="" type="checkbox"> Add WebSocket support for streaming</li>
+<li><input disabled="" type="checkbox"> Create custom metrics exporter</li>
+<li><input disabled="" type="checkbox"> Implement automatic scaling based on load</li>
+<li><input disabled="" type="checkbox"> Add request/response logging</li>
+<li><input disabled="" type="checkbox"> Create backup tunnel configuration</li>
+<li><input disabled="" type="checkbox"> Implement tunnel health dashboard</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

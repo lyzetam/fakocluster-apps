@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name">N8N Workflow Automation | My New Hugo Site</title>
+<meta property="og:title" content="N8N Workflow Automation | My New Hugo Site" />
+<meta name="twitter:title" content="N8N Workflow Automation | My New Hugo Site" />
+<meta itemprop="name" content="N8N Workflow Automation | My New Hugo Site" />
+<meta name="application-name" content="N8N Workflow Automation | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="Open-source workflow automation tool with visual interface for creating complex automations">
+<meta itemprop="description" content="Open-source workflow automation tool with visual interface for creating complex automations" />
+<meta property="og:description" content="Open-source workflow automation tool with visual interface for creating complex automations" />
+<meta name="twitter:description" content="Open-source workflow automation tool with visual interface for creating complex automations" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/projects/n8n/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/projects/n8n/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="N8N Workflow Automation">
+  <meta property="og:description" content="Open-source workflow automation tool with visual interface for creating complex automations">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+    <meta property="article:published_time" content="2025-01-07T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-01-07T00:00:00+00:00">
+    <meta property="article:tag" content="Automation">
+    <meta property="article:tag" content="Workflows">
+    <meta property="article:tag" content="Integration">
+    <meta property="article:tag" content="No-Code">
+    <meta property="article:tag" content="Kubernetes">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="N8N Workflow Automation">
+  <meta name="twitter:description" content="Open-source workflow automation tool with visual interface for creating complex automations">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/projects/n8n/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">N8N Workflow Automation</h1>
+                
+                
+                
+                <div class="post-meta">
+                    <time datetime="2025-01-07T00:00:00&#43;00:00" itemprop="datePublished"> Jan 7, 2025 </time>
+                </div>
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="n8n-workflow-automation-service">N8N Workflow Automation Service</h1>
+<h2 id="overview">Overview</h2>
+<p>N8N is an open-source workflow automation tool deployed in the Fako cluster. It provides a visual interface for creating complex automation workflows, integrating with hundreds of services and APIs. N8N allows you to automate repetitive tasks, connect different services, and build sophisticated data pipelines without extensive coding.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Visual Workflow Builder</strong>: Drag-and-drop interface for creating automations</li>
+<li><strong>200+ Integrations</strong>: Pre-built nodes for popular services</li>
+<li><strong>Self-Hosted</strong>: Full control over your data and workflows</li>
+<li><strong>PostgreSQL Backend</strong>: Reliable storage using the cluster&rsquo;s PostgreSQL</li>
+<li><strong>Webhook Support</strong>: Trigger workflows via HTTP webhooks</li>
+<li><strong>Custom Functions</strong>: JavaScript code support for complex logic</li>
+<li><strong>Fair-Code License</strong>: Source available with sustainable business model</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>Deployment</strong>: Single-replica deployment (stateful workflows)</li>
+<li><strong>Service</strong>: ClusterIP service on port 5678</li>
+<li><strong>Ingress</strong>: HTTPS access at <code>n8n.landryzetam.net</code></li>
+<li><strong>Storage</strong>: PersistentVolumeClaim for workflow data</li>
+<li><strong>Database</strong>: PostgreSQL for workflow definitions and execution data</li>
+<li><strong>External Secrets</strong>: Database credentials from AWS Secrets Manager</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>Memory</strong>: 512Mi (request), 2Gi (limit)</li>
+<li><strong>CPU</strong>: 250m (request), 1000m (limit)</li>
+<li><strong>Storage</strong>: Persistent volume for N8N data and files</li>
+<li><strong>Database</strong>: Uses shared PostgreSQL cluster</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="environment-settings">Environment Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>N8N_HOST</code></td>
+          <td><code>n8n.landryzetam.net</code></td>
+          <td>External hostname</td>
+      </tr>
+      <tr>
+          <td><code>N8N_PORT</code></td>
+          <td><code>5678</code></td>
+          <td>Application port</td>
+      </tr>
+      <tr>
+          <td><code>N8N_PROTOCOL</code></td>
+          <td><code>https</code></td>
+          <td>External protocol</td>
+      </tr>
+      <tr>
+          <td><code>WEBHOOK_URL</code></td>
+          <td><code>https://n8n.landryzetam.net/</code></td>
+          <td>Webhook base URL</td>
+      </tr>
+      <tr>
+          <td><code>GENERIC_TIMEZONE</code></td>
+          <td><code>America/New_York</code></td>
+          <td>Timezone for scheduling</td>
+      </tr>
+      <tr>
+          <td><code>N8N_METRICS</code></td>
+          <td><code>true</code></td>
+          <td>Enable metrics endpoint</td>
+      </tr>
+      <tr>
+          <td><code>N8N_TEMPLATES_ENABLED</code></td>
+          <td><code>true</code></td>
+          <td>Enable workflow templates</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="database-configuration">Database Configuration</h3>
+<ul>
+<li><strong>Type</strong>: PostgreSQL</li>
+<li><strong>Host</strong>: <code>postgres-cluster-rw.postgres.svc.cluster.local</code></li>
+<li><strong>Database</strong>: <code>app</code></li>
+<li><strong>User</strong>: <code>app</code></li>
+<li><strong>Password</strong>: Managed via External Secrets</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="accessing-n8n">Accessing N8N</h3>
+<p>External access:</p>
+<pre tabindex="0"><code>https://n8n.landryzetam.net
+</code></pre><p>Internal access:</p>
+<pre tabindex="0"><code>http://n8n.n8n.svc.cluster.local:5678
+</code></pre><h3 id="initial-setup">Initial Setup</h3>
+<ol>
+<li><strong>Access the UI</strong>: Navigate to <code>https://n8n.landryzetam.net</code></li>
+<li><strong>Create admin account</strong>: First user becomes admin</li>
+<li><strong>Configure SMTP</strong> (optional): For email notifications</li>
+<li><strong>Set up credentials</strong>: Store API keys for integrations</li>
+</ol>
+<h3 id="creating-your-first-workflow">Creating Your First Workflow</h3>
+<ol>
+<li>
+<p><strong>Start with a trigger</strong>:</p>
+<ul>
+<li>Webhook</li>
+<li>Schedule (Cron)</li>
+<li>Manual trigger</li>
+</ul>
+</li>
+<li>
+<p><strong>Add nodes</strong>:</p>
+<ul>
+<li>HTTP Request</li>
+<li>Database operations</li>
+<li>Data transformation</li>
+<li>Service integrations</li>
+</ul>
+</li>
+<li>
+<p><strong>Test and activate</strong>:</p>
+<ul>
+<li>Use test data</li>
+<li>Check execution logs</li>
+<li>Activate for production</li>
+</ul>
+</li>
+</ol>
+<h3 id="common-use-cases">Common Use Cases</h3>
+<h4 id="webhook-to-database">Webhook to Database</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Example: Store webhook data in PostgreSQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1.</span> <span style="color:#a6e22e">Webhook</span> <span style="color:#a6e22e">trigger</span> <span style="color:#a6e22e">node</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2.</span> <span style="color:#a6e22e">Set</span> <span style="color:#a6e22e">node</span> (<span style="color:#a6e22e">transform</span> <span style="color:#a6e22e">data</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3.</span> <span style="color:#a6e22e">Postgres</span> <span style="color:#a6e22e">node</span> (<span style="color:#a6e22e">insert</span> <span style="color:#a6e22e">data</span>)
+</span></span></code></pre></div><h4 id="scheduled-data-sync">Scheduled Data Sync</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Example: Daily data sync
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1.</span> <span style="color:#a6e22e">Cron</span> <span style="color:#a6e22e">trigger</span> (<span style="color:#ae81ff">0</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#f92672">*</span> <span style="color:#f92672">*</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2.</span> <span style="color:#a6e22e">HTTP</span> <span style="color:#a6e22e">Request</span> (<span style="color:#a6e22e">fetch</span> <span style="color:#a6e22e">data</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3.</span> <span style="color:#a6e22e">IF</span> <span style="color:#a6e22e">node</span> (<span style="color:#a6e22e">check</span> <span style="color:#a6e22e">conditions</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4.</span> <span style="color:#a6e22e">Update</span> <span style="color:#a6e22e">multiple</span> <span style="color:#a6e22e">services</span>
+</span></span></code></pre></div><h4 id="error-notification">Error Notification</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Example: Alert on failures
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1.</span> Error <span style="color:#a6e22e">trigger</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2.</span> <span style="color:#a6e22e">Format</span> <span style="color:#a6e22e">message</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3.</span> <span style="color:#a6e22e">Send</span> <span style="color:#a6e22e">to</span> <span style="color:#a6e22e">Slack</span><span style="color:#f92672">/</span><span style="color:#a6e22e">Email</span>
+</span></span></code></pre></div><h2 id="operations">Operations</h2>
+<h3 id="checking-service-status">Checking Service Status</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check pod status</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n n8n
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n n8n deployment/n8n
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check health endpoint</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n n8n deployment/n8n -- curl -s http://localhost:5678/healthz
+</span></span></code></pre></div><h3 id="managing-workflows">Managing Workflows</h3>
+<h4 id="export-workflows">Export Workflows</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Connect to pod</span>
+</span></span><span style="display:flex;"><span>kubectl exec -it -n n8n deployment/n8n -- /bin/sh
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Export all workflows</span>
+</span></span><span style="display:flex;"><span>n8n export:workflow --all --output<span style="color:#f92672">=</span>/tmp/workflows.json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy to local</span>
+</span></span><span style="display:flex;"><span>kubectl cp n8n/n8n-pod:/tmp/workflows.json ./n8n-workflows-backup.json
+</span></span></code></pre></div><h4 id="import-workflows">Import Workflows</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Copy file to pod</span>
+</span></span><span style="display:flex;"><span>kubectl cp ./workflows.json n8n/n8n-pod:/tmp/workflows.json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Import workflows</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n n8n deployment/n8n -- n8n import:workflow --input<span style="color:#f92672">=</span>/tmp/workflows.json
+</span></span></code></pre></div><h3 id="database-management">Database Management</h3>
+<h4 id="check-workflow-count">Check Workflow Count</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n postgres postgres-cluster-1 -- psql -U app -d app -c <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#e6db74">&#34;SELECT COUNT(*) FROM n8n.workflow_entity WHERE active = true;&#34;</span>
+</span></span></code></pre></div><h4 id="view-execution-history">View Execution History</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n postgres postgres-cluster-1 -- psql -U app -d app -c <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#e6db74">&#34;SELECT id, finished, mode, startedAt, stoppedAt, workflowId 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">   FROM n8n.execution_entity 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">   ORDER BY startedAt DESC 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">   LIMIT 10;&#34;</span>
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="pod-not-starting">Pod Not Starting</h3>
+<ol>
+<li><strong>Check logs</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n n8n deployment/n8n
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify database connection</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n n8n deployment/n8n -- nc -zv postgres-cluster-rw.postgres.svc.cluster.local <span style="color:#ae81ff">5432</span>
+</span></span></code></pre></div><ol start="3">
+<li><strong>Check secrets</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get secret -n n8n app-user-secret
+</span></span></code></pre></div><h3 id="workflow-execution-failures">Workflow Execution Failures</h3>
+<ol>
+<li>
+<p><strong>Check execution logs</strong>:</p>
+<ul>
+<li>UI: Executions → Failed executions</li>
+<li>Click on execution for details</li>
+</ul>
+</li>
+<li>
+<p><strong>Common issues</strong>:</p>
+<ul>
+<li>API credentials expired</li>
+<li>Rate limits exceeded</li>
+<li>Network timeouts</li>
+<li>Invalid data formats</li>
+</ul>
+</li>
+<li>
+<p><strong>Debug mode</strong>:</p>
+<ul>
+<li>Set <code>N8N_LOG_LEVEL=debug</code></li>
+<li>Restart pod</li>
+<li>Check detailed logs</li>
+</ul>
+</li>
+</ol>
+<h3 id="performance-issues">Performance Issues</h3>
+<ol>
+<li><strong>Check resource usage</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl top pod -n n8n
+</span></span></code></pre></div><ol start="2">
+<li><strong>Database queries</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Long-running executions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> workflow_id, started_at, 
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">EXTRACT</span>(EPOCH <span style="color:#66d9ef">FROM</span> (NOW() <span style="color:#f92672">-</span> started_at)) <span style="color:#66d9ef">as</span> duration_seconds
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> n8n.execution_entity
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> finished <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> started_at;
+</span></span></code></pre></div><ol start="3">
+<li><strong>Optimization tips</strong>:
+<ul>
+<li>Limit workflow complexity</li>
+<li>Use batching for large datasets</li>
+<li>Implement error handling</li>
+<li>Clean old executions regularly</li>
+</ul>
+</li>
+</ol>
+<h3 id="webhook-issues">Webhook Issues</h3>
+<ol>
+<li><strong>Test webhook endpoint</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -X POST https://n8n.landryzetam.net/webhook-test/your-webhook-id <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -d <span style="color:#e6db74">&#39;{&#34;test&#34;: &#34;data&#34;}&#39;</span>
+</span></span></code></pre></div><ol start="2">
+<li><strong>Check ingress</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe ingress n8n -n n8n
+</span></span></code></pre></div><h2 id="security-considerations">Security Considerations</h2>
+<h3 id="authentication">Authentication</h3>
+<ul>
+<li>First user registration creates admin</li>
+<li>Subsequent users need invitation</li>
+<li>Consider SSO integration with Keycloak</li>
+</ul>
+<h3 id="api-security">API Security</h3>
+<ul>
+<li>Store credentials encrypted in N8N</li>
+<li>Use environment variables for sensitive data</li>
+<li>Rotate API keys regularly</li>
+</ul>
+<h3 id="network-security">Network Security</h3>
+<ul>
+<li>Internal services only accessible within cluster</li>
+<li>HTTPS for external access</li>
+<li>Consider IP whitelisting for webhooks</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Least privilege</strong>: Create service accounts with minimal permissions</li>
+<li><strong>Audit workflows</strong>: Review automation logic regularly</li>
+<li><strong>Input validation</strong>: Sanitize webhook inputs</li>
+<li><strong>Error handling</strong>: Implement proper error workflows</li>
+<li><strong>Backup workflows</strong>: Regular exports to version control</li>
+</ol>
+<h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li>Active workflow count</li>
+<li>Execution success/failure rate</li>
+<li>Execution duration</li>
+<li>Webhook response times</li>
+<li>Database connection pool usage</li>
+<li>Memory and CPU utilization</li>
+</ul>
+<h3 id="prometheus-metrics">Prometheus Metrics</h3>
+<p>N8N exposes metrics at <code>/metrics</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Example metrics</span>
+</span></span><span style="display:flex;"><span>n8n_workflow_executions_total
+</span></span><span style="display:flex;"><span>n8n_workflow_execution_duration_seconds
+</span></span><span style="display:flex;"><span>n8n_workflow_execution_errors_total
+</span></span></code></pre></div><h3 id="grafana-dashboard">Grafana Dashboard</h3>
+<p>Create custom dashboard with:</p>
+<ul>
+<li>Execution trends</li>
+<li>Error rates by workflow</li>
+<li>Resource usage</li>
+<li>Database query performance</li>
+</ul>
+<h2 id="integration-examples">Integration Examples</h2>
+<h3 id="slack-notification">Slack Notification</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;nodes&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Webhook&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;n8n-nodes-base.webhook&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;position&#34;</span>: [<span style="color:#ae81ff">250</span>, <span style="color:#ae81ff">300</span>],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;webhookId&#34;</span>: <span style="color:#e6db74">&#34;alert-webhook&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Slack&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;n8n-nodes-base.slack&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;position&#34;</span>: [<span style="color:#ae81ff">450</span>, <span style="color:#ae81ff">300</span>],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;credentials&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;slackApi&#34;</span>: <span style="color:#e6db74">&#34;Slack Account&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;parameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;channel&#34;</span>: <span style="color:#e6db74">&#34;#alerts&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;=Alert: {{$json[\&#34;message\&#34;]}}&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="database-to-api-sync">Database to API Sync</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// Sync PostgreSQL data to external API
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1.</span> <span style="color:#a6e22e">Cron</span> <span style="color:#a6e22e">node</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0 */6 * * *&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2.</span> <span style="color:#a6e22e">Postgres</span> <span style="color:#a6e22e">node</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">SELECT</span> <span style="color:#a6e22e">query</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3.</span> <span style="color:#a6e22e">Loop</span> <span style="color:#a6e22e">over</span> <span style="color:#a6e22e">items</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4.</span> <span style="color:#a6e22e">HTTP</span> <span style="color:#a6e22e">Request</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">POST</span> <span style="color:#a6e22e">to</span> <span style="color:#a6e22e">API</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">5.</span> <span style="color:#a6e22e">Update</span> <span style="color:#a6e22e">sync</span> <span style="color:#a6e22e">status</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">DB</span>
+</span></span></code></pre></div><h3 id="multi-service-integration">Multi-Service Integration</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// GitHub → Jira → Slack workflow
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1.</span> <span style="color:#a6e22e">GitHub</span> <span style="color:#a6e22e">webhook</span> (<span style="color:#a6e22e">on</span> <span style="color:#a6e22e">PR</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2.</span> <span style="color:#a6e22e">Create</span> <span style="color:#a6e22e">Jira</span> <span style="color:#a6e22e">ticket</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3.</span> <span style="color:#a6e22e">Notify</span> <span style="color:#a6e22e">Slack</span> <span style="color:#a6e22e">channel</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4.</span> <span style="color:#a6e22e">Update</span> <span style="color:#a6e22e">GitHub</span> <span style="color:#a6e22e">PR</span> <span style="color:#66d9ef">with</span> <span style="color:#a6e22e">Jira</span> <span style="color:#a6e22e">link</span>
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Monitor failed executions</li>
+<li>Check webhook availability</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Review resource usage</li>
+<li>Clean old execution data</li>
+<li>Backup active workflows</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Update N8N version</li>
+<li>Audit workflow permissions</li>
+<li>Review integration credentials</li>
+</ul>
+</li>
+</ol>
+<h3 id="cleanup-old-executions">Cleanup Old Executions</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Delete executions older than 30 days
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> n8n.execution_entity 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> finished <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">AND</span> <span style="color:#e6db74">&#34;stoppedAt&#34;</span> <span style="color:#f92672">&lt;</span> NOW() <span style="color:#f92672">-</span> INTERVAL <span style="color:#e6db74">&#39;30 days&#39;</span>;
+</span></span></code></pre></div><h3 id="upgrade-procedure">Upgrade Procedure</h3>
+<ol>
+<li><strong>Backup workflows and credentials</strong></li>
+<li><strong>Test new version in staging</strong></li>
+<li><strong>Update deployment</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">image</span>: <span style="color:#ae81ff">n8nio/n8n:1.107.0</span>
+</span></span></code></pre></div><ol start="4">
+<li><strong>Monitor for issues</strong></li>
+</ol>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="workflow-design">Workflow Design</h3>
+<ul>
+<li>Use Sub-workflows for reusable logic</li>
+<li>Implement pagination for large datasets</li>
+<li>Add error handling nodes</li>
+<li>Use code nodes for complex transformations</li>
+</ul>
+<h3 id="database-optimization">Database Optimization</h3>
+<ul>
+<li>Regular VACUUM on execution tables</li>
+<li>Index frequently queried columns</li>
+<li>Monitor table growth</li>
+</ul>
+<h3 id="resource-tuning">Resource Tuning</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># For heavy workloads</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#e6db74">&#34;1Gi&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#e6db74">&#34;500m&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">limits</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#e6db74">&#34;4Gi&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#e6db74">&#34;2000m&#34;</span>
+</span></span></code></pre></div><h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Implement high availability setup</li>
+<li><input disabled="" type="checkbox"> Add Redis for queue management</li>
+<li><input disabled="" type="checkbox"> Configure SSO with Keycloak</li>
+<li><input disabled="" type="checkbox"> Create workflow templates library</li>
+<li><input disabled="" type="checkbox"> Implement automated testing for workflows</li>
+<li><input disabled="" type="checkbox"> Add workflow version control integration</li>
+<li><input disabled="" type="checkbox"> Set up execution data archival</li>
+<li><input disabled="" type="checkbox"> Create custom nodes for internal services</li>
+<li><input disabled="" type="checkbox"> Implement workflow approval process</li>
+<li><input disabled="" type="checkbox"> Add cost tracking for API calls</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

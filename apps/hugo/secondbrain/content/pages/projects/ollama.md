@@ -6,11 +6,6 @@ description: "Local AI model server with GPU acceleration for running large lang
 tags: ["AI", "Machine Learning", "GPU", "LLM", "Kubernetes"]
 categories: ["Projects", "AI/ML"]
 weight: 10
-menu:
-  main:
-    parent: "Projects"
-    name: "Ollama AI Server"
-    weight: 1
 ---
 
 # Ollama AI Model Server

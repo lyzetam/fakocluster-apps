@@ -6,11 +6,6 @@ description: "Feature-rich ChatGPT-like web interface for AI language models wit
 tags: ["AI", "ChatGPT", "Web UI", "GPUStack", "Kubernetes"]
 categories: ["Projects", "AI/ML"]
 weight: 20
-menu:
-  main:
-    parent: "Projects"
-    name: "Open WebUI"
-    weight: 2
 ---
 
 # Open WebUI - AI Chat Interface

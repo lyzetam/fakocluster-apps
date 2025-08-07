@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/kubescape-operator/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/kubescape-operator/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="Kubescape Operator - Kubernetes Security Scanning Platform Overview Kubescape Operator is a comprehensive Kubernetes security scanning platform deployed in the Fako cluster. It provides continuous security assessment using multiple frameworks including NSA, MITRE, and CIS benchmarks. The operator performs real-time vulnerability scanning, compliance checking, and network policy analysis. It stores scan results locally and can optionally integrate with Kubescape Cloud for enhanced dashboards and reporting.
+Key Features Multi-Framework Scanning: NSA, MITRE, CIS compliance checks Continuous Monitoring: Real-time security posture assessment Vulnerability Scanning: Container image vulnerability detection Network Policy Analysis: Automated network policy recommendations Local Storage: Persistent storage for scan results and vulnerability DB Prometheus Metrics: Export security metrics for monitoring Node Agent: Runtime security monitoring on Linux nodes Scheduled Scans: Configurable scanning intervals Architecture Components Operator: Core controller managing scans Kubevuln: Vulnerability scanner component Gateway: API gateway for results Node Agent: Runtime security on each node Storage: NFS-backed persistent volumes Helm Release: Managed by Flux Resource Requirements Component Memory Request Memory Limit CPU Request CPU Limit Ephemeral Storage Operator 256Mi 512Mi 100m 500m 1Gi/2Gi Kubevuln 512Mi 1Gi 200m 500m 5Gi/15Gi Gateway 256Mi 512Mi 100m 300m 1Gi/2Gi Configuration Scanning Schedule Framework Schedule Description NSA Every 6 hours National Security Agency guidelines MITRE Every 6 hours MITRE ATT&amp;CK framework CIS v1.23 Daily at 2 AM Center for Internet Security benchmark Storage Configuration Scan Results: 20Gi on nfs-security-logs Vulnerability DB: 10Gi on nfs-security-logs Access Mode: ReadWriteOnce Usage Viewing Scan Results Access scan results via kubectl:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="Kubescape Operator - Kubernetes Security Scanning Platform Overview Kubescape Operator is a comprehensive Kubernetes security scanning platform deployed in the Fako cluster. It provides continuous security assessment using multiple frameworks including NSA, MITRE, and CIS benchmarks. The operator performs real-time vulnerability scanning, compliance checking, and network policy analysis. It stores scan results locally and can optionally integrate with Kubescape Cloud for enhanced dashboards and reporting.
+Key Features Multi-Framework Scanning: NSA, MITRE, CIS compliance checks Continuous Monitoring: Real-time security posture assessment Vulnerability Scanning: Container image vulnerability detection Network Policy Analysis: Automated network policy recommendations Local Storage: Persistent storage for scan results and vulnerability DB Prometheus Metrics: Export security metrics for monitoring Node Agent: Runtime security monitoring on Linux nodes Scheduled Scans: Configurable scanning intervals Architecture Components Operator: Core controller managing scans Kubevuln: Vulnerability scanner component Gateway: API gateway for results Node Agent: Runtime security on each node Storage: NFS-backed persistent volumes Helm Release: Managed by Flux Resource Requirements Component Memory Request Memory Limit CPU Request CPU Limit Ephemeral Storage Operator 256Mi 512Mi 100m 500m 1Gi/2Gi Kubevuln 512Mi 1Gi 200m 500m 5Gi/15Gi Gateway 256Mi 512Mi 100m 300m 1Gi/2Gi Configuration Scanning Schedule Framework Schedule Description NSA Every 6 hours National Security Agency guidelines MITRE Every 6 hours MITRE ATT&amp;CK framework CIS v1.23 Daily at 2 AM Center for Internet Security benchmark Storage Configuration Scan Results: 20Gi on nfs-security-logs Vulnerability DB: 10Gi on nfs-security-logs Access Mode: ReadWriteOnce Usage Viewing Scan Results Access scan results via kubectl:">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/kubescape-operator/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="kubescape-operator---kubernetes-security-scanning-platform">Kubescape Operator - Kubernetes Security Scanning Platform</h1>
+<h2 id="overview">Overview</h2>
+<p>Kubescape Operator is a comprehensive Kubernetes security scanning platform deployed in the Fako cluster. It provides continuous security assessment using multiple frameworks including NSA, MITRE, and CIS benchmarks. The operator performs real-time vulnerability scanning, compliance checking, and network policy analysis. It stores scan results locally and can optionally integrate with Kubescape Cloud for enhanced dashboards and reporting.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Multi-Framework Scanning</strong>: NSA, MITRE, CIS compliance checks</li>
+<li><strong>Continuous Monitoring</strong>: Real-time security posture assessment</li>
+<li><strong>Vulnerability Scanning</strong>: Container image vulnerability detection</li>
+<li><strong>Network Policy Analysis</strong>: Automated network policy recommendations</li>
+<li><strong>Local Storage</strong>: Persistent storage for scan results and vulnerability DB</li>
+<li><strong>Prometheus Metrics</strong>: Export security metrics for monitoring</li>
+<li><strong>Node Agent</strong>: Runtime security monitoring on Linux nodes</li>
+<li><strong>Scheduled Scans</strong>: Configurable scanning intervals</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>Operator</strong>: Core controller managing scans</li>
+<li><strong>Kubevuln</strong>: Vulnerability scanner component</li>
+<li><strong>Gateway</strong>: API gateway for results</li>
+<li><strong>Node Agent</strong>: Runtime security on each node</li>
+<li><strong>Storage</strong>: NFS-backed persistent volumes</li>
+<li><strong>Helm Release</strong>: Managed by Flux</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Component</th>
+          <th>Memory Request</th>
+          <th>Memory Limit</th>
+          <th>CPU Request</th>
+          <th>CPU Limit</th>
+          <th>Ephemeral Storage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Operator</td>
+          <td>256Mi</td>
+          <td>512Mi</td>
+          <td>100m</td>
+          <td>500m</td>
+          <td>1Gi/2Gi</td>
+      </tr>
+      <tr>
+          <td>Kubevuln</td>
+          <td>512Mi</td>
+          <td>1Gi</td>
+          <td>200m</td>
+          <td>500m</td>
+          <td>5Gi/15Gi</td>
+      </tr>
+      <tr>
+          <td>Gateway</td>
+          <td>256Mi</td>
+          <td>512Mi</td>
+          <td>100m</td>
+          <td>300m</td>
+          <td>1Gi/2Gi</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="configuration">Configuration</h2>
+<h3 id="scanning-schedule">Scanning Schedule</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Framework</th>
+          <th>Schedule</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>NSA</td>
+          <td>Every 6 hours</td>
+          <td>National Security Agency guidelines</td>
+      </tr>
+      <tr>
+          <td>MITRE</td>
+          <td>Every 6 hours</td>
+          <td>MITRE ATT&amp;CK framework</td>
+      </tr>
+      <tr>
+          <td>CIS v1.23</td>
+          <td>Daily at 2 AM</td>
+          <td>Center for Internet Security benchmark</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="storage-configuration">Storage Configuration</h3>
+<ul>
+<li><strong>Scan Results</strong>: 20Gi on <code>nfs-security-logs</code></li>
+<li><strong>Vulnerability DB</strong>: 10Gi on <code>nfs-security-logs</code></li>
+<li><strong>Access Mode</strong>: ReadWriteOnce</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="viewing-scan-results">Viewing Scan Results</h3>
+<p>Access scan results via kubectl:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># List recent scans</span>
+</span></span><span style="display:flex;"><span>kubectl get configurationscansummaries -n kubescape
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View detailed scan results</span>
+</span></span><span style="display:flex;"><span>kubectl describe configurationscansummary &lt;scan-name&gt; -n kubescape
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Get vulnerability reports</span>
+</span></span><span style="display:flex;"><span>kubectl get vulnerabilitymanifestsummaries -n kubescape
+</span></span></code></pre></div><h3 id="manual-scan-trigger">Manual Scan Trigger</h3>
+<p>Trigger immediate scan:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Scan with specific framework</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n kubescape deployment/kubescape-operator -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  kubescape scan framework nsa --submit
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Full cluster scan</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n kubescape deployment/kubescape-operator -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  kubescape scan framework all --submit
+</span></span></code></pre></div><h3 id="viewing-network-policies">Viewing Network Policies</h3>
+<p>Generated network policies:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># List generated policies</span>
+</span></span><span style="display:flex;"><span>kubectl get generatednetworkpolicies -n kubescape
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View policy recommendations</span>
+</span></span><span style="display:flex;"><span>kubectl describe generatednetworkpolicy &lt;policy-name&gt; -n kubescape
+</span></span></code></pre></div><h2 id="operations">Operations</h2>
+<h3 id="monitoring-health">Monitoring Health</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check operator status</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n kubescape
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View operator logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n kubescape deployment/kubescape-operator
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check vulnerability scanner</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n kubescape deployment/kubevuln
+</span></span></code></pre></div><h3 id="metrics-access">Metrics Access</h3>
+<p>Prometheus metrics endpoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Port forward to access metrics</span>
+</span></span><span style="display:flex;"><span>kubectl port-forward -n kubescape svc/kubescape-metrics 9090:9090
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View metrics</span>
+</span></span><span style="display:flex;"><span>curl http://localhost:9090/metrics
+</span></span></code></pre></div><h3 id="storage-management">Storage Management</h3>
+<p>Monitor storage usage:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check PVC usage</span>
+</span></span><span style="display:flex;"><span>kubectl get pvc -n kubescape
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View storage details</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n kubescape deployment/kubevuln -- df -h /data
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="pod-evictions">Pod Evictions</h3>
+<p>Common issue: kubevuln pod evicted due to ephemeral storage</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check pod status</span>
+</span></span><span style="display:flex;"><span>kubectl describe pod -n kubescape -l app<span style="color:#f92672">=</span>kubevuln
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># If evicted, check events</span>
+</span></span><span style="display:flex;"><span>kubectl get events -n kubescape --sort-by<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.lastTimestamp&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Solution: Already configured with 15Gi ephemeral storage limit</span>
+</span></span></code></pre></div><h3 id="scan-failures">Scan Failures</h3>
+<ol>
+<li><strong>Check scan job logs</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n kubescape -l job-name<span style="color:#f92672">=</span>&lt;scan-job-name&gt;
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify RBAC permissions</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl auth can-i --list <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --as<span style="color:#f92672">=</span>system:serviceaccount:kubescape:kubescape-operator
+</span></span></code></pre></div><ol start="3">
+<li><strong>Check storage availability</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe pvc -n kubescape
+</span></span></code></pre></div><h3 id="node-agent-issues">Node Agent Issues</h3>
+<ol>
+<li><strong>Verify node compatibility</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check kernel version (needs BTF support)</span>
+</span></span><span style="display:flex;"><span>kubectl get nodes -o wide
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check node agent pods</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n kubescape -l app<span style="color:#f92672">=</span>node-agent -o wide
+</span></span></code></pre></div><ol start="2">
+<li><strong>macOS exclusion</strong>:
+<ul>
+<li>Node agent automatically excluded from macOS nodes</li>
+<li>Only runs on Linux nodes with BTF support</li>
+</ul>
+</li>
+</ol>
+<h2 id="security-frameworks">Security Frameworks</h2>
+<h3 id="nsa-framework">NSA Framework</h3>
+<ul>
+<li>Kubernetes Hardening Guidance</li>
+<li>Network segmentation checks</li>
+<li>Pod security standards</li>
+<li>RBAC configuration</li>
+</ul>
+<h3 id="mitre-attck">MITRE ATT&amp;CK</h3>
+<ul>
+<li>Threat modeling based on ATT&amp;CK matrix</li>
+<li>Technique detection</li>
+<li>Lateral movement prevention</li>
+<li>Persistence mechanisms</li>
+</ul>
+<h3 id="cis-benchmarks">CIS Benchmarks</h3>
+<ul>
+<li>Kubernetes CIS v1.23 compliance</li>
+<li>Control plane security</li>
+<li>Worker node hardening</li>
+<li>Network policies</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="scan-result-analysis">Scan Result Analysis</h3>
+<ol>
+<li>
+<p><strong>Priority-based remediation</strong>:</p>
+<ul>
+<li>Critical findings first</li>
+<li>High-impact, low-effort fixes</li>
+<li>Systematic approach</li>
+</ul>
+</li>
+<li>
+<p><strong>Regular review cycle</strong>:</p>
+<ul>
+<li>Daily critical findings</li>
+<li>Weekly compliance reports</li>
+<li>Monthly trend analysis</li>
+</ul>
+</li>
+<li>
+<p><strong>Exception management</strong>:</p>
+<ul>
+<li>Document accepted risks</li>
+<li>Create exclusion rules</li>
+<li>Regular review of exceptions</li>
+</ul>
+</li>
+</ol>
+<h3 id="performance-optimization">Performance Optimization</h3>
+<ol>
+<li>
+<p><strong>Scan scheduling</strong>:</p>
+<ul>
+<li>Avoid peak hours</li>
+<li>Stagger framework scans</li>
+<li>Balance coverage vs load</li>
+</ul>
+</li>
+<li>
+<p><strong>Resource allocation</strong>:</p>
+<ul>
+<li>Monitor scanner performance</li>
+<li>Adjust limits if needed</li>
+<li>Use node affinity for dedicated scanning</li>
+</ul>
+</li>
+</ol>
+<h3 id="integration">Integration</h3>
+<p>With CI/CD:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># GitLab CI example</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">security-scan</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">kubescape scan framework nsa --fail-threshold 70</span>
+</span></span></code></pre></div><p>With monitoring:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Prometheus alert</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">HighSecurityFindings</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">kubescape_scan_result_failed_resources &gt; 10</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;High number of security findings&#34;</span>
+</span></span></code></pre></div><h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li><code>kubescape_scan_result_failed_resources</code>: Failed resources per scan</li>
+<li><code>kubescape_scan_result_total_resources</code>: Total scanned resources</li>
+<li><code>kubescape_scan_duration_seconds</code>: Scan completion time</li>
+<li><code>kubescape_vulnerability_summary_high</code>: High severity vulnerabilities</li>
+<li><code>kubescape_compliance_score</code>: Overall compliance percentage</li>
+</ul>
+<h3 id="dashboards">Dashboards</h3>
+<p>Create Grafana dashboard:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;dashboard&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Kubescape Security&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;panels&#34;</span>: [
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Compliance Score&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;targets&#34;</span>: [{
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;expr&#34;</span>: <span style="color:#e6db74">&#34;kubescape_compliance_score&#34;</span>
+</span></span><span style="display:flex;"><span>        }]
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="alerts">Alerts</h3>
+<p>Configure critical alerts:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Critical vulnerability alert</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">CriticalVulnerability</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">kubescape_vulnerability_summary_critical &gt; 0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">for</span>: <span style="color:#ae81ff">5m</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;Critical vulnerability detected&#34;</span>
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Review critical findings</li>
+<li>Check scan completion</li>
+<li>Monitor pod health</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Analyze compliance trends</li>
+<li>Update exclusion rules</li>
+<li>Review network policies</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Update operator version</li>
+<li>Clean old scan results</li>
+<li>Performance analysis</li>
+</ul>
+</li>
+</ol>
+<h3 id="version-updates">Version Updates</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Update Helm release</span>
+</span></span><span style="display:flex;"><span>kubectl edit helmrelease kubescape-operator -n kubescape
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Change version</span>
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  chart:
+</span></span><span style="display:flex;"><span>    spec:
+</span></span><span style="display:flex;"><span>      version: <span style="color:#e6db74">&#34;1.x.x&#34;</span>  <span style="color:#75715e"># New version</span>
+</span></span></code></pre></div><h3 id="database-maintenance">Database Maintenance</h3>
+<p>Clean old scan results:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Remove scans older than 30 days</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n kubescape deployment/kubescape-operator -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  find /data/scans -mtime +30 -delete
+</span></span></code></pre></div><h2 id="advanced-configuration">Advanced Configuration</h2>
+<h3 id="custom-scanning-rules">Custom Scanning Rules</h3>
+<p>Add custom controls:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># custom-control.yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">kubescape.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Control</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">custom-control</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Check custom annotation&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">match</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">any</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">kinds</span>: [<span style="color:#e6db74">&#34;Deployment&#34;</span>]
+</span></span></code></pre></div><h3 id="scan-exclusions">Scan Exclusions</h3>
+<p>Configure exclusions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># In values</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">scanExclusions</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespaces</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">kube-system</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">kube-public</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;sensitive-deployment&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">namespace</span>: <span style="color:#e6db74">&#34;production&#34;</span>
+</span></span></code></pre></div><h3 id="cloud-integration">Cloud Integration</h3>
+<p>Enable Kubescape Cloud:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">kubescapeCloud</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">account</span>: <span style="color:#e6db74">&#34;your-account-id&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">clusterName</span>: <span style="color:#e6db74">&#34;fako-cluster&#34;</span>
+</span></span></code></pre></div><h2 id="compliance-reporting">Compliance Reporting</h2>
+<h3 id="generate-reports">Generate Reports</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Generate compliance report</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n kubescape deployment/kubescape-operator -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  kubescape scan framework cis --format pdf --output /tmp/report.pdf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy report</span>
+</span></span><span style="display:flex;"><span>kubectl cp kubescape/operator-pod:/tmp/report.pdf ./cis-compliance.pdf
+</span></span></code></pre></div><h3 id="automated-reporting">Automated Reporting</h3>
+<p>Create CronJob for reports:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">batch/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">CronJob</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">compliance-reporter</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">schedule</span>: <span style="color:#e6db74">&#34;0 8 * * 1&#34;</span>  <span style="color:#75715e"># Weekly Monday 8 AM</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">jobTemplate</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">reporter</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">image</span>: <span style="color:#ae81ff">kubescape/kubescape</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">command</span>: [<span style="color:#e6db74">&#34;generate-report.sh&#34;</span>]
+</span></span></code></pre></div><h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Integrate with ticketing system for findings</li>
+<li><input disabled="" type="checkbox"> Implement automated remediation for safe fixes</li>
+<li><input disabled="" type="checkbox"> Add custom framework for organization policies</li>
+<li><input disabled="" type="checkbox"> Create security scorecard dashboard</li>
+<li><input disabled="" type="checkbox"> Implement drift detection</li>
+<li><input disabled="" type="checkbox"> Add container signing verification</li>
+<li><input disabled="" type="checkbox"> Create remediation playbooks</li>
+<li><input disabled="" type="checkbox"> Implement security baseline enforcement</li>
+<li><input disabled="" type="checkbox"> Add integration with SIEM systems</li>
+<li><input disabled="" type="checkbox"> Create multi-cluster security dashboard</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

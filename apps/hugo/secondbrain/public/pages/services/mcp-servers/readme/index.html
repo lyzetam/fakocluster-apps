@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/mcp-servers/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/mcp-servers/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="MCP Servers - Model Context Protocol Services Overview MCP (Model Context Protocol) Servers is a collection of specialized services deployed in the Fako cluster that extend AI capabilities by providing structured access to various tools and resources. These servers implement the Model Context Protocol, enabling AI assistants like Claude to interact with external systems, databases, APIs, and tools in a standardized way. Each MCP server provides specific functionality that can be consumed by AI agents for enhanced automation and integration.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="MCP Servers - Model Context Protocol Services Overview MCP (Model Context Protocol) Servers is a collection of specialized services deployed in the Fako cluster that extend AI capabilities by providing structured access to various tools and resources. These servers implement the Model Context Protocol, enabling AI assistants like Claude to interact with external systems, databases, APIs, and tools in a standardized way. Each MCP server provides specific functionality that can be consumed by AI agents for enhanced automation and integration.">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/mcp-servers/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="mcp-servers---model-context-protocol-services">MCP Servers - Model Context Protocol Services</h1>
+<h2 id="overview">Overview</h2>
+<p>MCP (Model Context Protocol) Servers is a collection of specialized services deployed in the Fako cluster that extend AI capabilities by providing structured access to various tools and resources. These servers implement the Model Context Protocol, enabling AI assistants like Claude to interact with external systems, databases, APIs, and tools in a standardized way. Each MCP server provides specific functionality that can be consumed by AI agents for enhanced automation and integration.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Standardized Protocol</strong>: All servers implement the Model Context Protocol</li>
+<li><strong>Tool Extension</strong>: Provides AI assistants with new capabilities</li>
+<li><strong>Resource Access</strong>: Structured access to external data sources</li>
+<li><strong>High Availability</strong>: Multi-replica deployments for critical servers</li>
+<li><strong>Secure Integration</strong>: RBAC and service accounts for each server</li>
+<li><strong>Shared Workspace</strong>: Common storage for cross-server collaboration</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li>
+<p><strong>Multiple MCP Servers</strong>: Each providing specialized functionality</p>
+<ul>
+<li>kubernetes-mcp: Kubernetes cluster management</li>
+<li>postgres-mcp: PostgreSQL database operations</li>
+<li>filesystem-mcp: File system access</li>
+<li>github-mcp: GitHub repository interactions</li>
+<li>memory-mcp: Persistent memory/context storage</li>
+<li>n8n-mcp: N8N workflow integration</li>
+<li>puppeteer-mcp: Web automation</li>
+<li>time-mcp: Time and scheduling utilities</li>
+<li>weather-mcp: Weather data access</li>
+<li>And more&hellip;</li>
+</ul>
+</li>
+<li>
+<p><strong>Shared Resources</strong>:</p>
+<ul>
+<li>Namespace: <code>mcp-servers</code></li>
+<li>Shared workspace PVC for data exchange</li>
+<li>Common service discovery</li>
+</ul>
+</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<p>Varies by server, typically:</p>
+<ul>
+<li><strong>Memory</strong>: 128Mi-512Mi per server</li>
+<li><strong>CPU</strong>: 100m-500m per server</li>
+<li><strong>Storage</strong>: Shared workspace volume</li>
+</ul>
+<h2 id="available-mcp-servers">Available MCP Servers</h2>
+<h3 id="1-kubernetes-mcp-server">1. Kubernetes MCP Server</h3>
+<p><strong>Purpose</strong>: Kubernetes cluster management and operations</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>List/describe resources</li>
+<li>Apply/delete manifests</li>
+<li>Execute commands in pods</li>
+<li>Monitor cluster health</li>
+<li>Scale deployments</li>
+</ul>
+<p><strong>Deployment</strong>: 3 replicas for HA</p>
+<h3 id="2-postgresql-mcp-server">2. PostgreSQL MCP Server</h3>
+<p><strong>Purpose</strong>: Database operations and queries</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Execute SQL queries</li>
+<li>Manage database schemas</li>
+<li>Import/export data</li>
+<li>Database administration</li>
+</ul>
+<h3 id="3-filesystem-mcp-server">3. Filesystem MCP Server</h3>
+<p><strong>Purpose</strong>: File system operations</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Read/write files</li>
+<li>Directory operations</li>
+<li>File search and filtering</li>
+<li>Archive management</li>
+</ul>
+<h3 id="4-github-mcp-server">4. GitHub MCP Server</h3>
+<p><strong>Purpose</strong>: GitHub repository interactions</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Repository management</li>
+<li>Issue/PR operations</li>
+<li>Code search</li>
+<li>Workflow triggers</li>
+</ul>
+<h3 id="5-memory-mcp-server">5. Memory MCP Server</h3>
+<p><strong>Purpose</strong>: Persistent context storage</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Store/retrieve context</li>
+<li>Session management</li>
+<li>Cross-conversation memory</li>
+</ul>
+<h3 id="6-n8n-mcp-server">6. N8N MCP Server</h3>
+<p><strong>Purpose</strong>: Workflow automation integration</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Trigger workflows</li>
+<li>Monitor executions</li>
+<li>Manage workflow data</li>
+</ul>
+<h3 id="7-puppeteer-mcp-server">7. Puppeteer MCP Server</h3>
+<p><strong>Purpose</strong>: Web browser automation</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Web scraping</li>
+<li>Form automation</li>
+<li>Screenshot capture</li>
+<li>Browser testing</li>
+</ul>
+<h3 id="8-time-mcp-server">8. Time MCP Server</h3>
+<p><strong>Purpose</strong>: Time and date utilities</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Timezone conversions</li>
+<li>Date calculations</li>
+<li>Scheduling helpers</li>
+</ul>
+<h3 id="9-weather-mcp-server">9. Weather MCP Server</h3>
+<p><strong>Purpose</strong>: Weather data access</p>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Current weather</li>
+<li>Forecasts</li>
+<li>Historical data</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="for-ai-assistants-claude-etc">For AI Assistants (Claude, etc.)</h3>
+<p>MCP servers are automatically discovered and available to AI assistants configured with MCP support. The assistant can:</p>
+<ol>
+<li>
+<p><strong>List available tools</strong>:</p>
+<pre tabindex="0"><code>What MCP tools are available?
+</code></pre></li>
+<li>
+<p><strong>Use specific tools</strong>:</p>
+<pre tabindex="0"><code>Use the kubernetes MCP to list all pods in the default namespace
+</code></pre></li>
+<li>
+<p><strong>Chain operations</strong>:</p>
+<pre tabindex="0"><code>Check the weather, then create an N8N workflow to send alerts if it&#39;s raining
+</code></pre></li>
+</ol>
+<h3 id="direct-api-access">Direct API Access</h3>
+<p>Each MCP server exposes a standard MCP API:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Example: Query kubernetes-mcp</span>
+</span></span><span style="display:flex;"><span>curl -X POST http://kubernetes-mcp-server.mcp-servers.svc.cluster.local/api/v1/tools <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -d <span style="color:#e6db74">&#39;{&#34;method&#34;: &#34;list_pods&#34;, &#34;params&#34;: {&#34;namespace&#34;: &#34;default&#34;}}&#39;</span>
+</span></span></code></pre></div><h2 id="operations">Operations</h2>
+<h3 id="checking-server-status">Checking Server Status</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># List all MCP servers</span>
+</span></span><span style="display:flex;"><span>kubectl get deployments -n mcp-servers
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check specific server</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n mcp-servers -l app.kubernetes.io/name<span style="color:#f92672">=</span>kubernetes-mcp-server
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n mcp-servers deployment/kubernetes-mcp-server
+</span></span></code></pre></div><h3 id="monitoring-health">Monitoring Health</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check readiness</span>
+</span></span><span style="display:flex;"><span>kubectl get endpoints -n mcp-servers
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Resource usage</span>
+</span></span><span style="display:flex;"><span>kubectl top pods -n mcp-servers
+</span></span></code></pre></div><h3 id="scaling-servers">Scaling Servers</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Scale a specific server</span>
+</span></span><span style="display:flex;"><span>kubectl scale deployment kubernetes-mcp-server -n mcp-servers --replicas<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Or edit deployment</span>
+</span></span><span style="display:flex;"><span>kubectl edit deployment kubernetes-mcp-server -n mcp-servers
+</span></span></code></pre></div><h2 id="configuration">Configuration</h2>
+<h3 id="server-specific-configuration">Server-Specific Configuration</h3>
+<p>Each MCP server may have specific configuration needs:</p>
+<h4 id="kubernetes-mcp">Kubernetes MCP</h4>
+<ul>
+<li>ServiceAccount with appropriate RBAC</li>
+<li>Cluster role bindings for operations</li>
+<li>Optional: Read-only mode flag</li>
+</ul>
+<h4 id="postgresql-mcp">PostgreSQL MCP</h4>
+<ul>
+<li>Database connection strings</li>
+<li>Credentials via secrets</li>
+<li>Connection pool settings</li>
+</ul>
+<h4 id="github-mcp">GitHub MCP</h4>
+<ul>
+<li>GitHub API tokens</li>
+<li>Repository permissions</li>
+<li>Rate limiting configuration</li>
+</ul>
+<h3 id="shared-workspace">Shared Workspace</h3>
+<p>All servers can access shared workspace:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">volumeMounts</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">shared-workspace</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/workspace</span>
+</span></span></code></pre></div><h2 id="security-considerations">Security Considerations</h2>
+<h3 id="rbac-and-permissions">RBAC and Permissions</h3>
+<ul>
+<li>Each server runs with minimal required permissions</li>
+<li>Service accounts follow principle of least privilege</li>
+<li>Network policies restrict inter-service communication</li>
+</ul>
+<h3 id="authentication">Authentication</h3>
+<ul>
+<li>MCP protocol authentication</li>
+<li>Server-specific auth (GitHub tokens, DB passwords)</li>
+<li>Internal service mesh security</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Audit Usage</strong>: Monitor MCP tool usage</li>
+<li><strong>Limit Permissions</strong>: Grant only necessary permissions</li>
+<li><strong>Rotate Credentials</strong>: Regular credential rotation</li>
+<li><strong>Network Isolation</strong>: Use network policies</li>
+<li><strong>Log Analysis</strong>: Monitor for suspicious activity</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="server-not-responding">Server Not Responding</h3>
+<ol>
+<li><strong>Check pod status</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe pod -n mcp-servers &lt;pod-name&gt;
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify service endpoints</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get endpoints -n mcp-servers
+</span></span></code></pre></div><ol start="3">
+<li><strong>Check logs for errors</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n mcp-servers deployment/&lt;server-name&gt; --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">50</span>
+</span></span></code></pre></div><h3 id="permission-errors">Permission Errors</h3>
+<ol>
+<li><strong>Verify RBAC</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl auth can-i --list --as<span style="color:#f92672">=</span>system:serviceaccount:mcp-servers:&lt;sa-name&gt;
+</span></span></code></pre></div><ol start="2">
+<li><strong>Check service account</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get sa -n mcp-servers
+</span></span><span style="display:flex;"><span>kubectl describe sa &lt;sa-name&gt; -n mcp-servers
+</span></span></code></pre></div><h3 id="connection-issues">Connection Issues</h3>
+<ol>
+<li><strong>Test connectivity</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl run test-pod --rm -it --image<span style="color:#f92672">=</span>busybox --restart<span style="color:#f92672">=</span>Never -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  wget -O- http://&lt;server-name&gt;.mcp-servers.svc.cluster.local/health
+</span></span></code></pre></div><ol start="2">
+<li><strong>Check DNS resolution</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl run test-pod --rm -it --image<span style="color:#f92672">=</span>busybox --restart<span style="color:#f92672">=</span>Never -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  nslookup &lt;server-name&gt;.mcp-servers.svc.cluster.local
+</span></span></code></pre></div><h2 id="integration-examples">Integration Examples</h2>
+<h3 id="with-ai-agents">With AI Agents</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Example: Using MCP in a custom AI agent</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp_client <span style="color:#f92672">import</span> MCPClient
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Initialize clients</span>
+</span></span><span style="display:flex;"><span>k8s_client <span style="color:#f92672">=</span> MCPClient(<span style="color:#e6db74">&#34;kubernetes-mcp-server.mcp-servers.svc.cluster.local&#34;</span>)
+</span></span><span style="display:flex;"><span>pg_client <span style="color:#f92672">=</span> MCPClient(<span style="color:#e6db74">&#34;postgres-mcp-server.mcp-servers.svc.cluster.local&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Use tools</span>
+</span></span><span style="display:flex;"><span>pods <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> k8s_client<span style="color:#f92672">.</span>call_tool(<span style="color:#e6db74">&#34;list_pods&#34;</span>, {<span style="color:#e6db74">&#34;namespace&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>})
+</span></span><span style="display:flex;"><span>db_result <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> pg_client<span style="color:#f92672">.</span>call_tool(<span style="color:#e6db74">&#34;query&#34;</span>, {<span style="color:#e6db74">&#34;sql&#34;</span>: <span style="color:#e6db74">&#34;SELECT * FROM users&#34;</span>})
+</span></span></code></pre></div><h3 id="with-n8n-workflows">With N8N Workflows</h3>
+<p>Create N8N workflows that leverage MCP servers:</p>
+<ol>
+<li>Webhook trigger</li>
+<li>Call MCP server via HTTP</li>
+<li>Process results</li>
+<li>Take actions</li>
+</ol>
+<h3 id="with-monitoring">With Monitoring</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Prometheus ServiceMonitor</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">monitoring.coreos.com/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceMonitor</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mcp-servers</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">mcp-servers</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">app.kubernetes.io/part-of</span>: <span style="color:#ae81ff">mcp-servers</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">endpoints</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">metrics</span>
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Monitor server health</li>
+<li>Check error rates</li>
+<li>Review resource usage</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Analyze usage patterns</li>
+<li>Update server images</li>
+<li>Review security logs</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Audit permissions</li>
+<li>Update configurations</li>
+<li>Performance optimization</li>
+</ul>
+</li>
+</ol>
+<h3 id="adding-new-mcp-servers">Adding New MCP Servers</h3>
+<ol>
+<li><strong>Create deployment</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">my-mcp-server</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">mcp-servers</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># ... deployment spec</span>
+</span></span></code></pre></div><ol start="2">
+<li><strong>Add service account</strong> if needed</li>
+<li><strong>Configure RBAC</strong> for required permissions</li>
+<li><strong>Create service</strong> for discovery</li>
+<li><strong>Update kustomization.yaml</strong></li>
+</ol>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="resource-tuning">Resource Tuning</h3>
+<ul>
+<li>Adjust replica counts based on usage</li>
+<li>Configure HPA for auto-scaling</li>
+<li>Optimize memory/CPU limits</li>
+</ul>
+<h3 id="caching-strategies">Caching Strategies</h3>
+<ul>
+<li>Implement response caching</li>
+<li>Use shared workspace for data</li>
+<li>Cache external API responses</li>
+</ul>
+<h3 id="connection-pooling">Connection Pooling</h3>
+<ul>
+<li>Database connection pools</li>
+<li>HTTP client connection reuse</li>
+<li>gRPC connection management</li>
+</ul>
+<h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Add more specialized MCP servers</li>
+<li><input disabled="" type="checkbox"> Implement server discovery service</li>
+<li><input disabled="" type="checkbox"> Create unified monitoring dashboard</li>
+<li><input disabled="" type="checkbox"> Add request routing/load balancing</li>
+<li><input disabled="" type="checkbox"> Implement rate limiting per client</li>
+<li><input disabled="" type="checkbox"> Add WebSocket support for streaming</li>
+<li><input disabled="" type="checkbox"> Create MCP server SDK/template</li>
+<li><input disabled="" type="checkbox"> Add server health check endpoints</li>
+<li><input disabled="" type="checkbox"> Implement distributed tracing</li>
+<li><input disabled="" type="checkbox"> Add cost tracking per operation</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

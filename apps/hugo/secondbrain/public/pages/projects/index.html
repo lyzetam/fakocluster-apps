@@ -3,17 +3,17 @@
 <meta http-equiv="content-type" content="text/html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title itemprop="name"> | My New Hugo Site</title>
-<meta property="og:title" content=" | My New Hugo Site" />
-<meta name="twitter:title" content=" | My New Hugo Site" />
-<meta itemprop="name" content=" | My New Hugo Site" />
-<meta name="application-name" content=" | My New Hugo Site" />
+<title itemprop="name">Projects | My New Hugo Site</title>
+<meta property="og:title" content="Projects | My New Hugo Site" />
+<meta name="twitter:title" content="Projects | My New Hugo Site" />
+<meta itemprop="name" content="Projects | My New Hugo Site" />
+<meta name="application-name" content="Projects | My New Hugo Site" />
 <meta property="og:site_name" content="" />
 
-<meta name="description" content="">
-<meta itemprop="description" content="" />
-<meta property="og:description" content="" />
-<meta name="twitter:description" content="" />
+<meta name="description" content="Explore the various projects and services running on the Fako Cluster">
+<meta itemprop="description" content="Explore the various projects and services running on the Fako Cluster" />
+<meta property="og:description" content="Explore the various projects and services running on the Fako Cluster" />
+<meta name="twitter:description" content="Explore the various projects and services running on the Fako Cluster" />
 
 <meta property="og:locale" content="en-us" />
 <meta name="language" content="en-us" />
@@ -30,20 +30,20 @@
     
     <meta property="og:url" content="http://localhost:1313/pages/projects/">
   <meta property="og:site_name" content="My New Hugo Site">
-  <meta property="og:title" content="My New Hugo Site">
-  <meta property="og:description" content="The Fako Cluster: A Production-Gradish HomeLab How I built a production-gradish Kubernetes homelab that connects learning and real-world engineering
-The Story Behind This Project As a mechanical engineer, I’ve always been fascinated by how things work under the hood. Just as I used to design complex mechanical systems and rebuild engines with my dad during the summers, I wanted to deconstruct modern cloud infrastructure and rebuild it from scratch, within my 4 walls. Those summer days taught me that understanding comes from getting your hands dirty – whether it’s adjusting valve clearances or configuring Kubernetes operators. The Fako Cluster is that same journey in the digital realm – a homelab that doesn’t just run applications, but tries to implement how enterprise-grade systems are designed, secured, and operated. What does this mean?">
+  <meta property="og:title" content="Projects">
+  <meta property="og:description" content="Explore the various projects and services running on the Fako Cluster">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="article">
     <meta property="article:section" content="pages">
+    <meta property="article:published_time" content="2025-01-07T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-01-07T00:00:00+00:00">
 
 
     
     
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="My New Hugo Site">
-  <meta name="twitter:description" content="The Fako Cluster: A Production-Gradish HomeLab How I built a production-gradish Kubernetes homelab that connects learning and real-world engineering
-The Story Behind This Project As a mechanical engineer, I’ve always been fascinated by how things work under the hood. Just as I used to design complex mechanical systems and rebuild engines with my dad during the summers, I wanted to deconstruct modern cloud infrastructure and rebuild it from scratch, within my 4 walls. Those summer days taught me that understanding comes from getting your hands dirty – whether it’s adjusting valve clearances or configuring Kubernetes operators. The Fako Cluster is that same journey in the digital realm – a homelab that doesn’t just run applications, but tries to implement how enterprise-grade systems are designed, secured, and operated. What does this mean?">
+  <meta name="twitter:title" content="Projects">
+  <meta name="twitter:description" content="Explore the various projects and services running on the Fako Cluster">
 
 
     
@@ -100,6 +100,31 @@ stroke-linejoin="round" class="feather feather-home">
             <ul class="trigger-container">
                 
                 
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link active" href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
                 <li class="menu-separator">
                     <span>|</span>
                 </li>
@@ -120,588 +145,77 @@ stroke-linejoin="round" class="feather feather-home">
     <main class="page-content" aria-label="Content">
         <article>
             <header class="header">
-                <h1 class="header-title"></h1>
+                <h1 class="header-title">Projects</h1>
                 
+                
+                
+                <div class="post-meta">
+                    <time datetime="2025-01-07T00:00:00&#43;00:00" itemprop="datePublished"> Jan 7, 2025 </time>
+                </div>
                 
             </header>
             
             <div class="page-content">
-                <h1 id="the-fako-cluster-a-production-gradish-homelab">The Fako Cluster: A Production-Gradish HomeLab</h1>
-<p><em>How I built a production-gradish Kubernetes homelab that connects learning and real-world engineering</em></p>
-<h2 id="the-story-behind-this-project">The Story Behind This Project</h2>
-<p>As a mechanical engineer, I&rsquo;ve always been fascinated by how things work under the hood. Just as I used to design complex mechanical systems and rebuild engines with my dad during the summers, I wanted to deconstruct modern cloud infrastructure and rebuild it from scratch, within my 4 walls. Those summer days taught me that understanding comes from getting your hands dirty – whether it&rsquo;s adjusting valve clearances or configuring Kubernetes operators. The Fako Cluster is that same journey in the digital realm – a homelab that doesn&rsquo;t just run applications, but tries to implement how enterprise-grade systems are designed, secured, and operated.
-What does this mean?</p>
-<ol>
-<li>If it&rsquo;s not in Git, it doesn&rsquo;t exist</li>
-<li>If its not declarative then its not happening</li>
-<li>Defense in depth with pragmatic choices</li>
-<li>Native and Open source first approach</li>
-<li>Small pieces, loosely coupled (mono repo with layers)</li>
-<li>Data should outlive containers</li>
-<li>You can&rsquo;t fix what you can&rsquo;t see</li>
-<li>Understand by building, improve by iterating</li>
-<li>Automate everything that happens twice</li>
-<li>Complexity is the enemy of reliability</li>
-</ol>
-<h2 id="table-of-contents">Table of Contents</h2>
+                <h1 id="projects">Projects</h1>
+<p>Welcome to the projects section! Here you&rsquo;ll find detailed documentation about the various services and applications running on the Fako Cluster. Each project represents a real-world implementation of modern cloud-native technologies.</p>
+<h2 id="featured-projects">Featured Projects</h2>
+<h3 id="ai--machine-learning">AI &amp; Machine Learning</h3>
+<h4 id="ollama-ai-model-server"><a href="/pages/projects/ollama">Ollama AI Model Server</a></h4>
+<p>Run large language models locally with GPU acceleration. This project showcases how to self-host AI models for privacy, cost savings, and unlimited usage.</p>
+<h4 id="open-webui---ai-chat-interface"><a href="/pages/projects/open-webui">Open WebUI - AI Chat Interface</a></h4>
+<p>A ChatGPT-like web interface for interacting with local AI models. Features user management, conversation history, and seamless integration with GPUStack.</p>
+<h3 id="automation--integration">Automation &amp; Integration</h3>
+<h4 id="n8n-workflow-automation"><a href="/pages/projects/n8n">N8N Workflow Automation</a></h4>
+<p>Visual workflow automation platform with 200+ integrations. Create complex automations without coding, from simple webhooks to sophisticated data pipelines.</p>
+<h3 id="health--analytics">Health &amp; Analytics</h3>
+<h4 id="oura-dashboard"><a href="/pages/projects/oura-dashboard">Oura Dashboard</a></h4>
+<p>Interactive health data visualization platform for Oura Ring metrics. Features OAuth2 authentication, real-time charts, and comprehensive health insights.</p>
+<h2 id="additional-services">Additional Services</h2>
+<p>Beyond these featured projects, the Fako Cluster runs many other services:</p>
 <ul>
-<li><a href="#what-makes-this-special">What Makes This Special</a></li>
-<li><a href="#complete-stack-overview">Complete Stack Overview</a></li>
-<li><a href="#hardware-infrastructure">Hardware Infrastructure</a></li>
-<li><a href="#repository-structure">Repository Structure</a></li>
-<li><a href="#the-application-ecosystem">The Application Ecosystem</a></li>
-<li><a href="#infrastructure-components">Infrastructure Components</a></li>
-<li><a href="#security--secret-management">Security &amp; Secret Management</a></li>
-<li><a href="#monitoring--observability">Monitoring &amp; Observability</a></li>
-<li><a href="#getting-started">Getting Started</a></li>
-<li><a href="#lessons-learned">Lessons Learned</a></li>
+<li><strong>Keycloak</strong>: Identity and access management</li>
+<li><strong>Linkding</strong>: Bookmark management system</li>
+<li><strong>Audiobookshelf</strong>: Personal audiobook and podcast server</li>
+<li><strong>Whisper &amp; Piper</strong>: Speech-to-text and text-to-speech services</li>
+<li><strong>PostgreSQL Cluster</strong>: Managed database infrastructure</li>
+<li><strong>Prometheus &amp; Grafana</strong>: Monitoring and observability stack</li>
 </ul>
-<h2 id="what-makes-this-special">What Makes This Special?</h2>
-<h3 id="-real-problems-real-solutions">🎯 Real Problems, Real Solutions</h3>
-<p>Every application in this cluster solves an actual need:</p>
+<h2 id="technology-stack">Technology Stack</h2>
+<p>All projects share common infrastructure patterns:</p>
 <ul>
-<li><strong>AI Assistant</strong>: Local LLM inference for privacy-conscious AI interactions</li>
-<li><strong>Voice Pipeline</strong>: Complete voice assistant system that respects my privacy</li>
-</ul>
-<h2 id="complete-stack-overview">Complete Stack Overview</h2>
-<h3 id="-technology-stack-by-category">📊 Technology Stack by Category</h3>
-<table>
-  <thead>
-      <tr>
-          <th>Category</th>
-          <th>Component</th>
-          <th>Purpose</th>
-          <th>Key Features</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><strong>Core Platform</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>K3s</td>
-          <td>Lightweight Kubernetes</td>
-          <td>Production-grade, edge-optimized</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>FluxCD</td>
-          <td>GitOps operator</td>
-          <td>Automated deployments, drift detection</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Traefik</td>
-          <td>Ingress controller</td>
-          <td>Built-in K3s, automatic TLS</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>containerd</td>
-          <td>Container runtime</td>
-          <td>NVIDIA GPU support</td>
-      </tr>
-      <tr>
-          <td><strong>AI/ML Stack</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Ollama</td>
-          <td>LLM inference server</td>
-          <td>GPU-accelerated, multi-model support</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>OpenWebUI</td>
-          <td>Chat interface</td>
-          <td>GPUStack backend, family access</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Whisper</td>
-          <td>Speech-to-text</td>
-          <td>GPU-accelerated, Wyoming protocol</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Piper</td>
-          <td>Text-to-speech</td>
-          <td>Neural TTS, multiple voices</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>OpenWakeWord</td>
-          <td>Wake word detection</td>
-          <td>&ldquo;Hey Jarvis&rdquo;, &ldquo;Alexa&rdquo; support</td>
-      </tr>
-      <tr>
-          <td><strong>Data &amp; Analytics</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>CloudNative-PG</td>
-          <td>PostgreSQL operator</td>
-          <td>3-node HA, automated backups</td>
-      </tr>
-      <tr>
-          <td><strong>Identity &amp; Security</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Keycloak</td>
-          <td>Identity provider</td>
-          <td>OIDC/SAML, multi-realm</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>OAuth2 Proxy</td>
-          <td>SSO gateway</td>
-          <td>Protects all applications</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>External Secrets</td>
-          <td>Secret management</td>
-          <td>AWS Secrets Manager integration</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Gitleaks</td>
-          <td>Secret scanning</td>
-          <td>Automated remediation</td>
-      </tr>
-      <tr>
-          <td><strong>Storage &amp; Backup</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>NFS CSI Driver</td>
-          <td>Dynamic storage</td>
-          <td>No hardcoded IPs</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Velero</td>
-          <td>Backup solution</td>
-          <td>Scheduled backups, disaster recovery</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>CloudNative-PG</td>
-          <td>Database backups</td>
-          <td>Point-in-time recovery</td>
-      </tr>
-      <tr>
-          <td><strong>Monitoring</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Prometheus</td>
-          <td>Metrics collection</td>
-          <td>30-day retention, HA setup</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Loki</td>
-          <td>Log aggregation</td>
-          <td>Distributed mode, 31-day retention</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Grafana</td>
-          <td>Visualization</td>
-          <td>Custom dashboards, alerting</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Alloy</td>
-          <td>Telemetry collector</td>
-          <td>OpenTelemetry support</td>
-      </tr>
-      <tr>
-          <td><strong>Web Applications</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>PGAdmin</td>
-          <td>Database UI</td>
-          <td>Multi-server, query tools</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Home Assistant</td>
-          <td>Smart home</td>
-          <td>Raspberry Pi, voice control</td>
-      </tr>
-      <tr>
-          <td><strong>Development Tools</strong></td>
-          <td></td>
-          <td></td>
-          <td></td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Renovate</td>
-          <td>Dependency updates</td>
-          <td>Automated PRs, grouped updates</td>
-      </tr>
-      <tr>
-          <td></td>
-          <td>Node Labeling</td>
-          <td>Cluster management</td>
-          <td>Automatic node configuration</td>
-      </tr>
-  </tbody>
-</table>
-<h2 id="hardware-infrastructure">Hardware Infrastructure</h2>
-<h3 id="-detailed-node-specifications">🖥️ Detailed Node Specifications</h3>
-<p>One of the unique challenges was making enterprise patterns work on consumer hardware. Here&rsquo;s the complete infrastructure:</p>
-<table>
-  <thead>
-      <tr>
-          <th>Node</th>
-          <th>Role</th>
-          <th>CPU</th>
-          <th>Memory</th>
-          <th>Storage</th>
-          <th>GPU</th>
-          <th>Network</th>
-          <th>Cost</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><strong>yeezyai</strong></td>
-          <td>GPU Worker</td>
-          <td>AMD Ryzen 9 3900X (24 cores @ 3.8GHz)</td>
-          <td>32GB DDR4</td>
-          <td>957GB NVMe</td>
-          <td>NVIDIA RTX 5070 (12GB) + RTX 3050</td>
-          <td>1Gbps</td>
-          <td>~$1800</td>
-      </tr>
-      <tr>
-          <td><strong>zz-macbookpro</strong></td>
-          <td>Control Plane</td>
-          <td>Apple M1 Pro (12 cores)</td>
-          <td>16GB</td>
-          <td>479GB SSD</td>
-          <td>-</td>
-          <td>WiFi 6</td>
-          <td>Daily driver</td>
-      </tr>
-      <tr>
-          <td><strong>thinkpad01</strong></td>
-          <td>Worker</td>
-          <td>Intel i5-8250U (8 cores @ 1.6GHz)</td>
-          <td>16GB DDR4</td>
-          <td>102GB SSD</td>
-          <td>-</td>
-          <td>1Gbps</td>
-          <td>~$80</td>
-      </tr>
-      <tr>
-          <td><strong>pgmac01</strong></td>
-          <td>Worker</td>
-          <td>Intel Core i5 (4 cores @ 2.4GHz)</td>
-          <td>8GB DDR3</td>
-          <td>102GB SSD</td>
-          <td>-</td>
-          <td>1Gbps</td>
-          <td>~$80</td>
-      </tr>
-      <tr>
-          <td><strong>pgmac02</strong></td>
-          <td>Worker</td>
-          <td>Intel Core i5 (4 cores @ 2.4GHz)</td>
-          <td>8GB DDR3</td>
-          <td>102GB SSD</td>
-          <td>-</td>
-          <td>1Gbps</td>
-          <td>~$80</td>
-      </tr>
-      <tr>
-          <td><strong>pglenovo01</strong></td>
-          <td>Worker</td>
-          <td>Intel i5-6200U (4 cores @ 2.3GHz)</td>
-          <td>8GB DDR4</td>
-          <td>100GB SSD</td>
-          <td>-</td>
-          <td>1Gbps</td>
-          <td>~$80</td>
-      </tr>
-      <tr>
-          <td><strong>pglenovo02</strong></td>
-          <td>Worker</td>
-          <td>Intel i5-6200U (4 cores @ 2.3GHz)</td>
-          <td>8GB DDR4</td>
-          <td>119GB SSD</td>
-          <td>-</td>
-          <td>1Gbps</td>
-          <td>~$80</td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>External Infrastructure:</strong></p>
-<ul>
-<li><strong>UGREEN NAS</strong>: 12TB (4x3TB RAID5) for persistent storage</li>
-<li><strong>Raspberry Pi 4</strong>: Home Assistant server (4GB RAM)</li>
-<li><strong>Network</strong>: UniFi Dream Machine, managed switches</li>
-</ul>
-<p>The beauty? I can touch and feel the hardware. There is something special about setting up a physical node, from purchasing it (facebook market or Amazon) to installing ubuntu, adding to network segment, like its truely special. I could do all of this with cheap vms or even EC2s but &hellip; I think its worth the investment.</p>
-<h2 id="repository-structure">Repository Structure</h2>
-<h3 id="-gitops-organization">📁 GitOps Organization</h3>
-<pre tabindex="0"><code>fako-cluster/
-├── apps/                    # Application deployments
-│   ├── base/               # Base configurations (environment-agnostic)
-│   │   ├── audiobookshelf/ # Each app has its own directory
-│   │   ├── keycloak/       # with Kubernetes manifests
-│   │   ├── ollama/         # ConfigMaps, Deployments, Services
-│   │   └── ...             # Ingress, Storage, Secrets
-│   └── staging/            # Production overlays
-│       └── kustomization.yaml # Patches for production
-│
-├── clusters/               # Cluster bootstrapping
-│   └── staging/            # Production cluster configuration
-│       └── flux-system/    # Flux components
-│
-├── infrastructure/         # Platform components
-│   ├── configs/            # Infrastructure configuration
-│   │   ├── base/           # Shared configs
-│   │   └── staging/        # Prod-specific configs
-│   └── controllers/        # Operators and controllers
-│       ├── base/           # External Secrets, CSI drivers
-│       └── staging/        # Prod overrides
-│
-└── monitoring/             # Observability stack
-    ├── configs/            # Dashboards, alerts
-    └── controllers/        # Prometheus, Loki, Grafana
-</code></pre><h3 id="gitops-flow">GitOps Flow</h3>
-<pre tabindex="0"><code>GitHub Repository → Flux Source Controller → Kustomize Controller → Kubernetes API
-                                         ↓
-                                    Helm Controller
-                                         ↓
-                                 Deployed Resources
-</code></pre><h2 id="the-application-ecosystem">The Application Ecosystem</h2>
-<h3 id="-aiml-stack-privacy-first-intelligence">🤖 AI/ML Stack: Privacy-First Intelligence</h3>
-<p>Running LLMs locally isn&rsquo;t just about avoiding API costs – it&rsquo;s about data sovereignty:</p>
-<ul>
-<li><strong>Ollama</strong>: GPU-accelerated inference server running models like Llama 3 and Mistral on RTX 5070</li>
-<li><strong>OpenWebUI + GPUStack</strong>: Beautiful interface powered by a distributed macOS cluster for family-wide AI access</li>
-<li><strong>MLX Distributed Inference</strong>: Leveraging Apple Silicon for efficient model serving (<a href="https://github.com/lyzetam/mlx-distributed-inference">see the implementation →</a>)</li>
-</ul>
-<p><strong>GPU Assignment Strategy</strong>: The yeezyai node&rsquo;s dual GPUs are strategically allocated:</p>
-<ul>
-<li><strong>RTX 5070 (12GB GDDR7)</strong>: Runs large language models with DLSS 4 and ray tracing capabilities</li>
-<li><strong>RTX 3050</strong>: Dedicated to Whisper for speech-to-text processing</li>
-<li>Deployments use node affinity and GPU device selection for optimal resource utilization</li>
-</ul>
-<h3 id="-the-alexa-replacement-voice-first-smart-home">🏠 The Alexa Replacement: Voice-First Smart Home</h3>
-<p>I built a complete voice assistant that respects privacy and runs entirely on-premises:</p>
-<ul>
-<li><strong>Home Assistant</strong>: Running on Raspberry Pi, the brain of my smart home</li>
-<li><strong>Voice Preview Edition</strong>: Captures voice input throughout the house</li>
-<li><strong>YeezyAI Processing</strong>: The GPU node handles:
-<ul>
-<li><strong>Whisper</strong>: Speech-to-text conversion</li>
-<li><strong>LLM Integration</strong>: Natural language understanding</li>
-<li><strong>Piper</strong>: Text-to-speech for responses</li>
-</ul>
-</li>
-<li><strong>Result</strong>: Full voice control of my home + AI conversations, zero cloud dependency</li>
-</ul>
-<p>This isn&rsquo;t just about privacy – it&rsquo;s about ownership. My family&rsquo;s conversations stay in our home, processed by our hardware, under our control.</p>
-<h3 id="-family-ai-governance-at-home">👨‍👩‍👧‍👦 Family AI: Governance at Home</h3>
-<p>The distributed AI infrastructure serves my entire family with proper governance:</p>
-<ul>
-<li><strong>GPUStack Backend</strong>: macOS nodes clustered together for distributed inference</li>
-<li><strong>Multi-User Access</strong>: Each family member has their own AI assistant access</li>
-<li><strong>Usage Monitoring</strong>: Track and understand AI usage patterns</li>
-<li><strong>Content Filtering</strong>: Age-appropriate responses for younger family members</li>
-<li><strong>Data Sovereignty</strong>: All conversations, queries, and responses stay within our network</li>
-</ul>
-<p>This demonstrates enterprise AI governance principles applied at home scale – proving that responsible AI doesn&rsquo;t require cloud providers.</p>
-<h3 id="-health--fitness-data-driven-wellness">🏥 Health &amp; Fitness: Data-Driven Wellness</h3>
-<p>The Oura integration showcases full-stack development:</p>
-<ul>
-<li><strong>Collector Service</strong>: Smart backfill logic that only fetches new data</li>
-<li><strong>PostgreSQL Storage</strong>: Time-series optimized schema</li>
-<li><strong>Streamlit Dashboard</strong>: Real-time visualization of sleep, activity, and readiness</li>
-</ul>
-<p><a href="https://github.com/lyzetam/fakocluster-apps">Check out the application code here →</a></p>
-<h3 id="-security-enterprise-patterns-at-home">🔐 Security: Enterprise Patterns at Home</h3>
-<ul>
-<li><strong>Keycloak</strong>: Full OIDC provider with HA deployment</li>
-<li><strong>OAuth2 Proxy</strong>: Every app protected by SSO</li>
-<li><strong>Gitleaks</strong>: Automated secret scanning with remediation</li>
-<li><strong>Network Policies</strong>: Zero-trust networking between pods</li>
-</ul>
-<h2 id="infrastructure-components">Infrastructure Components</h2>
-<h3 id="external-secrets-operator">External Secrets Operator</h3>
-<p>Manages all sensitive data through AWS Secrets Manager:</p>
-<ul>
-<li>Database credentials</li>
-<li>API keys</li>
-<li>OAuth secrets</li>
-<li>Internal service endpoints</li>
-</ul>
-<p><strong>Pattern</strong>: Each namespace has its own SecretStore with scoped AWS IAM permissions</p>
-<h3 id="cloudnative-pg">CloudNative-PG</h3>
-<p>Production-grade PostgreSQL:</p>
-<ul>
-<li>3-node HA cluster</li>
-<li>Automated backups to NFS</li>
-<li>Point-in-time recovery</li>
-<li>Connection pooling with PgBouncer</li>
-<li>Monitoring integration</li>
-</ul>
-<h2 id="security--secret-management">Security &amp; Secret Management</h2>
-<h3 id="zero-trust-secrets">Zero-Trust Secrets</h3>
-<p>No sensitive data in Git repository:</p>
-<ol>
-<li><strong>AWS Secrets Manager</strong>: Central secret storage</li>
-<li><strong>External Secrets Operator</strong>: Syncs secrets to Kubernetes</li>
-<li><strong>SOPS Encryption</strong>: AWS credentials encrypted in Git</li>
-<li><strong>Dynamic Configuration</strong>: IPs and endpoints from secrets</li>
-</ol>
-<h3 id="network-security">Network Security</h3>
-<ul>
-<li><strong>Ingress</strong>: Traefik with automatic TLS</li>
-<li><strong>External Access</strong>: Cloudflare tunnels for select services</li>
-<li><strong>Internal</strong>: Network policies for pod-to-pod communication</li>
-<li><strong>Authentication</strong>: OAuth2 proxy with Keycloak</li>
-</ul>
-<h3 id="cloudflare-integration">Cloudflare Integration</h3>
-<p>Cloudflare provides secure external access without exposing my home IP:</p>
-<ul>
-<li><strong>Cloudflare Tunnels</strong>: Zero-trust connectivity to internal services
-<ul>
-<li>No port forwarding required</li>
-<li>DDoS protection built-in</li>
-<li>Encrypted tunnel from cluster to Cloudflare edge</li>
-</ul>
-</li>
-<li><strong>Services Exposed</strong>:
-<ul>
-<li>Keycloak (auth.landryzetam.net)</li>
-<li>Oura Dashboard (oura-health.landryzetam.net)</li>
-<li>OpenWebUI (ai.landryzetam.net)</li>
-<li>Selected applications based on need</li>
-</ul>
-</li>
-<li><strong>Security Benefits</strong>:
-<ul>
-<li>Hide home IP address</li>
-<li>Cloudflare&rsquo;s WAF and bot protection</li>
-<li>Access policies and authentication rules</li>
-<li>SSL/TLS termination at edge</li>
-</ul>
-</li>
-</ul>
-<h2 id="monitoring--observability">Monitoring &amp; Observability</h2>
-<h3 id="beyond-basic-metrics">Beyond Basic Metrics</h3>
-<p>Most homelabs have Grafana. Mine has:</p>
-<ul>
-<li><strong>Custom Dashboards</strong>: GPU utilization, voice pipeline latency, backup status</li>
-<li><strong>Distributed Tracing</strong>: OpenTelemetry integration for request flow analysis</li>
-<li><strong>Log Aggregation</strong>: Every log searchable, correlated with metrics</li>
-<li><strong>Proactive Alerts</strong>: Know about issues before they impact services</li>
-</ul>
-<h3 id="the-3-am-test">The 3 AM Test</h3>
-<p>Can I diagnose and fix issues at 3 AM when I&rsquo;m half asleep? The monitoring stack ensures:</p>
-<ul>
-<li>Clear error messages in logs</li>
-<li>Runbook links in alerts</li>
-<li>One-click rollback via Flux</li>
-<li>Automated recovery where possible</li>
+<li><strong>Kubernetes</strong>: Container orchestration</li>
+<li><strong>GitOps</strong>: Automated deployments with FluxCD</li>
+<li><strong>Security</strong>: External secrets management, OAuth2, RBAC</li>
+<li><strong>Monitoring</strong>: Prometheus metrics and Grafana dashboards</li>
+<li><strong>Storage</strong>: Persistent volumes and database integration</li>
 </ul>
 <h2 id="getting-started">Getting Started</h2>
-<h3 id="prerequisites-the-honest-version">Prerequisites (The Honest Version)</h3>
-<ul>
-<li><strong>Hardware</strong>: At least 3 nodes (VMs work too!)</li>
-<li><strong>Patience</strong>: This isn&rsquo;t a weekend project</li>
-<li><strong>Curiosity</strong>: You&rsquo;ll learn Kubernetes, GitOps, and about 20 other technologies</li>
-<li><strong>Coffee</strong>: Lots of it</li>
-</ul>
-<h2 id="lessons-learned">Lessons Learned</h2>
-<h3 id="what-worked-brilliantly">What Worked Brilliantly</h3>
+<p>Each project documentation includes:</p>
 <ol>
-<li><strong>External Secrets Operator</strong>: Game-changer for secret management</li>
-<li><strong>Flux&rsquo;s Kustomization Controller</strong>: Perfect balance of flexibility and structure</li>
-<li><strong>CloudNative-PG</strong>: Production-grade PostgreSQL that &ldquo;just works&rdquo;</li>
-<li><strong>GPU Operator</strong>: Simplified what could have been driver hell</li>
-<li><strong>Dynamic NFS Configuration</strong>: No more hardcoded IPs!</li>
+<li><strong>Overview</strong>: What the project does and why it&rsquo;s useful</li>
+<li><strong>Architecture</strong>: Technical components and design decisions</li>
+<li><strong>Configuration</strong>: Environment settings and customization options</li>
+<li><strong>Usage</strong>: Practical examples and integration patterns</li>
+<li><strong>Operations</strong>: Maintenance, monitoring, and troubleshooting</li>
 </ol>
-<h3 id="what-id-do-differently">What I&rsquo;d Do Differently</h3>
-<ol>
-<li>Start with observability from day one (added it later, wished I hadn&rsquo;t)</li>
-<li>Use Flux&rsquo;s multi-tenancy features earlier</li>
-<li>Implement network policies from the start</li>
-<li>Document as I go (hence this README!)</li>
-<li>Set up automated testing for manifests</li>
-</ol>
-<h3 id="the-human-side-of-engineering">The Human Side of Engineering</h3>
-<p>This cluster isn&rsquo;t just about running services – it&rsquo;s about understanding the entire stack. When I deploy an application, I know:</p>
+<h2 id="contributing">Contributing</h2>
+<p>While this is a personal cluster, I welcome:</p>
 <ul>
-<li>How the container runtime works</li>
-<li>How service discovery happens</li>
-<li>How storage is provisioned</li>
-<li>How secrets are managed</li>
-<li>How traffic flows through the system</li>
+<li><strong>Feedback</strong>: Share your thoughts on implementations</li>
+<li><strong>Questions</strong>: Ask about specific configurations</li>
+<li><strong>Suggestions</strong>: Propose improvements or new projects</li>
 </ul>
-<h2 id="the-future">The Future</h2>
-<h3 id="immediate-roadmap">Immediate Roadmap</h3>
+<h2 id="future-projects">Future Projects</h2>
+<p>Planned additions to the cluster:</p>
 <ul>
-<li><strong>Service Mesh</strong>: Exploring Linkerd for advanced traffic management</li>
-<li><strong>Backup to S3</strong>: Extending backups beyond local NFS</li>
-<li><strong>Multi-Cluster</strong>: Federation across multiple physical locations</li>
-<li><strong>Edge ML</strong>: Deploying models to edge devices</li>
-</ul>
-<h3 id="the-bigger-picture">The Bigger Picture</h3>
-<p>This cluster is a living laboratory. It&rsquo;s where I test ideas before implementing them in production environments. It&rsquo;s where I learn new technologies in a safe space. Most importantly, it&rsquo;s where I can push boundaries without worrying about breaking someone else&rsquo;s infrastructure.</p>
-<h2 id="connect-and-contribute">Connect and Contribute</h2>
-<h3 id="found-a-bug-have-an-idea">Found a Bug? Have an Idea?</h3>
-<p>This project thrives on collaboration. Whether you&rsquo;re fixing a typo or proposing a new architecture pattern, contributions are welcome.</p>
-<h3 id="the-code-behind-the-magic">The Code Behind the Magic</h3>
-<ul>
-<li><strong>Infrastructure</strong>: You&rsquo;re looking at it!</li>
-<li><strong>Applications</strong>: <a href="https://github.com/lyzetam/fakocluster-apps">github.com/lyzetam/fakocluster-apps</a></li>
-<li><strong>MLX Distributed</strong>: <a href="https://github.com/lyzetam/mlx-distributed-inference">github.com/lyzetam/mlx-distributed-inference</a></li>
+<li><strong>Vector Database</strong>: For AI/RAG applications</li>
+<li><strong>GitLab Runner</strong>: Self-hosted CI/CD</li>
+<li><strong>Jupyter Hub</strong>: Collaborative data science platform</li>
+<li><strong>Mastodon Instance</strong>: Federated social media</li>
+<li><strong>Home Bridge</strong>: Smart home integration</li>
 </ul>
 <hr>
-<h2 id="final-thoughts">Final Thoughts</h2>
-<p>Building this cluster taught me more about modern infrastructure than any course or certification could. It forced me to understand not just the &ldquo;how&rdquo; but the &ldquo;why&rdquo; behind every architectural decision.</p>
-<p>To future employers: This is how I approach systems engineering. I don&rsquo;t just deploy applications – I build platforms. I don&rsquo;t just solve today&rsquo;s problems – I architect for tomorrow&rsquo;s challenges. And I document everything because the best code is the code that others can understand and improve.</p>
-<p>To fellow engineers: Your homelab doesn&rsquo;t have to be perfect. Start small, fail fast, and iterate. The journey is more valuable than the destination.</p>
-<p><em>&ldquo;In the end, we are all apprentices in a craft where no one ever becomes a master.&rdquo;</em> – Ernest Hemingway</p>
-<p>That&rsquo;s the beauty of systems engineering – there&rsquo;s always more to learn, always ways to improve, and always new problems to solve.</p>
-<p><strong>Happy clustering!</strong> 🚀</p>
-<hr>
-<p><em>Built with passion and probably too much ☕ by Landry</em></p>
-<p><em>Code and Documentation enhanced with the help of Claude AI – because even engineers need a Tech Lead and a good editor</em></p>
-<p><em>Last updated: July 2025 | Running in production since: Forever in homelab years</em></p>
+<p><em>Explore each project to see how modern cloud-native technologies can be applied in a personal infrastructure context.</em></p>
 
             </div>
         </article></main>

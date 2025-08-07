@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/openwakeword/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/openwakeword/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="OpenWakeWord - Wake Word Detection Service Overview OpenWakeWord is a wake word detection service deployed in the Fako cluster as part of the voice assistant pipeline. It uses machine learning models to detect specific wake words (like “Hey Jarvis”) in continuous audio streams. The service implements the Wyoming protocol for integration with voice assistants and can handle multiple concurrent audio streams. It’s designed for low-latency, real-time wake word detection and scales automatically based on load.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="OpenWakeWord - Wake Word Detection Service Overview OpenWakeWord is a wake word detection service deployed in the Fako cluster as part of the voice assistant pipeline. It uses machine learning models to detect specific wake words (like “Hey Jarvis”) in continuous audio streams. The service implements the Wyoming protocol for integration with voice assistants and can handle multiple concurrent audio streams. It’s designed for low-latency, real-time wake word detection and scales automatically based on load.">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/openwakeword/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="openwakeword---wake-word-detection-service">OpenWakeWord - Wake Word Detection Service</h1>
+<h2 id="overview">Overview</h2>
+<p>OpenWakeWord is a wake word detection service deployed in the Fako cluster as part of the voice assistant pipeline. It uses machine learning models to detect specific wake words (like &ldquo;Hey Jarvis&rdquo;) in continuous audio streams. The service implements the Wyoming protocol for integration with voice assistants and can handle multiple concurrent audio streams. It&rsquo;s designed for low-latency, real-time wake word detection and scales automatically based on load.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Real-Time Detection</strong>: Low-latency wake word detection</li>
+<li><strong>Multiple Models</strong>: Support for various wake word models</li>
+<li><strong>Wyoming Protocol</strong>: Standard voice assistant integration</li>
+<li><strong>Auto-Scaling</strong>: HPA-based scaling for concurrent streams</li>
+<li><strong>Model Preloading</strong>: Fast startup with preloaded models</li>
+<li><strong>High Performance</strong>: Optimized for CPU-based inference</li>
+<li><strong>Debug Mode</strong>: Detailed logging for troubleshooting</li>
+<li><strong>Health Monitoring</strong>: TCP-based health checks</li>
+<li><strong>Persistent Storage</strong>: Model caching and custom models</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>Deployment</strong>: Single to multi-replica with HPA</li>
+<li><strong>Service</strong>: ClusterIP on port 10400</li>
+<li><strong>NodePort Service</strong>: Optional external access</li>
+<li><strong>HPA</strong>: Auto-scaling 1-3 replicas</li>
+<li><strong>Storage</strong>: PVC for model storage</li>
+<li><strong>Node Affinity</strong>: Avoids control plane nodes</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>Memory</strong>: 2Gi (request), 3Gi (limit)</li>
+<li><strong>CPU</strong>: 2 cores (request), 3 cores (limit)</li>
+<li><strong>Storage</strong>: Persistent volume for models</li>
+<li><strong>Scaling</strong>: Up to 3 replicas for 4+ streams</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="service-settings">Service Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Port</td>
+          <td><code>10400</code></td>
+          <td>Wyoming protocol port</td>
+      </tr>
+      <tr>
+          <td>Protocol</td>
+          <td><code>TCP</code></td>
+          <td>Wyoming TCP transport</td>
+      </tr>
+      <tr>
+          <td>Preloaded Model</td>
+          <td><code>hey_jarvis</code></td>
+          <td>Default wake word</td>
+      </tr>
+      <tr>
+          <td>Debug</td>
+          <td>Enabled</td>
+          <td>Verbose logging</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="auto-scaling-configuration">Auto-Scaling Configuration</h3>
+<ul>
+<li><strong>Min Replicas</strong>: 1</li>
+<li><strong>Max Replicas</strong>: 3</li>
+<li><strong>CPU Target</strong>: 50% utilization</li>
+<li><strong>Memory Target</strong>: 60% utilization</li>
+<li><strong>Scale Up</strong>: 15 seconds stabilization</li>
+<li><strong>Scale Down</strong>: 300 seconds stabilization</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="wyoming-protocol-access">Wyoming Protocol Access</h3>
+<p>Internal service:</p>
+<pre tabindex="0"><code>tcp://openwakeword.openwakeword.svc.cluster.local:10400
+</code></pre><p>Direct pod access:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Port forward for testing</span>
+</span></span><span style="display:flex;"><span>kubectl port-forward -n openwakeword svc/openwakeword 10400:10400
+</span></span></code></pre></div><h3 id="integration-with-voice-assistants">Integration with Voice Assistants</h3>
+<h4 id="home-assistant-configuration">Home Assistant Configuration</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">wyoming</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;OpenWakeWord&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">uri</span>: <span style="color:#e6db74">&#34;tcp://openwakeword.openwakeword.svc.cluster.local:10400&#34;</span>
+</span></span></code></pre></div><h4 id="python-client-example">Python Client Example</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> wyoming.client <span style="color:#f92672">import</span> AsyncTcpClient
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">detect_wake_word</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> AsyncTcpClient(<span style="color:#e6db74">&#34;openwakeword&#34;</span>, <span style="color:#ae81ff">10400</span>) <span style="color:#66d9ef">as</span> client:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Send audio stream</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>write_event(<span style="color:#f92672">...</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Receive detection events</span>
+</span></span><span style="display:flex;"><span>        event <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>read_event()
+</span></span></code></pre></div><h3 id="available-wake-words">Available Wake Words</h3>
+<p>Default models:</p>
+<ul>
+<li><code>hey_jarvis</code> - &ldquo;Hey Jarvis&rdquo;</li>
+<li><code>ok_nabu</code> - &ldquo;OK Nabu&rdquo;</li>
+<li><code>hey_mycroft</code> - &ldquo;Hey Mycroft&rdquo;</li>
+<li><code>alexa</code> - &ldquo;Alexa&rdquo;</li>
+</ul>
+<h2 id="operations">Operations</h2>
+<h3 id="checking-service-status">Checking Service Status</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check pod status</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n openwakeword
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n openwakeword -l app<span style="color:#f92672">=</span>openwakeword
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check HPA status</span>
+</span></span><span style="display:flex;"><span>kubectl get hpa -n openwakeword
+</span></span></code></pre></div><h3 id="adding-custom-models">Adding Custom Models</h3>
+<ol>
+<li><strong>Download model</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Download .tflite model file</span>
+</span></span><span style="display:flex;"><span>curl -o custom_wake_word.tflite https://example.com/model.tflite
+</span></span></code></pre></div><ol start="2">
+<li><strong>Copy to pod</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>POD<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl get pod -n openwakeword -l app<span style="color:#f92672">=</span>openwakeword -o name | head -1<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>kubectl cp custom_wake_word.tflite $POD:/data/
+</span></span></code></pre></div><ol start="3">
+<li><strong>Update configuration</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl set env deployment/openwakeword -n openwakeword <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  PRELOAD_MODEL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hey_jarvis,custom_wake_word&#34;</span>
+</span></span></code></pre></div><h3 id="performance-tuning">Performance Tuning</h3>
+<p>Adjust detection sensitivity:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">args</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;--threshold&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;0.5&#34;</span>  <span style="color:#75715e"># Lower = more sensitive</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;--trigger-level&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;2&#34;</span>    <span style="color:#75715e"># Consecutive detections required</span>
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="no-wake-word-detection">No Wake Word Detection</h3>
+<ol>
+<li><strong>Check logs</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n openwakeword -l app<span style="color:#f92672">=</span>openwakeword --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span></code></pre></div><ol start="2">
+<li>
+<p><strong>Verify audio format</strong>:</p>
+<ul>
+<li>Expected: 16kHz, mono, 16-bit PCM</li>
+<li>Check client audio settings</li>
+</ul>
+</li>
+<li>
+<p><strong>Test with example</strong>:</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Send test audio</span>
+</span></span><span style="display:flex;"><span>sox test.wav -t raw -r <span style="color:#ae81ff">16000</span> -e signed -b <span style="color:#ae81ff">16</span> -c <span style="color:#ae81ff">1</span> - | <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  nc openwakeword.openwakeword.svc.cluster.local <span style="color:#ae81ff">10400</span>
+</span></span></code></pre></div><h3 id="high-cpu-usage">High CPU Usage</h3>
+<ol>
+<li><strong>Check active streams</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n openwakeword -l app<span style="color:#f92672">=</span>openwakeword | grep <span style="color:#e6db74">&#34;Active streams&#34;</span>
+</span></span></code></pre></div><ol start="2">
+<li><strong>Monitor HPA</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get hpa -n openwakeword --watch
+</span></span></code></pre></div><ol start="3">
+<li><strong>Adjust resources</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">limits</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#e6db74">&#34;4000m&#34;</span>  <span style="color:#75715e"># Increase if needed</span>
+</span></span></code></pre></div><h3 id="connection-issues">Connection Issues</h3>
+<ol>
+<li><strong>Test TCP connectivity</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl run test-client --rm -it --image<span style="color:#f92672">=</span>busybox -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  nc -zv openwakeword.openwakeword.svc.cluster.local <span style="color:#ae81ff">10400</span>
+</span></span></code></pre></div><ol start="2">
+<li><strong>Check service endpoints</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get endpoints -n openwakeword
+</span></span></code></pre></div><h2 id="security-considerations">Security Considerations</h2>
+<h3 id="network-security">Network Security</h3>
+<ul>
+<li>Internal-only by default</li>
+<li>Wyoming protocol has no built-in auth</li>
+<li>Use NetworkPolicies to restrict access</li>
+</ul>
+<h3 id="resource-limits">Resource Limits</h3>
+<ul>
+<li>CPU/Memory limits prevent DoS</li>
+<li>HPA prevents resource exhaustion</li>
+<li>Node affinity for isolation</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Isolate traffic</strong>: Use dedicated namespace</li>
+<li><strong>Monitor usage</strong>: Track detection rates</li>
+<li><strong>Update models</strong>: Keep models current</li>
+<li><strong>Audit access</strong>: Log client connections</li>
+<li><strong>Resource quotas</strong>: Set namespace limits</li>
+</ol>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="model-optimization">Model Optimization</h3>
+<ol>
+<li><strong>Quantization</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Reduce model size</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tensorflow <span style="color:#66d9ef">as</span> tf
+</span></span><span style="display:flex;"><span>converter <span style="color:#f92672">=</span> tf<span style="color:#f92672">.</span>lite<span style="color:#f92672">.</span>TFLiteConverter<span style="color:#f92672">.</span>from_saved_model(model_path)
+</span></span><span style="display:flex;"><span>converter<span style="color:#f92672">.</span>optimizations <span style="color:#f92672">=</span> [tf<span style="color:#f92672">.</span>lite<span style="color:#f92672">.</span>Optimize<span style="color:#f92672">.</span>DEFAULT]
+</span></span></code></pre></div><ol start="2">
+<li><strong>Model selection</strong>:
+<ul>
+<li>Smaller models = lower latency</li>
+<li>Larger models = better accuracy</li>
+</ul>
+</li>
+</ol>
+<h3 id="scaling-strategy">Scaling Strategy</h3>
+<ol>
+<li>
+<p><strong>Vertical scaling</strong>:</p>
+<ul>
+<li>Increase CPU for single-stream performance</li>
+<li>More memory for model caching</li>
+</ul>
+</li>
+<li>
+<p><strong>Horizontal scaling</strong>:</p>
+<ul>
+<li>Multiple replicas for concurrent streams</li>
+<li>Load balancing via service</li>
+</ul>
+</li>
+</ol>
+<h3 id="caching">Caching</h3>
+<p>Enable model caching:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">MODEL_CACHE_SIZE</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#34;10&#34;</span>  <span style="color:#75715e"># Cache 10 models in memory</span>
+</span></span></code></pre></div><h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li>Wake word detection rate</li>
+<li>False positive rate</li>
+<li>Processing latency</li>
+<li>Active stream count</li>
+<li>CPU/Memory usage per stream</li>
+</ul>
+<h3 id="prometheus-metrics">Prometheus Metrics</h3>
+<p>If enabled:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Example queries</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">rate(openwakeword_detections_total[5m])</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">histogram_quantile(0.95, openwakeword_latency_seconds)</span>
+</span></span></code></pre></div><h3 id="logging">Logging</h3>
+<p>Important log patterns:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Detection events</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n openwakeword -l app<span style="color:#f92672">=</span>openwakeword | grep <span style="color:#e6db74">&#34;Detected wake word&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Performance stats</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n openwakeword -l app<span style="color:#f92672">=</span>openwakeword | grep <span style="color:#e6db74">&#34;Processing time&#34;</span>
+</span></span></code></pre></div><h2 id="integration-examples">Integration Examples</h2>
+<h3 id="with-whisper-stt">With Whisper STT</h3>
+<p>Chain with speech-to-text:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Voice pipeline flow</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">OpenWakeWord -&gt; Whisper -&gt; Intent Recognition -&gt; TTS</span>
+</span></span></code></pre></div><h3 id="with-home-assistant">With Home Assistant</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># configuration.yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">assist_pipeline</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">pipelines</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Custom Assistant&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">conversation_engine</span>: <span style="color:#e6db74">&#34;conversation&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">stt_engine</span>: <span style="color:#e6db74">&#34;whisper&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">tts_engine</span>: <span style="color:#e6db74">&#34;piper&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">wake_word_entity</span>: <span style="color:#e6db74">&#34;wake_word.openwakeword&#34;</span>
+</span></span></code></pre></div><h3 id="custom-integration">Custom Integration</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Custom voice assistant</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">voice_assistant</span>():
+</span></span><span style="display:flex;"><span>    wake_word <span style="color:#f92672">=</span> WyomingClient(<span style="color:#e6db74">&#34;openwakeword&#34;</span>, <span style="color:#ae81ff">10400</span>)
+</span></span><span style="display:flex;"><span>    stt <span style="color:#f92672">=</span> WyomingClient(<span style="color:#e6db74">&#34;whisper&#34;</span>, <span style="color:#ae81ff">10300</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Wait for wake word</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> wake_word<span style="color:#f92672">.</span>detect()
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Process speech</span>
+</span></span><span style="display:flex;"><span>        text <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> stt<span style="color:#f92672">.</span>transcribe()
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Handle command</span>
+</span></span><span style="display:flex;"><span>        process_command(text)
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Monitor detection accuracy</li>
+<li>Check false positive rate</li>
+<li>Review resource usage</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Analyze detection patterns</li>
+<li>Update model thresholds</li>
+<li>Clean old logs</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Update OpenWakeWord image</li>
+<li>Review and add new models</li>
+<li>Performance analysis</li>
+</ul>
+</li>
+</ol>
+<h3 id="model-updates">Model Updates</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Update to latest models</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n openwakeword deployment/openwakeword -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  wget -O /data/new_model.tflite https://models.com/latest.tflite
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Restart to load new model</span>
+</span></span><span style="display:flex;"><span>kubectl rollout restart deployment/openwakeword -n openwakeword
+</span></span></code></pre></div><h3 id="backup-models">Backup Models</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Backup custom models</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n openwakeword deployment/openwakeword -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  tar -czf /tmp/models.tar.gz /data/*.tflite
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>kubectl cp openwakeword/pod:/tmp/models.tar.gz ./openwakeword-models-backup.tar.gz
+</span></span></code></pre></div><h2 id="advanced-configuration">Advanced Configuration</h2>
+<h3 id="multi-language-support">Multi-Language Support</h3>
+<p>Configure multiple wake words:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">args</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;--preload-model&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;hey_jarvis&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;--preload-model&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;hola_jarvis&#34;</span>  <span style="color:#75715e"># Spanish</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;--preload-model&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;salut_jarvis&#34;</span>  <span style="color:#75715e"># French</span>
+</span></span></code></pre></div><h3 id="custom-thresholds">Custom Thresholds</h3>
+<p>Per-model thresholds:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">MODEL_hey_jarvis_THRESHOLD</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#34;0.5&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">MODEL_alexa_THRESHOLD</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#34;0.7&#34;</span>  <span style="color:#75715e"># Higher threshold for Alexa</span>
+</span></span></code></pre></div><h3 id="audio-preprocessing">Audio Preprocessing</h3>
+<p>Enable noise suppression:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">args</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;--noise-suppression&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;--vad-threshold&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;0.5&#34;</span>
+</span></span></code></pre></div><h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Implement model training pipeline</li>
+<li><input disabled="" type="checkbox"> Add webhook for detection events</li>
+<li><input disabled="" type="checkbox"> Create web UI for model management</li>
+<li><input disabled="" type="checkbox"> Implement distributed detection</li>
+<li><input disabled="" type="checkbox"> Add support for custom languages</li>
+<li><input disabled="" type="checkbox"> Create A/B testing framework</li>
+<li><input disabled="" type="checkbox"> Implement detection analytics</li>
+<li><input disabled="" type="checkbox"> Add GPU acceleration support</li>
+<li><input disabled="" type="checkbox"> Create mobile SDK</li>
+<li><input disabled="" type="checkbox"> Implement edge deployment options</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

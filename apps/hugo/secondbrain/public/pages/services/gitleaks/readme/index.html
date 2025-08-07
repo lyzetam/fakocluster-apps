@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/gitleaks/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/gitleaks/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="Gitleaks - Secret Detection and Cleanup Service Overview Gitleaks is an automated secret scanning and cleanup service deployed in the Fako cluster. It runs as a scheduled CronJob that scans Git repositories for exposed secrets, API keys, and sensitive information. When secrets are detected, it can automatically remove them from the entire Git history using BFG Repo-Cleaner. This service helps maintain security by preventing accidental exposure of credentials in version control.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="Gitleaks - Secret Detection and Cleanup Service Overview Gitleaks is an automated secret scanning and cleanup service deployed in the Fako cluster. It runs as a scheduled CronJob that scans Git repositories for exposed secrets, API keys, and sensitive information. When secrets are detected, it can automatically remove them from the entire Git history using BFG Repo-Cleaner. This service helps maintain security by preventing accidental exposure of credentials in version control.">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/gitleaks/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="gitleaks---secret-detection-and-cleanup-service">Gitleaks - Secret Detection and Cleanup Service</h1>
+<h2 id="overview">Overview</h2>
+<p>Gitleaks is an automated secret scanning and cleanup service deployed in the Fako cluster. It runs as a scheduled CronJob that scans Git repositories for exposed secrets, API keys, and sensitive information. When secrets are detected, it can automatically remove them from the entire Git history using BFG Repo-Cleaner. This service helps maintain security by preventing accidental exposure of credentials in version control.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Automated Scanning</strong>: Scheduled scans every 6 hours</li>
+<li><strong>Secret Detection</strong>: Identifies various types of secrets and credentials</li>
+<li><strong>History Cleanup</strong>: Removes secrets from entire Git history</li>
+<li><strong>Dry Run Mode</strong>: Test scans without making changes</li>
+<li><strong>Auto-Push</strong>: Optional automatic pushing of cleaned repos</li>
+<li><strong>Slack Notifications</strong>: Alerts when secrets are found</li>
+<li><strong>GitHub Integration</strong>: Uses GitHub token for authentication</li>
+<li><strong>Comprehensive Reports</strong>: JSON reports of findings</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>CronJob</strong>: Scheduled execution every 6 hours</li>
+<li><strong>ServiceAccount</strong>: For Kubernetes API access</li>
+<li><strong>ConfigMap</strong>: Cleanup script and configuration</li>
+<li><strong>External Secret</strong>: GitHub token from AWS Secrets Manager</li>
+<li><strong>Init Container</strong>: Installs required tools (BFG, Java)</li>
+<li><strong>Volumes</strong>: Temporary storage for scans and results</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>Memory</strong>: 512Mi (request), 1Gi (limit)</li>
+<li><strong>CPU</strong>: 200m (request), 500m (limit)</li>
+<li><strong>Storage</strong>: EmptyDir volumes for temporary data</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="environment-variables">Environment Variables</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Variable</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>GITHUB_TOKEN</code></td>
+          <td>From secret</td>
+          <td>GitHub authentication token</td>
+      </tr>
+      <tr>
+          <td><code>DRY_RUN</code></td>
+          <td><code>false</code></td>
+          <td>Run scan without cleanup</td>
+      </tr>
+      <tr>
+          <td><code>AUTO_PUSH</code></td>
+          <td><code>false</code></td>
+          <td>Auto-push cleaned repos</td>
+      </tr>
+      <tr>
+          <td><code>SLACK_WEBHOOK</code></td>
+          <td>Optional</td>
+          <td>Slack notification URL</td>
+      </tr>
+      <tr>
+          <td><code>REPO_URL</code></td>
+          <td>In script</td>
+          <td>Target repository URL</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="schedule">Schedule</h3>
+<ul>
+<li><strong>CronJob Schedule</strong>: <code>0 */6 * * *</code> (every 6 hours)</li>
+<li>Runs at: 00:00, 06:00, 12:00, 18:00 UTC</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="manual-execution">Manual Execution</h3>
+<p>Trigger a manual scan:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl create job --from<span style="color:#f92672">=</span>cronjob/gitleaks-scanner manual-scan-<span style="color:#66d9ef">$(</span>date +%s<span style="color:#66d9ef">)</span> -n security-scanning
+</span></span></code></pre></div><h3 id="monitoring-scans">Monitoring Scans</h3>
+<p>Watch job execution:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># List recent jobs</span>
+</span></span><span style="display:flex;"><span>kubectl get jobs -n security-scanning --sort-by<span style="color:#f92672">=</span>.metadata.creationTimestamp
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Watch logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n security-scanning job/gitleaks-scanner-xxxxx -f
+</span></span></code></pre></div><h3 id="viewing-results">Viewing Results</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Get scan results from completed job</span>
+</span></span><span style="display:flex;"><span>kubectl cp security-scanning/gitleaks-scanner-xxxxx:/tmp/scan-results ./scan-results
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View cleanup report</span>
+</span></span><span style="display:flex;"><span>cat scan-results/cleanup-report.json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View detailed findings</span>
+</span></span><span style="display:flex;"><span>cat scan-results/gitleaks-report.json
+</span></span></code></pre></div><h2 id="scan-process">Scan Process</h2>
+<h3 id="1-repository-clone">1. Repository Clone</h3>
+<ul>
+<li>Clones target repository with mirror mode</li>
+<li>Uses GitHub token for authentication</li>
+<li>Creates working copy for scanning</li>
+</ul>
+<h3 id="2-secret-detection">2. Secret Detection</h3>
+<ul>
+<li>Runs Gitleaks against entire repository</li>
+<li>Generates JSON report of findings</li>
+<li>Identifies affected files and secrets</li>
+</ul>
+<h3 id="3-report-generation">3. Report Generation</h3>
+<ul>
+<li>Parses results for unique secrets</li>
+<li>Creates replacement mappings</li>
+<li>Generates summary statistics</li>
+</ul>
+<h3 id="4-cleanup-if-enabled">4. Cleanup (if enabled)</h3>
+<ul>
+<li>Uses BFG Repo-Cleaner</li>
+<li>Replaces secrets with <code>***REMOVED***</code></li>
+<li>Cleans Git history completely</li>
+<li>Runs garbage collection</li>
+</ul>
+<h3 id="5-push-if-enabled">5. Push (if enabled)</h3>
+<ul>
+<li>Force pushes cleaned repository</li>
+<li>Updates all branches and tags</li>
+<li>Sends completion notification</li>
+</ul>
+<h2 id="operations">Operations</h2>
+<h3 id="enabledisable-scanning">Enable/Disable Scanning</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Suspend CronJob</span>
+</span></span><span style="display:flex;"><span>kubectl patch cronjob gitleaks-scanner -n security-scanning -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;suspend&#34;:true}}&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Resume CronJob</span>
+</span></span><span style="display:flex;"><span>kubectl patch cronjob gitleaks-scanner -n security-scanning -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;suspend&#34;:false}}&#39;</span>
+</span></span></code></pre></div><h3 id="changing-configuration">Changing Configuration</h3>
+<h4 id="switch-to-production-mode">Switch to Production Mode</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Edit CronJob</span>
+</span></span><span style="display:flex;"><span>kubectl edit cronjob gitleaks-scanner -n security-scanning
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Change:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># DRY_RUN: &#34;false&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># AUTO_PUSH: &#34;true&#34;  # CAUTION: This will modify Git history</span>
+</span></span></code></pre></div><h4 id="update-schedule">Update Schedule</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Change to daily at 2 AM</span>
+</span></span><span style="display:flex;"><span>kubectl patch cronjob gitleaks-scanner -n security-scanning <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;schedule&#34;:&#34;0 2 * * *&#34;}}&#39;</span>
+</span></span></code></pre></div><h3 id="adding-repositories">Adding Repositories</h3>
+<p>Edit the ConfigMap to scan additional repos:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl edit configmap gitleaks-cleanup-script -n security-scanning
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="job-failures">Job Failures</h3>
+<ol>
+<li><strong>Check job status</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe job -n security-scanning gitleaks-scanner-xxxxx
+</span></span></code></pre></div><ol start="2">
+<li><strong>View pod logs</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n security-scanning job/gitleaks-scanner-xxxxx --all-containers
+</span></span></code></pre></div><ol start="3">
+<li><strong>Common issues</strong>:
+<ul>
+<li>GitHub token expired</li>
+<li>Repository access denied</li>
+<li>Out of memory</li>
+<li>Network connectivity</li>
+</ul>
+</li>
+</ol>
+<h3 id="github-token-issues">GitHub Token Issues</h3>
+<ol>
+<li><strong>Verify secret exists</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get secret github-credentials -n security-scanning
+</span></span></code></pre></div><ol start="2">
+<li>
+<p><strong>Check token permissions</strong>:</p>
+<ul>
+<li>Needs repo scope for private repos</li>
+<li>Needs write access for auto-push</li>
+</ul>
+</li>
+<li>
+<p><strong>Update token</strong>:</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Update in AWS Secrets Manager</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># External Secret will sync automatically</span>
+</span></span></code></pre></div><h3 id="bfgjava-issues">BFG/Java Issues</h3>
+<ol>
+<li><strong>Check init container</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n security-scanning job/gitleaks-scanner-xxxxx -c setup
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify BFG download</strong>:
+<ul>
+<li>Check network connectivity</li>
+<li>Verify Maven repository access</li>
+</ul>
+</li>
+</ol>
+<h3 id="memory-issues">Memory Issues</h3>
+<p>For large repositories:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">limits</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#e6db74">&#34;2Gi&#34;</span>  <span style="color:#75715e"># Increase if needed</span>
+</span></span></code></pre></div><h2 id="security-considerations">Security Considerations</h2>
+<h3 id="credentials">Credentials</h3>
+<ul>
+<li>GitHub token stored in AWS Secrets Manager</li>
+<li>No hardcoded secrets in configurations</li>
+<li>Token should have minimal required permissions</li>
+</ul>
+<h3 id="repository-access">Repository Access</h3>
+<ul>
+<li>Use read-only tokens for scanning only</li>
+<li>Separate tokens for push operations</li>
+<li>Consider using GitHub Apps for better security</li>
+</ul>
+<h3 id="cleanup-safety">Cleanup Safety</h3>
+<ul>
+<li>Always test with DRY_RUN first</li>
+<li>Backup repositories before cleanup</li>
+<li>Understand Git history rewriting implications</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Start with dry run</strong>: Test before enabling cleanup</li>
+<li><strong>Monitor notifications</strong>: Set up Slack alerts</li>
+<li><strong>Regular reviews</strong>: Check scan reports weekly</li>
+<li><strong>Coordinate cleanup</strong>: Notify team before history rewrite</li>
+<li><strong>Backup first</strong>: Always backup before auto-push</li>
+</ol>
+<h2 id="gitleaks-configuration">Gitleaks Configuration</h2>
+<h3 id="custom-rules">Custom Rules</h3>
+<p>Add custom detection rules:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># .gitleaks.toml in repo</span>
+</span></span><span style="display:flex;"><span>[[<span style="color:#ae81ff">rules]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">description = &#34;Custom API Key&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">regex = &#39;&#39;&#39;company_api_key_[a-zA-Z0-9]{32}&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">tags = [&#34;api&#34;, &#34;custom&#34;]</span>
+</span></span></code></pre></div><h3 id="exclusions">Exclusions</h3>
+<p>Exclude false positives:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span>[<span style="color:#a6e22e">allowlist</span>]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">paths</span> = [
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;docs/examples&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;test/fixtures&#34;</span>
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">files</span> = [
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;go.sum&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;package-lock.json&#34;</span>
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><h2 id="integration-examples">Integration Examples</h2>
+<h3 id="with-cicd">With CI/CD</h3>
+<p>Pre-commit hook:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e"># .git/hooks/pre-commit</span>
+</span></span><span style="display:flex;"><span>gitleaks detect --source . --verbose
+</span></span></code></pre></div><h3 id="github-actions">GitHub Actions</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Gitleaks</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>: [<span style="color:#ae81ff">push, pull_request]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">scan</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v3</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">gitleaks/gitleaks-action@v2</span>
+</span></span></code></pre></div><h3 id="slack-notifications">Slack Notifications</h3>
+<p>Configure rich notifications:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;Gitleaks Scan Complete&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;attachments&#34;</span>: [{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;color&#34;</span>: <span style="color:#e6db74">&#34;danger&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;fields&#34;</span>: [
+</span></span><span style="display:flex;"><span>      {<span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Secrets Found&#34;</span>, <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;5&#34;</span>, <span style="color:#f92672">&#34;short&#34;</span>: <span style="color:#66d9ef">true</span>},
+</span></span><span style="display:flex;"><span>      {<span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Files Affected&#34;</span>, <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;3&#34;</span>, <span style="color:#f92672">&#34;short&#34;</span>: <span style="color:#66d9ef">true</span>}
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  }]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li>Scan frequency and duration</li>
+<li>Number of secrets detected</li>
+<li>Cleanup success rate</li>
+<li>Repository scan coverage</li>
+<li>False positive rate</li>
+</ul>
+<h3 id="dashboards">Dashboards</h3>
+<p>Create monitoring dashboard:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># ConfigMap for Grafana dashboard</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ConfigMap</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">gitleaks-dashboard</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">data</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">dashboard.json</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      &#34;title&#34;: &#34;Gitleaks Security Scanning&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      &#34;panels&#34;: [...]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    }</span>
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Check for failed scans</li>
+<li>Review new findings</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Analyze trends</li>
+<li>Update exclusion lists</li>
+<li>Review false positives</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Update Gitleaks version</li>
+<li>Review scanning scope</li>
+<li>Audit cleaned secrets</li>
+</ul>
+</li>
+</ol>
+<h3 id="version-updates">Version Updates</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Update Gitleaks version</span>
+</span></span><span style="display:flex;"><span>kubectl set image cronjob/gitleaks-scanner <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  gitleaks<span style="color:#f92672">=</span>zricethezav/gitleaks:v8.29.0 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -n security-scanning
+</span></span></code></pre></div><h3 id="backup-reports">Backup Reports</h3>
+<p>Archive scan results:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e"># backup-gitleaks-reports.sh</span>
+</span></span><span style="display:flex;"><span>DATE<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date +%Y%m%d<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>kubectl cp security-scanning/gitleaks-scanner-xxxxx:/tmp/scan-results <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  /backups/gitleaks/$DATE/
+</span></span></code></pre></div><h2 id="recovery-procedures">Recovery Procedures</h2>
+<h3 id="if-secrets-were-pushed">If Secrets Were Pushed</h3>
+<ol>
+<li>
+<p><strong>Immediate actions</strong>:</p>
+<ul>
+<li>Rotate affected credentials</li>
+<li>Run cleanup with AUTO_PUSH</li>
+<li>Notify security team</li>
+</ul>
+</li>
+<li>
+<p><strong>Follow-up</strong>:</p>
+<ul>
+<li>Audit access logs</li>
+<li>Update security policies</li>
+<li>Implement additional controls</li>
+</ul>
+</li>
+</ol>
+<h3 id="repository-recovery">Repository Recovery</h3>
+<p>If cleanup causes issues:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Restore from backup</span>
+</span></span><span style="display:flex;"><span>git clone --mirror /backup/repo.git
+</span></span><span style="display:flex;"><span>git push --mirror https://github.com/org/repo.git
+</span></span></code></pre></div><h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Support multiple repositories per scan</li>
+<li><input disabled="" type="checkbox"> Integrate with GitHub Security Alerts</li>
+<li><input disabled="" type="checkbox"> Add support for GitLab/Bitbucket</li>
+<li><input disabled="" type="checkbox"> Implement incremental scanning</li>
+<li><input disabled="" type="checkbox"> Create web dashboard for results</li>
+<li><input disabled="" type="checkbox"> Add support for pre-receive hooks</li>
+<li><input disabled="" type="checkbox"> Implement secret rotation automation</li>
+<li><input disabled="" type="checkbox"> Add machine learning for false positive reduction</li>
+<li><input disabled="" type="checkbox"> Create remediation workflows</li>
+<li><input disabled="" type="checkbox"> Add support for container image scanning</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/oura-collector/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/oura-collector/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="Oura Collector - Health Data Collection Service Overview Oura Collector is an automated health data collection service deployed in the Fako cluster. It integrates with the Oura Ring API to collect personal health metrics including sleep, activity, readiness, and heart rate data. The service stores this data in PostgreSQL for analysis and visualization. It features scheduled collection, backfill capabilities, and secure credential management through AWS Secrets Manager. This enables long-term health tracking and analysis within your personal infrastructure.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="Oura Collector - Health Data Collection Service Overview Oura Collector is an automated health data collection service deployed in the Fako cluster. It integrates with the Oura Ring API to collect personal health metrics including sleep, activity, readiness, and heart rate data. The service stores this data in PostgreSQL for analysis and visualization. It features scheduled collection, backfill capabilities, and secure credential management through AWS Secrets Manager. This enables long-term health tracking and analysis within your personal infrastructure.">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/oura-collector/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="oura-collector---health-data-collection-service">Oura Collector - Health Data Collection Service</h1>
+<h2 id="overview">Overview</h2>
+<p>Oura Collector is an automated health data collection service deployed in the Fako cluster. It integrates with the Oura Ring API to collect personal health metrics including sleep, activity, readiness, and heart rate data. The service stores this data in PostgreSQL for analysis and visualization. It features scheduled collection, backfill capabilities, and secure credential management through AWS Secrets Manager. This enables long-term health tracking and analysis within your personal infrastructure.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Automated Collection</strong>: Hourly data synchronization from Oura API</li>
+<li><strong>Data Backfill</strong>: Historical data collection up to 30 days</li>
+<li><strong>PostgreSQL Storage</strong>: Structured storage for analytics</li>
+<li><strong>AWS Secrets Integration</strong>: Secure API credential management</li>
+<li><strong>Prometheus Metrics</strong>: Service health monitoring</li>
+<li><strong>Health Checks</strong>: Liveness and readiness probes</li>
+<li><strong>Persistent Storage</strong>: Local data caching</li>
+<li><strong>Error Handling</strong>: Retry logic with exponential backoff</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>Deployment</strong>: Single-replica stateful service</li>
+<li><strong>CronJob</strong>: Optional scheduled collection</li>
+<li><strong>Service</strong>: ClusterIP on port 8080</li>
+<li><strong>Storage</strong>: PostgreSQL database and local PVC</li>
+<li><strong>External Secrets</strong>: AWS Secrets Manager integration</li>
+<li><strong>ServiceMonitor</strong>: Prometheus metrics export</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>Memory</strong>: 256Mi (request), 512Mi (limit)</li>
+<li><strong>CPU</strong>: 100m (request), 500m (limit)</li>
+<li><strong>Storage</strong>: Persistent volume for local cache</li>
+<li><strong>Database</strong>: PostgreSQL connection</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="environment-settings">Environment Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>STORAGE_BACKEND</code></td>
+          <td><code>postgres</code></td>
+          <td>Database backend</td>
+      </tr>
+      <tr>
+          <td><code>DATABASE_NAME</code></td>
+          <td><code>app</code></td>
+          <td>PostgreSQL database</td>
+      </tr>
+      <tr>
+          <td><code>COLLECTION_INTERVAL</code></td>
+          <td><code>3600</code></td>
+          <td>1 hour between collections</td>
+      </tr>
+      <tr>
+          <td><code>DAYS_TO_BACKFILL</code></td>
+          <td><code>30</code></td>
+          <td>Historical data range</td>
+      </tr>
+      <tr>
+          <td><code>API_TIMEOUT</code></td>
+          <td><code>30</code></td>
+          <td>API request timeout</td>
+      </tr>
+      <tr>
+          <td><code>MAX_RETRIES</code></td>
+          <td><code>3</code></td>
+          <td>Retry attempts</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="aws-secrets">AWS Secrets</h3>
+<p>Required secrets in AWS Secrets Manager:</p>
+<ul>
+<li><code>oura/api-credentials</code>: Oura API token</li>
+<li><code>postgres/app-user</code>: Database credentials</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="initial-setup">Initial Setup</h3>
+<ol>
+<li><strong>Configure Oura API Token</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Create secret in AWS Secrets Manager</span>
+</span></span><span style="display:flex;"><span>aws secretsmanager create-secret <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --name oura/api-credentials <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --secret-string <span style="color:#e6db74">&#39;{&#34;OURA_API_TOKEN&#34;:&#34;your-token-here&#34;}&#39;</span>
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify deployment</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get deployment -n oura-collector oura-collector
+</span></span><span style="display:flex;"><span>kubectl logs -n oura-collector -l app<span style="color:#f92672">=</span>oura-collector
+</span></span></code></pre></div><h3 id="data-collection">Data Collection</h3>
+<p>The collector automatically:</p>
+<ol>
+<li>Fetches data every hour</li>
+<li>Backfills up to 30 days on first run</li>
+<li>Stores data in PostgreSQL</li>
+<li>Updates collection timestamp</li>
+</ol>
+<h3 id="accessing-data">Accessing Data</h3>
+<p>Query collected data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Connect to PostgreSQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>kubectl <span style="color:#66d9ef">exec</span> <span style="color:#f92672">-</span>it <span style="color:#f92672">-</span>n postgres postgres<span style="color:#f92672">-</span><span style="color:#66d9ef">cluster</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#75715e">-- psql -U app
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- View sleep data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, total_sleep, rem_sleep, deep_sleep 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> oura_sleep 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date <span style="color:#66d9ef">DESC</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">7</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- View activity data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> date, steps, active_calories, total_calories 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> oura_activity 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> date <span style="color:#66d9ef">DESC</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">7</span>;
+</span></span></code></pre></div><h2 id="data-types-collected">Data Types Collected</h2>
+<h3 id="sleep-metrics">Sleep Metrics</h3>
+<ul>
+<li>Total sleep duration</li>
+<li>REM sleep</li>
+<li>Deep sleep</li>
+<li>Light sleep</li>
+<li>Sleep efficiency</li>
+<li>Bedtime/wake time</li>
+</ul>
+<h3 id="activity-metrics">Activity Metrics</h3>
+<ul>
+<li>Steps</li>
+<li>Active calories</li>
+<li>Total calories</li>
+<li>Activity score</li>
+<li>Movement data</li>
+</ul>
+<h3 id="readiness-metrics">Readiness Metrics</h3>
+<ul>
+<li>Readiness score</li>
+<li>HRV (Heart Rate Variability)</li>
+<li>Resting heart rate</li>
+<li>Body temperature deviation</li>
+</ul>
+<h3 id="heart-rate-data">Heart Rate Data</h3>
+<ul>
+<li>Continuous heart rate</li>
+<li>Heart rate zones</li>
+<li>Recovery metrics</li>
+</ul>
+<h2 id="operations">Operations</h2>
+<h3 id="manual-data-collection">Manual Data Collection</h3>
+<p>Trigger immediate collection:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Force collection</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n oura-collector deployment/oura-collector -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  python /app/collect.py --force
+</span></span></code></pre></div><h3 id="backfill-historical-data">Backfill Historical Data</h3>
+<p>Collect specific date range:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Backfill specific period</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n oura-collector deployment/oura-collector -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  python /app/collect.py --start-date 2024-01-01 --end-date 2024-12-31
+</span></span></code></pre></div><h3 id="health-monitoring">Health Monitoring</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check health endpoint</span>
+</span></span><span style="display:flex;"><span>kubectl port-forward -n oura-collector svc/oura-collector 8080:8080
+</span></span><span style="display:flex;"><span>curl http://localhost:8080/health
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View metrics</span>
+</span></span><span style="display:flex;"><span>curl http://localhost:8080/metrics
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="collection-failures">Collection Failures</h3>
+<ol>
+<li><strong>Check logs</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n oura-collector -l app<span style="color:#f92672">=</span>oura-collector --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify API token</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check if secret exists</span>
+</span></span><span style="display:flex;"><span>kubectl get secret aws-credentials-env -n oura-collector
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Test API access</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n oura-collector deployment/oura-collector -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  curl -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$OURA_API_TOKEN<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  https://api.ouraring.com/v2/usercollection/personal_info
+</span></span></code></pre></div><h3 id="database-connection-issues">Database Connection Issues</h3>
+<ol>
+<li><strong>Verify credentials</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe externalsecret -n oura-collector
+</span></span></code></pre></div><ol start="2">
+<li><strong>Test connection</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n oura-collector deployment/oura-collector -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  pg_isready -h postgres-cluster-rw.postgres.svc.cluster.local -p <span style="color:#ae81ff">5432</span>
+</span></span></code></pre></div><h3 id="rate-limiting">Rate Limiting</h3>
+<p>Oura API limits:</p>
+<ul>
+<li>5000 requests per hour</li>
+<li>Collector implements backoff strategy</li>
+<li>Check <code>X-RateLimit-Remaining</code> in logs</li>
+</ul>
+<h2 id="security-considerations">Security Considerations</h2>
+<h3 id="api-token-security">API Token Security</h3>
+<ul>
+<li>Token stored in AWS Secrets Manager</li>
+<li>Never logged or exposed</li>
+<li>Rotation supported</li>
+</ul>
+<h3 id="database-security">Database Security</h3>
+<ul>
+<li>Credentials from AWS Secrets</li>
+<li>SSL connection to PostgreSQL</li>
+<li>Limited database permissions</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Rotate tokens</strong>: Regular API token rotation</li>
+<li><strong>Monitor access</strong>: Audit API usage</li>
+<li><strong>Backup data</strong>: Regular database backups</li>
+<li><strong>Privacy</strong>: Ensure data handling compliance</li>
+<li><strong>Access control</strong>: Limit namespace access</li>
+</ol>
+<h2 id="data-analysis">Data Analysis</h2>
+<h3 id="example-queries">Example Queries</h3>
+<p>Sleep quality trends:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Weekly sleep averages
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>  DATE_TRUNC(<span style="color:#e6db74">&#39;week&#39;</span>, date) <span style="color:#66d9ef">as</span> week,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">AVG</span>(total_sleep) <span style="color:#66d9ef">as</span> avg_sleep,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">AVG</span>(sleep_efficiency) <span style="color:#66d9ef">as</span> avg_efficiency
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> oura_sleep
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> week
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> week <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><p>Activity patterns:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- Daily activity vs readiness
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> 
+</span></span><span style="display:flex;"><span>  a.date,
+</span></span><span style="display:flex;"><span>  a.steps,
+</span></span><span style="display:flex;"><span>  a.activity_score,
+</span></span><span style="display:flex;"><span>  r.readiness_score
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> oura_activity a
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">JOIN</span> oura_readiness r <span style="color:#66d9ef">ON</span> a.date <span style="color:#f92672">=</span> r.date
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> a.date <span style="color:#66d9ef">DESC</span>;
+</span></span></code></pre></div><h3 id="integration-with-grafana">Integration with Grafana</h3>
+<p>Create dashboards:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Datasource configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">datasources</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Oura-PostgreSQL</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">postgres</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">postgres-cluster-rw.postgres:5432</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">database</span>: <span style="color:#ae81ff">app</span>
+</span></span></code></pre></div><h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li><code>oura_collector_collections_total</code>: Total collections</li>
+<li><code>oura_collector_errors_total</code>: Collection errors</li>
+<li><code>oura_collector_last_collection_timestamp</code>: Last success</li>
+<li><code>oura_collector_api_requests_total</code>: API call count</li>
+<li><code>oura_collector_rate_limit_remaining</code>: API quota</li>
+</ul>
+<h3 id="alerts">Alerts</h3>
+<p>Configure alerts:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># PrometheusRule</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">OuraCollectionFailed</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">time() - oura_collector_last_collection_timestamp &gt; 7200</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;Oura collection hasn&#39;t run in 2 hours&#34;</span>
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Check collection status</li>
+<li>Monitor error logs</li>
+<li>Verify data integrity</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Review API usage</li>
+<li>Check storage usage</li>
+<li>Analyze collection patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Rotate API tokens</li>
+<li>Clean old logs</li>
+<li>Update collector image</li>
+</ul>
+</li>
+</ol>
+<h3 id="database-maintenance">Database Maintenance</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Vacuum tables</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n postgres postgres-cluster-1 -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  psql -U app -c <span style="color:#e6db74">&#34;VACUUM ANALYZE oura_sleep, oura_activity;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check table sizes</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n postgres postgres-cluster-1 -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  psql -U app -c <span style="color:#e6db74">&#34;SELECT relname, pg_size_pretty(pg_total_relation_size(relid)) 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  FROM pg_stat_user_tables WHERE schemaname=&#39;public&#39;;&#34;</span>
+</span></span></code></pre></div><h3 id="backup-strategy">Backup Strategy</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Backup Oura data</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n postgres postgres-cluster-1 -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  pg_dump -U app -t <span style="color:#e6db74">&#39;oura_*&#39;</span> app &gt; oura-backup-<span style="color:#66d9ef">$(</span>date +%Y%m%d<span style="color:#66d9ef">)</span>.sql
+</span></span></code></pre></div><h2 id="advanced-configuration">Advanced Configuration</h2>
+<h3 id="custom-collection-schedule">Custom Collection Schedule</h3>
+<p>Modify CronJob:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">schedule</span>: <span style="color:#e6db74">&#34;0 */6 * * *&#34;</span>  <span style="color:#75715e"># Every 6 hours</span>
+</span></span></code></pre></div><h3 id="additional-metrics">Additional Metrics</h3>
+<p>Enable detailed metrics:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">data</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ENABLE_DETAILED_METRICS</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">COLLECT_WORKOUTS</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">COLLECT_TAGS</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span></code></pre></div><h3 id="multi-user-support">Multi-User Support</h3>
+<p>Configure for multiple Oura accounts:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">data</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">MULTI_USER_MODE</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">USER_MAPPING</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    user1:token1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    user2:token2</span>
+</span></span></code></pre></div><h2 id="integration-examples">Integration Examples</h2>
+<h3 id="with-n8n-workflows">With n8n Workflows</h3>
+<p>Trigger analysis on new data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;nodes&#34;</span>: [{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Oura Data Trigger&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;n8n-nodes-base.webhook&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;webhookPath&#34;</span>: <span style="color:#e6db74">&#34;oura-new-data&#34;</span>
+</span></span><span style="display:flex;"><span>  }]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="with-jupyter-notebooks">With Jupyter Notebooks</h3>
+<p>Analysis environment:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> psycopg2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Connect to database</span>
+</span></span><span style="display:flex;"><span>conn <span style="color:#f92672">=</span> psycopg2<span style="color:#f92672">.</span>connect(
+</span></span><span style="display:flex;"><span>    host<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;postgres-cluster-rw.postgres&#34;</span>,
+</span></span><span style="display:flex;"><span>    database<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>,
+</span></span><span style="display:flex;"><span>    user<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Load sleep data</span>
+</span></span><span style="display:flex;"><span>sleep_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_sql(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;SELECT * FROM oura_sleep ORDER BY date&#34;</span>, 
+</span></span><span style="display:flex;"><span>    conn
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Add real-time data streaming</li>
+<li><input disabled="" type="checkbox"> Implement data export features</li>
+<li><input disabled="" type="checkbox"> Create mobile app integration</li>
+<li><input disabled="" type="checkbox"> Add anomaly detection</li>
+<li><input disabled="" type="checkbox"> Implement data visualization UI</li>
+<li><input disabled="" type="checkbox"> Add integration with other health devices</li>
+<li><input disabled="" type="checkbox"> Create health insights engine</li>
+<li><input disabled="" type="checkbox"> Add data anonymization features</li>
+<li><input disabled="" type="checkbox"> Implement FHIR compliance</li>
+<li><input disabled="" type="checkbox"> Create API for third-party access</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

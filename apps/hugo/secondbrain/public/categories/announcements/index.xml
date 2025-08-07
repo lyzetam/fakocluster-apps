@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Announcements on My New Hugo Site</title>
+    <link>http://localhost:1313/categories/announcements/</link>
+    <description>Recent content in Announcements on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 05 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/categories/announcements/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Introducing the Fako Cluster: A Personal Kubernetes Infrastructure</title>
+      <link>http://localhost:1313/posts/introducing-fako-cluster/</link>
+      <pubDate>Sun, 05 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/introducing-fako-cluster/</guid>
+      
+      <description>&lt;p&gt;Welcome to the documentation hub for the Fako Cluster! This post marks the beginning of sharing my journey building and maintaining a personal Kubernetes infrastructure that showcases modern cloud-native technologies.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-the-fako-cluster&#34;&gt;What is the Fako Cluster?&lt;/h2&gt;
+&lt;p&gt;The Fako Cluster is a self-hosted Kubernetes environment that I&amp;rsquo;ve built to explore and demonstrate:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;GitOps practices&lt;/strong&gt; with FluxCD for declarative infrastructure management&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AI/ML capabilities&lt;/strong&gt; with local LLM inference using Ollama and GPUStack&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Security-first design&lt;/strong&gt; with external secrets management and RBAC&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Comprehensive monitoring&lt;/strong&gt; using Prometheus and Grafana&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Modern automation&lt;/strong&gt; with tools like n8n for workflow orchestration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;why-build-a-personal-cluster&#34;&gt;Why Build a Personal Cluster?&lt;/h2&gt;
+&lt;p&gt;As someone driven by sheer curiosity, I wanted a playground where I could:&lt;/p&gt;</description>
+      
+    </item>
+    
+  </channel>
+</rss>

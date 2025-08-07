@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on My New Hugo Site</title>
+    <link>http://localhost:1313/tags/kubernetes/</link>
+    <description>Recent content in Kubernetes on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 07 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ollama AI Model Server</title>
+      <link>http://localhost:1313/pages/projects/ollama/</link>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/pages/projects/ollama/</guid>
+      
+      <description>&lt;h1 id=&#34;ollama-ai-model-server&#34;&gt;Ollama AI Model Server&lt;/h1&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;Ollama is a local AI model server deployed in the Fako cluster that provides a unified API for running large language models (LLMs). It runs on GPU acceleration and manages multiple AI models, making them available for various applications including Home Assistant integrations, coding assistants, and general AI tasks.&lt;/p&gt;
+&lt;h2 id=&#34;key-features&#34;&gt;Key Features&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;GPU Acceleration&lt;/strong&gt;: Optimized for RTX 5070 with 12GB VRAM&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Model Management&lt;/strong&gt;: Automatic downloading and lifecycle management of models&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Multiple Model Support&lt;/strong&gt;: Hosts various models from small (0.5B) to large (32B+)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RESTful API&lt;/strong&gt;: Compatible with OpenAI-style APIs&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Persistent Storage&lt;/strong&gt;: Models cached to avoid re-downloading&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Auto-scaling&lt;/strong&gt;: Memory management with model unloading&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;architecture&#34;&gt;Architecture&lt;/h2&gt;
+&lt;h3 id=&#34;components&#34;&gt;Components&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Deployment&lt;/strong&gt;: Single-replica GPU deployment pinned to the &lt;code&gt;yeezyai&lt;/code&gt; node&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Services&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;ClusterIP service on port 11434&lt;/li&gt;
+&lt;li&gt;NodePort service for external access&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: PersistentVolumeClaim for model storage&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ConfigMaps&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;General configuration&lt;/li&gt;
+&lt;li&gt;GPU-specific settings&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sidecar Container&lt;/strong&gt;: Model manager for automatic model downloads&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;resource-requirements&#34;&gt;Resource Requirements&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;GPU&lt;/strong&gt;: 1 NVIDIA GPU (RTX 5070)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Memory&lt;/strong&gt;: 12Gi (request), 36Gi (limit)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CPU&lt;/strong&gt;: 4 cores (request), 8 cores (limit)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: Persistent volume for model storage&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
+&lt;h3 id=&#34;general-settings-ollama-configmap&#34;&gt;General Settings (ollama-configmap)&lt;/h3&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Parameter&lt;/th&gt;
+          &lt;th&gt;Default&lt;/th&gt;
+          &lt;th&gt;Description&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_HOST&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;0.0.0.0&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Bind address for the API server&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_ORIGINS&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;*&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;CORS origins allowed&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_MODELS&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;/root/.ollama/models&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Model storage directory&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_DEBUG&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;false&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Enable debug logging&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_NOHISTORY&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;false&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Keep conversation history&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;gpu-settings-ollama-gpu-configmap&#34;&gt;GPU Settings (ollama-gpu-configmap)&lt;/h3&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Parameter&lt;/th&gt;
+          &lt;th&gt;Default&lt;/th&gt;
+          &lt;th&gt;Description&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_GPU_LAYERS&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;999&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Force all layers to GPU&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_GPU_MEMORY&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;12G&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;GPU memory allocation&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_NUM_PARALLEL&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;2&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Concurrent request handling&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_NUM_THREAD&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;8&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;CPU threads for operations&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_MAX_LOADED_MODELS&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;1&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Models kept in GPU memory&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;OLLAMA_KEEP_ALIVE&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;5m&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Model keep-alive duration&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;available-models&#34;&gt;Available Models&lt;/h2&gt;
+&lt;p&gt;The model manager automatically downloads and maintains these models:&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>Open WebUI - AI Chat Interface</title>
+      <link>http://localhost:1313/pages/projects/open-webui/</link>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/pages/projects/open-webui/</guid>
+      
+      <description>&lt;h1 id=&#34;open-webui---ai-chat-interface&#34;&gt;Open WebUI - AI Chat Interface&lt;/h1&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;Open WebUI is a feature-rich, user-friendly web interface for AI language models deployed in the Fako cluster. It provides a ChatGPT-like experience with support for multiple AI backends. This deployment is configured to use GPUStack as the primary AI backend, providing access to various open-source language models through an OpenAI-compatible API.&lt;/p&gt;
+&lt;h2 id=&#34;key-features&#34;&gt;Key Features&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Modern Chat Interface&lt;/strong&gt;: Clean, responsive UI similar to ChatGPT&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Multi-Model Support&lt;/strong&gt;: Access multiple AI models from GPUStack&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;User Management&lt;/strong&gt;: Built-in authentication and user roles&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Conversation History&lt;/strong&gt;: Persistent chat storage with SQLite&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Model Switching&lt;/strong&gt;: Easy switching between available models&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Custom System Prompts&lt;/strong&gt;: Create and save custom prompts&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dark/Light Mode&lt;/strong&gt;: Theme switching for user preference&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mobile Responsive&lt;/strong&gt;: Works seamlessly on all devices&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;architecture&#34;&gt;Architecture&lt;/h2&gt;
+&lt;h3 id=&#34;components&#34;&gt;Components&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Deployment&lt;/strong&gt;: Single-replica stateful deployment&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Service&lt;/strong&gt;: ClusterIP service on port 8080&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ingress&lt;/strong&gt;: HTTPS access for external users&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: PersistentVolumeClaim for SQLite database and user data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ConfigMap&lt;/strong&gt;: Application configuration&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;External Secrets&lt;/strong&gt;: API keys and endpoints from AWS Secrets Manager&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;resource-requirements&#34;&gt;Resource Requirements&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Memory&lt;/strong&gt;: 3Gi (request), 6Gi (limit)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CPU&lt;/strong&gt;: 1.5 cores (request), 3 cores (limit)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: Persistent volume for database and uploads&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
+&lt;h3 id=&#34;application-settings&#34;&gt;Application Settings&lt;/h3&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Parameter&lt;/th&gt;
+          &lt;th&gt;Value&lt;/th&gt;
+          &lt;th&gt;Description&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;ENABLE_OLLAMA_API&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;false&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Ollama disabled, using GPUStack&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;ENABLE_OPENAI_API&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;OpenAI-compatible API enabled&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;WEBUI_NAME&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;HomeLab AI (GPUStack) - Production&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Instance name&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;WEBUI_AUTH&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Authentication enabled&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;ENABLE_SIGNUP&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;false&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;New signups disabled&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;DEFAULT_MODELS&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;gemma-3-27b-it,glm4-0414&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Available models&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;BYPASS_MODEL_ACCESS_CONTROL&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;All models visible to all users&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;backend-configuration&#34;&gt;Backend Configuration&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;AI Backend&lt;/strong&gt;: GPUStack (OpenAI-compatible)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Database&lt;/strong&gt;: SQLite at &lt;code&gt;/app/backend/data/webui.db&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Session Lifetime&lt;/strong&gt;: 30 days (2592000 seconds)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Request Timeout&lt;/strong&gt;: 10 minutes for large models&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
+&lt;h3 id=&#34;accessing-open-webui&#34;&gt;Accessing Open WebUI&lt;/h3&gt;
+&lt;p&gt;External access:&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>N8N Workflow Automation</title>
+      <link>http://localhost:1313/pages/projects/n8n/</link>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/pages/projects/n8n/</guid>
+      
+      <description>&lt;h1 id=&#34;n8n-workflow-automation-service&#34;&gt;N8N Workflow Automation Service&lt;/h1&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;N8N is an open-source workflow automation tool deployed in the Fako cluster. It provides a visual interface for creating complex automation workflows, integrating with hundreds of services and APIs. N8N allows you to automate repetitive tasks, connect different services, and build sophisticated data pipelines without extensive coding.&lt;/p&gt;
+&lt;h2 id=&#34;key-features&#34;&gt;Key Features&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Visual Workflow Builder&lt;/strong&gt;: Drag-and-drop interface for creating automations&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;200+ Integrations&lt;/strong&gt;: Pre-built nodes for popular services&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Self-Hosted&lt;/strong&gt;: Full control over your data and workflows&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PostgreSQL Backend&lt;/strong&gt;: Reliable storage using the cluster&amp;rsquo;s PostgreSQL&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Webhook Support&lt;/strong&gt;: Trigger workflows via HTTP webhooks&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Custom Functions&lt;/strong&gt;: JavaScript code support for complex logic&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fair-Code License&lt;/strong&gt;: Source available with sustainable business model&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;architecture&#34;&gt;Architecture&lt;/h2&gt;
+&lt;h3 id=&#34;components&#34;&gt;Components&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Deployment&lt;/strong&gt;: Single-replica deployment (stateful workflows)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Service&lt;/strong&gt;: ClusterIP service on port 5678&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ingress&lt;/strong&gt;: HTTPS access at &lt;code&gt;n8n.landryzetam.net&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: PersistentVolumeClaim for workflow data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Database&lt;/strong&gt;: PostgreSQL for workflow definitions and execution data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;External Secrets&lt;/strong&gt;: Database credentials from AWS Secrets Manager&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;resource-requirements&#34;&gt;Resource Requirements&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Memory&lt;/strong&gt;: 512Mi (request), 2Gi (limit)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CPU&lt;/strong&gt;: 250m (request), 1000m (limit)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: Persistent volume for N8N data and files&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Database&lt;/strong&gt;: Uses shared PostgreSQL cluster&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
+&lt;h3 id=&#34;environment-settings&#34;&gt;Environment Settings&lt;/h3&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Parameter&lt;/th&gt;
+          &lt;th&gt;Value&lt;/th&gt;
+          &lt;th&gt;Description&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;N8N_HOST&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;n8n.landryzetam.net&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;External hostname&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;N8N_PORT&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;5678&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Application port&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;N8N_PROTOCOL&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;https&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;External protocol&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;WEBHOOK_URL&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;https://n8n.landryzetam.net/&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Webhook base URL&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;GENERIC_TIMEZONE&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;America/New_York&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Timezone for scheduling&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;N8N_METRICS&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Enable metrics endpoint&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;N8N_TEMPLATES_ENABLED&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Enable workflow templates&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;database-configuration&#34;&gt;Database Configuration&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Type&lt;/strong&gt;: PostgreSQL&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Host&lt;/strong&gt;: &lt;code&gt;postgres-cluster-rw.postgres.svc.cluster.local&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Database&lt;/strong&gt;: &lt;code&gt;app&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;User&lt;/strong&gt;: &lt;code&gt;app&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Password&lt;/strong&gt;: Managed via External Secrets&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
+&lt;h3 id=&#34;accessing-n8n&#34;&gt;Accessing N8N&lt;/h3&gt;
+&lt;p&gt;External access:&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>Oura Dashboard - Health Data Visualization</title>
+      <link>http://localhost:1313/pages/projects/oura-dashboard/</link>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/pages/projects/oura-dashboard/</guid>
+      
+      <description>&lt;h1 id=&#34;oura-dashboard---health-data-visualization-platform&#34;&gt;Oura Dashboard - Health Data Visualization Platform&lt;/h1&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;Oura Dashboard is a Streamlit-based web application deployed in the Fako cluster that provides interactive visualization of health data collected from the Oura Ring. It connects to the PostgreSQL database populated by the Oura Collector service and presents comprehensive health insights through charts, graphs, and analytics. The dashboard is secured with OAuth2 authentication and provides personalized health tracking capabilities for sleep, activity, readiness, and heart rate metrics.&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>GitOps in Practice: Managing Kubernetes with FluxCD</title>
+      <link>http://localhost:1313/posts/gitops-with-fluxcd/</link>
+      <pubDate>Mon, 06 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/gitops-with-fluxcd/</guid>
+      
+      <description>&lt;p&gt;After running the Fako Cluster for several months, I can confidently say that adopting GitOps with FluxCD has been one of the best decisions for managing my Kubernetes infrastructure. In this post, I&amp;rsquo;ll share practical insights and patterns that have proven invaluable.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-gitops&#34;&gt;What is GitOps?&lt;/h2&gt;
+&lt;p&gt;GitOps is a way of implementing Continuous Deployment for cloud native applications. It focuses on:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Declarative Infrastructure&lt;/strong&gt;: Everything defined in Git&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Automated Reconciliation&lt;/strong&gt;: Cluster state matches Git state&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Version Control&lt;/strong&gt;: Complete history of all changes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pull-based Deployment&lt;/strong&gt;: No direct kubectl access needed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;why-fluxcd&#34;&gt;Why FluxCD?&lt;/h2&gt;
+&lt;p&gt;Among GitOps tools like ArgoCD and Fleet, I chose FluxCD because:&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>Introducing the Fako Cluster: A Personal Kubernetes Infrastructure</title>
+      <link>http://localhost:1313/posts/introducing-fako-cluster/</link>
+      <pubDate>Sun, 05 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/introducing-fako-cluster/</guid>
+      
+      <description>&lt;p&gt;Welcome to the documentation hub for the Fako Cluster! This post marks the beginning of sharing my journey building and maintaining a personal Kubernetes infrastructure that showcases modern cloud-native technologies.&lt;/p&gt;
+&lt;h2 id=&#34;what-is-the-fako-cluster&#34;&gt;What is the Fako Cluster?&lt;/h2&gt;
+&lt;p&gt;The Fako Cluster is a self-hosted Kubernetes environment that I&amp;rsquo;ve built to explore and demonstrate:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;GitOps practices&lt;/strong&gt; with FluxCD for declarative infrastructure management&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AI/ML capabilities&lt;/strong&gt; with local LLM inference using Ollama and GPUStack&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Security-first design&lt;/strong&gt; with external secrets management and RBAC&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Comprehensive monitoring&lt;/strong&gt; using Prometheus and Grafana&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Modern automation&lt;/strong&gt; with tools like n8n for workflow orchestration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;why-build-a-personal-cluster&#34;&gt;Why Build a Personal Cluster?&lt;/h2&gt;
+&lt;p&gt;As someone driven by sheer curiosity, I wanted a playground where I could:&lt;/p&gt;</description>
+      
+    </item>
+    
+  </channel>
+</rss>

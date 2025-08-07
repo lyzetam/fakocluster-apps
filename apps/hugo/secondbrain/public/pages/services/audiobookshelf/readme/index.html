@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/audiobookshelf/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/audiobookshelf/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="Audiobookshelf - Audiobook and Podcast Server Overview Audiobookshelf is a self-hosted audiobook and podcast server deployed in the Fako cluster. It provides a comprehensive media management system with features like automatic metadata fetching, progress syncing across devices, and a beautiful web interface. Audiobookshelf supports various audio formats and offers mobile apps for iOS and Android, making it a complete solution for managing and enjoying your audio library.
+Key Features Multi-Format Support: MP3, M4A, M4B, FLAC, OGG, and more Automatic Metadata: Fetches cover art, descriptions, and metadata Progress Sync: Syncs playback position across all devices Mobile Apps: Native iOS and Android applications Multi-User: Support for multiple users with individual progress Series Management: Organize books by series and authors Podcast Support: Subscribe and manage podcast feeds Sleep Timer: Built-in sleep timer for bedtime listening Variable Playback Speed: Adjust playback speed to preference Architecture Components Deployment: Single-replica deployment Service: ClusterIP service on port 3005 Storage: Three PersistentVolumeClaims: Config: Application configuration and database Metadata: Cover images and cached metadata Audiobooks: Media library storage ConfigMap: Basic configuration settings Security Context: Runs as user 1000 Resource Requirements Memory: 512Mi (request), 1Gi (limit) CPU: 250m (request), 1000m (limit) Storage: Config volume for database Metadata volume for images/cache Audiobooks volume for media files Configuration Deployment Settings Parameter Value Description Image ghcr.io/advplyr/audiobookshelf:2.26.0 Audiobookshelf version Port 3005 Web interface port User/Group 1000 Non-root user Volumes 3 mounts Config, metadata, and media Volume Mounts /config: Database and configuration files /metadata: Cover art and metadata cache /audiobooks: Media library root directory Usage Accessing Audiobookshelf Internal access:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="Audiobookshelf - Audiobook and Podcast Server Overview Audiobookshelf is a self-hosted audiobook and podcast server deployed in the Fako cluster. It provides a comprehensive media management system with features like automatic metadata fetching, progress syncing across devices, and a beautiful web interface. Audiobookshelf supports various audio formats and offers mobile apps for iOS and Android, making it a complete solution for managing and enjoying your audio library.
+Key Features Multi-Format Support: MP3, M4A, M4B, FLAC, OGG, and more Automatic Metadata: Fetches cover art, descriptions, and metadata Progress Sync: Syncs playback position across all devices Mobile Apps: Native iOS and Android applications Multi-User: Support for multiple users with individual progress Series Management: Organize books by series and authors Podcast Support: Subscribe and manage podcast feeds Sleep Timer: Built-in sleep timer for bedtime listening Variable Playback Speed: Adjust playback speed to preference Architecture Components Deployment: Single-replica deployment Service: ClusterIP service on port 3005 Storage: Three PersistentVolumeClaims: Config: Application configuration and database Metadata: Cover images and cached metadata Audiobooks: Media library storage ConfigMap: Basic configuration settings Security Context: Runs as user 1000 Resource Requirements Memory: 512Mi (request), 1Gi (limit) CPU: 250m (request), 1000m (limit) Storage: Config volume for database Metadata volume for images/cache Audiobooks volume for media files Configuration Deployment Settings Parameter Value Description Image ghcr.io/advplyr/audiobookshelf:2.26.0 Audiobookshelf version Port 3005 Web interface port User/Group 1000 Non-root user Volumes 3 mounts Config, metadata, and media Volume Mounts /config: Database and configuration files /metadata: Cover art and metadata cache /audiobooks: Media library root directory Usage Accessing Audiobookshelf Internal access:">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/audiobookshelf/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="audiobookshelf---audiobook-and-podcast-server">Audiobookshelf - Audiobook and Podcast Server</h1>
+<h2 id="overview">Overview</h2>
+<p>Audiobookshelf is a self-hosted audiobook and podcast server deployed in the Fako cluster. It provides a comprehensive media management system with features like automatic metadata fetching, progress syncing across devices, and a beautiful web interface. Audiobookshelf supports various audio formats and offers mobile apps for iOS and Android, making it a complete solution for managing and enjoying your audio library.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Multi-Format Support</strong>: MP3, M4A, M4B, FLAC, OGG, and more</li>
+<li><strong>Automatic Metadata</strong>: Fetches cover art, descriptions, and metadata</li>
+<li><strong>Progress Sync</strong>: Syncs playback position across all devices</li>
+<li><strong>Mobile Apps</strong>: Native iOS and Android applications</li>
+<li><strong>Multi-User</strong>: Support for multiple users with individual progress</li>
+<li><strong>Series Management</strong>: Organize books by series and authors</li>
+<li><strong>Podcast Support</strong>: Subscribe and manage podcast feeds</li>
+<li><strong>Sleep Timer</strong>: Built-in sleep timer for bedtime listening</li>
+<li><strong>Variable Playback Speed</strong>: Adjust playback speed to preference</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>Deployment</strong>: Single-replica deployment</li>
+<li><strong>Service</strong>: ClusterIP service on port 3005</li>
+<li><strong>Storage</strong>: Three PersistentVolumeClaims:
+<ul>
+<li>Config: Application configuration and database</li>
+<li>Metadata: Cover images and cached metadata</li>
+<li>Audiobooks: Media library storage</li>
+</ul>
+</li>
+<li><strong>ConfigMap</strong>: Basic configuration settings</li>
+<li><strong>Security Context</strong>: Runs as user 1000</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>Memory</strong>: 512Mi (request), 1Gi (limit)</li>
+<li><strong>CPU</strong>: 250m (request), 1000m (limit)</li>
+<li><strong>Storage</strong>:
+<ul>
+<li>Config volume for database</li>
+<li>Metadata volume for images/cache</li>
+<li>Audiobooks volume for media files</li>
+</ul>
+</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="deployment-settings">Deployment Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Value</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Image</td>
+          <td><code>ghcr.io/advplyr/audiobookshelf:2.26.0</code></td>
+          <td>Audiobookshelf version</td>
+      </tr>
+      <tr>
+          <td>Port</td>
+          <td><code>3005</code></td>
+          <td>Web interface port</td>
+      </tr>
+      <tr>
+          <td>User/Group</td>
+          <td><code>1000</code></td>
+          <td>Non-root user</td>
+      </tr>
+      <tr>
+          <td>Volumes</td>
+          <td>3 mounts</td>
+          <td>Config, metadata, and media</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="volume-mounts">Volume Mounts</h3>
+<ul>
+<li><code>/config</code>: Database and configuration files</li>
+<li><code>/metadata</code>: Cover art and metadata cache</li>
+<li><code>/audiobooks</code>: Media library root directory</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="accessing-audiobookshelf">Accessing Audiobookshelf</h3>
+<p>Internal access:</p>
+<pre tabindex="0"><code>http://audiobookshelf.audiobookshelf.svc.cluster.local:3005
+</code></pre><p>Port forwarding for local access:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl port-forward -n audiobookshelf svc/audiobookshelf 3005:3005
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Access at http://localhost:3005</span>
+</span></span></code></pre></div><p>External access (requires ingress configuration)</p>
+<h3 id="initial-setup">Initial Setup</h3>
+<ol>
+<li><strong>Access the web interface</strong></li>
+<li><strong>Create admin account</strong> on first visit</li>
+<li><strong>Configure library folders</strong>:
+<ul>
+<li>Add audiobook folders</li>
+<li>Add podcast folders</li>
+</ul>
+</li>
+<li><strong>Set up users</strong> if needed</li>
+<li><strong>Configure server settings</strong></li>
+</ol>
+<h3 id="library-management">Library Management</h3>
+<h4 id="adding-books">Adding Books</h4>
+<ol>
+<li>
+<p><strong>Upload files</strong> to the audiobooks volume:</p>
+<ul>
+<li>Via web interface upload</li>
+<li>Direct file copy to PVC</li>
+<li>Network share mount</li>
+</ul>
+</li>
+<li>
+<p><strong>Organize structure</strong>:</p>
+<pre tabindex="0"><code>/audiobooks/
+├── Author Name/
+│   ├── Book Title/
+│   │   ├── track01.mp3
+│   │   ├── track02.mp3
+│   │   └── cover.jpg
+│   └── Another Book/
+└── Podcasts/
+</code></pre></li>
+<li>
+<p><strong>Scan library</strong>:</p>
+<ul>
+<li>Settings → Libraries → Scan</li>
+</ul>
+</li>
+</ol>
+<h4 id="metadata-management">Metadata Management</h4>
+<ul>
+<li><strong>Automatic matching</strong>: Uses Google Books, OpenLibrary</li>
+<li><strong>Manual editing</strong>: Edit any metadata field</li>
+<li><strong>Cover art</strong>: Auto-fetch or upload custom</li>
+<li><strong>Series grouping</strong>: Organize books in series</li>
+</ul>
+<h3 id="mobile-app-setup">Mobile App Setup</h3>
+<ol>
+<li><strong>Install app</strong> from App Store/Play Store</li>
+<li><strong>Server connection</strong>:
+<ul>
+<li>Enter server URL</li>
+<li>Use external URL or VPN</li>
+</ul>
+</li>
+<li><strong>Login</strong> with your credentials</li>
+<li><strong>Download</strong> books for offline listening</li>
+</ol>
+<h2 id="operations">Operations</h2>
+<h3 id="checking-service-status">Checking Service Status</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check pod status</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n audiobookshelf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n audiobookshelf deployment/audiobookshelf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Monitor resource usage</span>
+</span></span><span style="display:flex;"><span>kubectl top pod -n audiobookshelf
+</span></span></code></pre></div><h3 id="backup-and-restore">Backup and Restore</h3>
+<h4 id="database-backup">Database Backup</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Backup SQLite database</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n audiobookshelf deployment/audiobookshelf -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  cp /config/absdatabase.sqlite /config/absdatabase.sqlite.backup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy to local</span>
+</span></span><span style="display:flex;"><span>kubectl cp audiobookshelf/audiobookshelf-pod:/config/absdatabase.sqlite.backup <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  ./audiobookshelf-backup.sqlite
+</span></span></code></pre></div><h4 id="full-backup">Full Backup</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Create tarball of config</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n audiobookshelf deployment/audiobookshelf -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  tar -czf /tmp/config-backup.tar.gz /config
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy locally</span>
+</span></span><span style="display:flex;"><span>kubectl cp audiobookshelf/audiobookshelf-pod:/tmp/config-backup.tar.gz <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  ./audiobookshelf-config-backup.tar.gz
+</span></span></code></pre></div><h3 id="library-maintenance">Library Maintenance</h3>
+<h4 id="scan-for-new-books">Scan for New Books</h4>
+<ul>
+<li>Via UI: Settings → Libraries → Scan</li>
+<li>Force rescan for metadata updates</li>
+</ul>
+<h4 id="clean-missing-files">Clean Missing Files</h4>
+<ul>
+<li>Remove entries for deleted files</li>
+<li>Update file paths if moved</li>
+</ul>
+<h4 id="manage-storage">Manage Storage</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check storage usage</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n audiobookshelf deployment/audiobookshelf -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  df -h /audiobooks /metadata /config
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="cannot-access-web-interface">Cannot Access Web Interface</h3>
+<ol>
+<li><strong>Check pod status</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe pod -n audiobookshelf -l app<span style="color:#f92672">=</span>audiobookshelf
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify service</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get endpoints -n audiobookshelf
+</span></span></code></pre></div><ol start="3">
+<li><strong>Check logs</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n audiobookshelf deployment/audiobookshelf --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span></code></pre></div><h3 id="playback-issues">Playback Issues</h3>
+<ol>
+<li><strong>Check file format</strong>: Ensure supported audio format</li>
+<li><strong>Verify permissions</strong>: Files readable by user 1000</li>
+<li><strong>Browser compatibility</strong>: Try different browser</li>
+<li><strong>Network speed</strong>: Check bandwidth for streaming</li>
+</ol>
+<h3 id="metadata-not-fetching">Metadata Not Fetching</h3>
+<ol>
+<li><strong>Internet access</strong>: Verify pod can reach external APIs</li>
+<li><strong>API limits</strong>: Some providers have rate limits</li>
+<li><strong>Manual match</strong>: Try different search terms</li>
+<li><strong>Custom metadata</strong>: Add manually if needed</li>
+</ol>
+<h3 id="mobile-app-connection-issues">Mobile App Connection Issues</h3>
+<ol>
+<li><strong>Server URL</strong>: Ensure correct external URL</li>
+<li><strong>SSL/TLS</strong>: Valid certificate for HTTPS</li>
+<li><strong>Firewall</strong>: Port accessible from internet</li>
+<li><strong>Authentication</strong>: Correct username/password</li>
+</ol>
+<h2 id="security-considerations">Security Considerations</h2>
+<h3 id="authentication">Authentication</h3>
+<ul>
+<li>Local user accounts with bcrypt passwords</li>
+<li>No default credentials</li>
+<li>Session-based authentication</li>
+<li>API tokens for mobile apps</li>
+</ul>
+<h3 id="network-security">Network Security</h3>
+<ul>
+<li>Use HTTPS for external access</li>
+<li>VPN for internal network access</li>
+<li>Implement firewall rules</li>
+<li>Rate limiting on API endpoints</li>
+</ul>
+<h3 id="data-privacy">Data Privacy</h3>
+<ul>
+<li>All data stored locally</li>
+<li>No cloud dependencies</li>
+<li>User listening data private</li>
+<li>Optional anonymous statistics</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Strong passwords</strong>: Enforce password requirements</li>
+<li><strong>HTTPS only</strong>: Use TLS for external access</li>
+<li><strong>Regular updates</strong>: Keep Audiobookshelf updated</li>
+<li><strong>Backup data</strong>: Regular automated backups</li>
+<li><strong>Monitor access</strong>: Check logs for unusual activity</li>
+</ol>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="transcoding">Transcoding</h3>
+<ul>
+<li>Pre-transcode if needed</li>
+<li>Optimize audio bitrates</li>
+<li>Use efficient codecs</li>
+</ul>
+<h3 id="caching">Caching</h3>
+<ul>
+<li>Metadata cache in separate volume</li>
+<li>Browser cache for cover art</li>
+<li>CDN for static assets</li>
+</ul>
+<h3 id="database">Database</h3>
+<ul>
+<li>Regular VACUUM operations</li>
+<li>Index optimization</li>
+<li>Query performance monitoring</li>
+</ul>
+<h3 id="resource-scaling">Resource Scaling</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># For larger libraries</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#e6db74">&#34;1Gi&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#e6db74">&#34;500m&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">limits</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#e6db74">&#34;2Gi&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#e6db74">&#34;2000m&#34;</span>
+</span></span></code></pre></div><h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li>Active users/sessions</li>
+<li>Playback statistics</li>
+<li>Storage usage growth</li>
+<li>API response times</li>
+<li>Transcoding load</li>
+</ul>
+<h3 id="health-checks">Health Checks</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">livenessProbe</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">httpGet</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/ping</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">3005</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">readinessProbe</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">httpGet</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/ping</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">3005</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">5</span>
+</span></span></code></pre></div><h2 id="integration-examples">Integration Examples</h2>
+<h3 id="with-file-sync">With File Sync</h3>
+<p>Sync audiobooks from NAS:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Add NFS volume mount</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nas-audiobooks</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">nfs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server</span>: <span style="color:#ae81ff">nas.local</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/audiobooks</span>
+</span></span></code></pre></div><h3 id="reverse-proxy-setup">Reverse Proxy Setup</h3>
+<p>Nginx configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nginx" data-lang="nginx"><span style="display:flex;"><span><span style="color:#66d9ef">location</span> <span style="color:#e6db74">/audiobooks/</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">proxy_pass</span> <span style="color:#e6db74">http://audiobookshelf:3005/</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">X-Forwarded-For</span> $proxy_add_x_forwarded_for;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">X-Forwarded-Proto</span> $scheme;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">Host</span> $host;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># WebSocket support
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">proxy_http_version</span> <span style="color:#ae81ff">1</span><span style="color:#e6db74">.1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">Upgrade</span> $http_upgrade;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">proxy_set_header</span> <span style="color:#e6db74">Connection</span> <span style="color:#e6db74">&#34;upgrade&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="backup-automation">Backup Automation</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e"># backup-audiobookshelf.sh</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NAMESPACE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;audiobookshelf&#34;</span>
+</span></span><span style="display:flex;"><span>TIMESTAMP<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>date +%Y%m%d_%H%M%S<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Backup database</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n $NAMESPACE deployment/audiobookshelf -- <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  sqlite3 /config/absdatabase.sqlite <span style="color:#e6db74">&#34;.backup /tmp/backup.db&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Copy to persistent backup location</span>
+</span></span><span style="display:flex;"><span>kubectl cp $NAMESPACE/audiobookshelf-pod:/tmp/backup.db <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  /backups/audiobookshelf/db_$TIMESTAMP.sqlite
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Monitor disk usage</li>
+<li>Check failed uploads</li>
+<li>Review error logs</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Backup database</li>
+<li>Update metadata</li>
+<li>Clean temp files</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Update Audiobookshelf</li>
+<li>Optimize database</li>
+<li>Review user activity</li>
+</ul>
+</li>
+</ol>
+<h3 id="upgrade-procedure">Upgrade Procedure</h3>
+<ol>
+<li>
+<p><strong>Backup everything</strong>:</p>
+<ul>
+<li>Database</li>
+<li>Configuration</li>
+<li>Cover art cache</li>
+</ul>
+</li>
+<li>
+<p><strong>Update deployment</strong>:</p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">image</span>: <span style="color:#ae81ff">ghcr.io/advplyr/audiobookshelf:2.27.0</span>
+</span></span></code></pre></div><ol start="3">
+<li><strong>Monitor startup</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n audiobookshelf deployment/audiobookshelf -f
+</span></span></code></pre></div><h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Implement SSO with Keycloak</li>
+<li><input disabled="" type="checkbox"> Add automated metadata enrichment</li>
+<li><input disabled="" type="checkbox"> Create backup CronJob</li>
+<li><input disabled="" type="checkbox"> Add Prometheus metrics</li>
+<li><input disabled="" type="checkbox"> Implement CDN for cover art</li>
+<li><input disabled="" type="checkbox"> Add support for comics/ebooks</li>
+<li><input disabled="" type="checkbox"> Create recommendation engine</li>
+<li><input disabled="" type="checkbox"> Add social features</li>
+<li><input disabled="" type="checkbox"> Implement bandwidth limiting</li>
+<li><input disabled="" type="checkbox"> Add parental controls</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

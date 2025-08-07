@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/housekeeping/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/housekeeping/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="Housekeeping - Cluster Cleanup Service Overview Housekeeping is an automated cluster maintenance service deployed in the Fako cluster. It runs as a CronJob that periodically cleans up completed and failed pods across all namespaces. This service helps maintain cluster hygiene by removing terminated pods that would otherwise accumulate and consume resources. It’s essential for keeping the cluster clean and preventing resource exhaustion from leftover pod metadata.
+Key Features Automated Cleanup: Runs every hour to clean terminated pods Cluster-Wide: Scans all namespaces for cleanup candidates Safe Deletion: Only removes pods in Succeeded or Failed states Detailed Logging: Reports what was found and cleaned Concurrency Control: Prevents overlapping cleanup runs Statistics Tracking: Counts total pods found and deleted Force Deletion: Uses grace period 0 for immediate removal Job History: Keeps history of last 3 successful/failed runs Architecture Components CronJob: Scheduled execution every hour ServiceAccount: Cluster-wide permissions for pod management ClusterRole: Permissions to list and delete pods ConfigMap: Cleanup script with logic Container: kubectl image with bash script execution Resource Requirements Image: bitnami/kubectl:1.33 CPU/Memory: Minimal (kubectl operations) Permissions: Cluster-wide pod list/delete Configuration Schedule CronJob Schedule: 0 * * * * (every hour at minute 0) Concurrency Policy: Forbid (no overlapping runs) TTL After Finish: 3600 seconds (1 hour) History Limits: 3 successful, 3 failed jobs Cleanup Targets The service removes pods in these states:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="Housekeeping - Cluster Cleanup Service Overview Housekeeping is an automated cluster maintenance service deployed in the Fako cluster. It runs as a CronJob that periodically cleans up completed and failed pods across all namespaces. This service helps maintain cluster hygiene by removing terminated pods that would otherwise accumulate and consume resources. It’s essential for keeping the cluster clean and preventing resource exhaustion from leftover pod metadata.
+Key Features Automated Cleanup: Runs every hour to clean terminated pods Cluster-Wide: Scans all namespaces for cleanup candidates Safe Deletion: Only removes pods in Succeeded or Failed states Detailed Logging: Reports what was found and cleaned Concurrency Control: Prevents overlapping cleanup runs Statistics Tracking: Counts total pods found and deleted Force Deletion: Uses grace period 0 for immediate removal Job History: Keeps history of last 3 successful/failed runs Architecture Components CronJob: Scheduled execution every hour ServiceAccount: Cluster-wide permissions for pod management ClusterRole: Permissions to list and delete pods ConfigMap: Cleanup script with logic Container: kubectl image with bash script execution Resource Requirements Image: bitnami/kubectl:1.33 CPU/Memory: Minimal (kubectl operations) Permissions: Cluster-wide pod list/delete Configuration Schedule CronJob Schedule: 0 * * * * (every hour at minute 0) Concurrency Policy: Forbid (no overlapping runs) TTL After Finish: 3600 seconds (1 hour) History Limits: 3 successful, 3 failed jobs Cleanup Targets The service removes pods in these states:">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/housekeeping/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="housekeeping---cluster-cleanup-service">Housekeeping - Cluster Cleanup Service</h1>
+<h2 id="overview">Overview</h2>
+<p>Housekeeping is an automated cluster maintenance service deployed in the Fako cluster. It runs as a CronJob that periodically cleans up completed and failed pods across all namespaces. This service helps maintain cluster hygiene by removing terminated pods that would otherwise accumulate and consume resources. It&rsquo;s essential for keeping the cluster clean and preventing resource exhaustion from leftover pod metadata.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Automated Cleanup</strong>: Runs every hour to clean terminated pods</li>
+<li><strong>Cluster-Wide</strong>: Scans all namespaces for cleanup candidates</li>
+<li><strong>Safe Deletion</strong>: Only removes pods in Succeeded or Failed states</li>
+<li><strong>Detailed Logging</strong>: Reports what was found and cleaned</li>
+<li><strong>Concurrency Control</strong>: Prevents overlapping cleanup runs</li>
+<li><strong>Statistics Tracking</strong>: Counts total pods found and deleted</li>
+<li><strong>Force Deletion</strong>: Uses grace period 0 for immediate removal</li>
+<li><strong>Job History</strong>: Keeps history of last 3 successful/failed runs</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>CronJob</strong>: Scheduled execution every hour</li>
+<li><strong>ServiceAccount</strong>: Cluster-wide permissions for pod management</li>
+<li><strong>ClusterRole</strong>: Permissions to list and delete pods</li>
+<li><strong>ConfigMap</strong>: Cleanup script with logic</li>
+<li><strong>Container</strong>: kubectl image with bash script execution</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>Image</strong>: <code>bitnami/kubectl:1.33</code></li>
+<li><strong>CPU/Memory</strong>: Minimal (kubectl operations)</li>
+<li><strong>Permissions</strong>: Cluster-wide pod list/delete</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="schedule">Schedule</h3>
+<ul>
+<li><strong>CronJob Schedule</strong>: <code>0 * * * *</code> (every hour at minute 0)</li>
+<li><strong>Concurrency Policy</strong>: <code>Forbid</code> (no overlapping runs)</li>
+<li><strong>TTL After Finish</strong>: 3600 seconds (1 hour)</li>
+<li><strong>History Limits</strong>: 3 successful, 3 failed jobs</li>
+</ul>
+<h3 id="cleanup-targets">Cleanup Targets</h3>
+<p>The service removes pods in these states:</p>
+<ul>
+<li><strong>Succeeded</strong>: Completed jobs and one-time pods</li>
+<li><strong>Failed</strong>: Crashed or errored pods</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="manual-execution">Manual Execution</h3>
+<p>Trigger immediate cleanup:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl create job --from<span style="color:#f92672">=</span>cronjob/housekeeping manual-cleanup-<span style="color:#66d9ef">$(</span>date +%s<span style="color:#66d9ef">)</span> -n housekeeping
+</span></span></code></pre></div><h3 id="monitoring-cleanup">Monitoring Cleanup</h3>
+<p>Watch cleanup progress:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># View current job</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n housekeeping -l app<span style="color:#f92672">=</span>housekeeping -f
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># List recent jobs</span>
+</span></span><span style="display:flex;"><span>kubectl get jobs -n housekeeping --sort-by<span style="color:#f92672">=</span>.metadata.creationTimestamp
+</span></span></code></pre></div><h3 id="viewing-statistics">Viewing Statistics</h3>
+<p>Check cleanup history:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Get logs from last successful job</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n housekeeping <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#66d9ef">$(</span>kubectl get pods -n housekeeping -l app<span style="color:#f92672">=</span>housekeeping --sort-by<span style="color:#f92672">=</span>.metadata.creationTimestamp -o name | tail -1<span style="color:#66d9ef">)</span>
+</span></span></code></pre></div><h2 id="cleanup-process">Cleanup Process</h2>
+<h3 id="1-namespace-discovery">1. Namespace Discovery</h3>
+<ul>
+<li>Lists all namespaces in cluster</li>
+<li>Iterates through each namespace</li>
+</ul>
+<h3 id="2-pod-identification">2. Pod Identification</h3>
+<ul>
+<li>Queries pods with status.phase == &ldquo;Succeeded&rdquo;</li>
+<li>Queries pods with status.phase == &ldquo;Failed&rdquo;</li>
+<li>Combines results for processing</li>
+</ul>
+<h3 id="3-pod-details">3. Pod Details</h3>
+<ul>
+<li>Retrieves pod age and phase</li>
+<li>Logs pod information before deletion</li>
+</ul>
+<h3 id="4-force-deletion">4. Force Deletion</h3>
+<ul>
+<li>Deletes with grace-period=0</li>
+<li>Uses &ndash;force flag for immediate removal</li>
+<li>Tracks success/failure of each deletion</li>
+</ul>
+<h3 id="5-statistics">5. Statistics</h3>
+<ul>
+<li>Counts total pods found</li>
+<li>Counts successfully deleted pods</li>
+<li>Reports summary at completion</li>
+</ul>
+<h2 id="operations">Operations</h2>
+<h3 id="enabledisable-cleanup">Enable/Disable Cleanup</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Suspend housekeeping</span>
+</span></span><span style="display:flex;"><span>kubectl patch cronjob housekeeping -n housekeeping -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;suspend&#34;:true}}&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Resume housekeeping</span>
+</span></span><span style="display:flex;"><span>kubectl patch cronjob housekeeping -n housekeeping -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;suspend&#34;:false}}&#39;</span>
+</span></span></code></pre></div><h3 id="adjust-schedule">Adjust Schedule</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Change to every 30 minutes</span>
+</span></span><span style="display:flex;"><span>kubectl patch cronjob housekeeping -n housekeeping <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;schedule&#34;:&#34;*/30 * * * *&#34;}}&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Change to twice daily</span>
+</span></span><span style="display:flex;"><span>kubectl patch cronjob housekeeping -n housekeeping <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -p <span style="color:#e6db74">&#39;{&#34;spec&#34;:{&#34;schedule&#34;:&#34;0 2,14 * * *&#34;}}&#39;</span>
+</span></span></code></pre></div><h3 id="exclude-namespaces">Exclude Namespaces</h3>
+<p>Edit the ConfigMap to exclude specific namespaces:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl edit configmap housekeeping-script -n housekeeping
+</span></span></code></pre></div><p>Add exclusion logic:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Skip system namespaces</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$ns<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">=</span>~ ^<span style="color:#f92672">(</span>kube-system|kube-public|kube-node-lease<span style="color:#f92672">)</span>$ <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="job-failures">Job Failures</h3>
+<ol>
+<li><strong>Check job status</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe job -n housekeeping housekeeping-xxxxx
+</span></span></code></pre></div><ol start="2">
+<li><strong>View pod logs</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n housekeeping job/housekeeping-xxxxx
+</span></span></code></pre></div><ol start="3">
+<li><strong>Common issues</strong>:
+<ul>
+<li>Permission denied (RBAC)</li>
+<li>kubectl command failures</li>
+<li>Script syntax errors</li>
+</ul>
+</li>
+</ol>
+<h3 id="permission-issues">Permission Issues</h3>
+<ol>
+<li><strong>Verify ServiceAccount</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get sa housekeeping -n housekeeping
+</span></span></code></pre></div><ol start="2">
+<li><strong>Check ClusterRole</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe clusterrole housekeeping
+</span></span></code></pre></div><ol start="3">
+<li><strong>Test permissions</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl auth can-i delete pods --all-namespaces <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --as<span style="color:#f92672">=</span>system:serviceaccount:housekeeping:housekeeping
+</span></span></code></pre></div><h3 id="no-pods-being-cleaned">No Pods Being Cleaned</h3>
+<ol>
+<li><strong>Check for completed pods</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get pods --all-namespaces --field-selector<span style="color:#f92672">=</span>status.phase<span style="color:#f92672">=</span>Succeeded
+</span></span><span style="display:flex;"><span>kubectl get pods --all-namespaces --field-selector<span style="color:#f92672">=</span>status.phase<span style="color:#f92672">=</span>Failed
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify jq installation</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n housekeeping deployment/housekeeping -- which jq
+</span></span></code></pre></div><h2 id="security-considerations">Security Considerations</h2>
+<h3 id="rbac-permissions">RBAC Permissions</h3>
+<ul>
+<li>Limited to pod list and delete operations</li>
+<li>No access to secrets or configmaps</li>
+<li>Cannot modify running pods</li>
+</ul>
+<h3 id="namespace-isolation">Namespace Isolation</h3>
+<ul>
+<li>Consider excluding sensitive namespaces</li>
+<li>Add namespace labels for filtering</li>
+<li>Implement allowlist/denylist</li>
+</ul>
+<h3 id="audit-trail">Audit Trail</h3>
+<ul>
+<li>All deletions logged in job output</li>
+<li>Kubernetes audit logs track API calls</li>
+<li>Consider external log aggregation</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Test in staging</strong>: Verify behavior before production</li>
+<li><strong>Monitor closely</strong>: Check logs after deployment</li>
+<li><strong>Gradual rollout</strong>: Start with specific namespaces</li>
+<li><strong>Set alerts</strong>: Monitor for failed cleanup jobs</li>
+<li><strong>Regular review</strong>: Audit what&rsquo;s being cleaned</li>
+</ol>
+<h2 id="customization">Customization</h2>
+<h3 id="pod-age-filtering">Pod Age Filtering</h3>
+<p>Add age-based filtering:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Only delete pods older than 24 hours</span>
+</span></span><span style="display:flex;"><span>pod_age<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl get pod <span style="color:#e6db74">&#34;</span>$pod<span style="color:#e6db74">&#34;</span> -n <span style="color:#e6db74">&#34;</span>$namespace<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{.metadata.creationTimestamp}&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#66d9ef">$(</span>date -d <span style="color:#e6db74">&#34;</span>$pod_age<span style="color:#e6db74">&#34;</span> +%s<span style="color:#66d9ef">)</span> -lt <span style="color:#66d9ef">$(</span>date -d <span style="color:#e6db74">&#39;24 hours ago&#39;</span> +%s<span style="color:#66d9ef">)</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    kubectl delete pod <span style="color:#e6db74">&#34;</span>$pod<span style="color:#e6db74">&#34;</span> -n <span style="color:#e6db74">&#34;</span>$namespace<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><h3 id="label-based-filtering">Label-Based Filtering</h3>
+<p>Clean only labeled pods:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Only clean pods with cleanup=true label</span>
+</span></span><span style="display:flex;"><span>labeled_pods<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>kubectl get pods -n <span style="color:#e6db74">&#34;</span>$namespace<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -l cleanup<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --field-selector<span style="color:#f92672">=</span>status.phase<span style="color:#f92672">=</span>Succeeded <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{.items[*].metadata.name}&#39;</span><span style="color:#66d9ef">)</span>
+</span></span></code></pre></div><h3 id="custom-notifications">Custom Notifications</h3>
+<p>Add Slack notifications:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Send summary to Slack</span>
+</span></span><span style="display:flex;"><span>curl -X POST <span style="color:#e6db74">&#34;</span>$SLACK_WEBHOOK<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -H <span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -d <span style="color:#e6db74">&#34;{\&#34;text\&#34;:\&#34;Housekeeping: Cleaned </span>$TOTAL_DELETED<span style="color:#e6db74"> pods from </span>$namespace_count<span style="color:#e6db74"> namespaces\&#34;}&#34;</span>
+</span></span></code></pre></div><h2 id="monitoring">Monitoring</h2>
+<h3 id="key-metrics">Key Metrics</h3>
+<ul>
+<li>Pods cleaned per run</li>
+<li>Namespaces processed</li>
+<li>Cleanup duration</li>
+<li>Failed deletions</li>
+<li>Job success rate</li>
+</ul>
+<h3 id="prometheus-metrics">Prometheus Metrics</h3>
+<p>Add metrics exporter:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Add pushgateway container</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">metrics</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">prom/pushgateway</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">9091</span>
+</span></span></code></pre></div><p>Push metrics from script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Push to Prometheus</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;housekeeping_pods_deleted </span>$TOTAL_DELETED<span style="color:#e6db74">&#34;</span> | <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  curl --data-binary @- http://localhost:9091/metrics/job/housekeeping
+</span></span></code></pre></div><h3 id="grafana-dashboard">Grafana Dashboard</h3>
+<p>Key panels:</p>
+<ul>
+<li>Pods cleaned over time</li>
+<li>Cleanup job duration</li>
+<li>Failed cleanup attempts</li>
+<li>Namespace distribution</li>
+</ul>
+<h2 id="integration-examples">Integration Examples</h2>
+<h3 id="with-monitoring-stack">With Monitoring Stack</h3>
+<p>Alert on cleanup failures:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># PrometheusRule</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">HousekeepingFailed</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">kube_job_status_failed{job_name=~&#34;housekeeping-.*&#34;} &gt; 0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">for</span>: <span style="color:#ae81ff">1h</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;Housekeeping job failed&#34;</span>
+</span></span></code></pre></div><h3 id="with-cicd">With CI/CD</h3>
+<p>Trigger cleanup after deployments:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># In deployment pipeline</span>
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Trigger housekeeping</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">run</span>: |<span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    kubectl create job --from=cronjob/housekeeping \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      post-deploy-cleanup-${{ github.run_id }} \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      -n housekeeping</span>
+</span></span></code></pre></div><h2 id="maintenance">Maintenance</h2>
+<h3 id="regular-tasks">Regular Tasks</h3>
+<ol>
+<li>
+<p><strong>Daily</strong>:</p>
+<ul>
+<li>Review cleanup logs</li>
+<li>Check for failed jobs</li>
+</ul>
+</li>
+<li>
+<p><strong>Weekly</strong>:</p>
+<ul>
+<li>Analyze cleanup patterns</li>
+<li>Review excluded namespaces</li>
+<li>Check resource usage</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly</strong>:</p>
+<ul>
+<li>Update kubectl version</li>
+<li>Review RBAC permissions</li>
+<li>Optimize cleanup logic</li>
+</ul>
+</li>
+</ol>
+<h3 id="performance-tuning">Performance Tuning</h3>
+<p>For large clusters:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Parallel namespace processing</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> ns in $namespaces; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    cleanup_namespace <span style="color:#e6db74">&#34;</span>$ns<span style="color:#e6db74">&#34;</span> &amp;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>wait
+</span></span></code></pre></div><h3 id="backup-considerations">Backup Considerations</h3>
+<p>Before major changes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Export current configuration</span>
+</span></span><span style="display:flex;"><span>kubectl get cronjob housekeeping -n housekeeping -o yaml &gt; housekeeping-backup.yaml
+</span></span><span style="display:flex;"><span>kubectl get cm housekeeping-script -n housekeeping -o yaml &gt; script-backup.yaml
+</span></span></code></pre></div><h2 id="advanced-features">Advanced Features</h2>
+<h3 id="multi-resource-cleanup">Multi-Resource Cleanup</h3>
+<p>Extend to clean other resources:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Clean completed jobs</span>
+</span></span><span style="display:flex;"><span>kubectl delete jobs --all-namespaces <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --field-selector status.successful<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Clean old replicasets</span>
+</span></span><span style="display:flex;"><span>kubectl get rs --all-namespaces -o json | <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  jq -r <span style="color:#e6db74">&#39;.items[] | select(.spec.replicas == 0) | 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;\(.metadata.namespace) \(.metadata.name)&#34;&#39;</span> | <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#66d9ef">while</span> read ns rs; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    kubectl delete rs <span style="color:#e6db74">&#34;</span>$rs<span style="color:#e6db74">&#34;</span> -n <span style="color:#e6db74">&#34;</span>$ns<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">done</span>
+</span></span></code></pre></div><h3 id="intelligent-cleanup">Intelligent Cleanup</h3>
+<p>Add smart filtering:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Keep recent failures for debugging</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">&#34;</span>$phase<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;Failed&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Keep failures from last 24 hours</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#66d9ef">$(</span>date -d <span style="color:#e6db74">&#34;</span>$age<span style="color:#e6db74">&#34;</span> +%s<span style="color:#66d9ef">)</span> -gt <span style="color:#66d9ef">$(</span>date -d <span style="color:#e6db74">&#39;24 hours ago&#39;</span> +%s<span style="color:#66d9ef">)</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;    Keeping recent failure for debugging&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Add configurable retention policies</li>
+<li><input disabled="" type="checkbox"> Implement namespace exclusion via labels</li>
+<li><input disabled="" type="checkbox"> Add support for cleaning other resources</li>
+<li><input disabled="" type="checkbox"> Create web dashboard for statistics</li>
+<li><input disabled="" type="checkbox"> Implement dry-run mode</li>
+<li><input disabled="" type="checkbox"> Add email notifications</li>
+<li><input disabled="" type="checkbox"> Support custom cleanup rules</li>
+<li><input disabled="" type="checkbox"> Add PVC cleanup for orphaned volumes</li>
+<li><input disabled="" type="checkbox"> Implement gradual deletion (rate limiting)</li>
+<li><input disabled="" type="checkbox"> Add cost savings calculations</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>

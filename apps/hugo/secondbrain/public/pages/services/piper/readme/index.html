@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name"> | My New Hugo Site</title>
+<meta property="og:title" content=" | My New Hugo Site" />
+<meta name="twitter:title" content=" | My New Hugo Site" />
+<meta itemprop="name" content=" | My New Hugo Site" />
+<meta name="application-name" content=" | My New Hugo Site" />
+<meta property="og:site_name" content="" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+  <link rel="alternate" hreflang="en" href="http://localhost:1313/pages/services/piper/readme/" title="" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.148.2">
+
+    
+    <meta property="og:url" content="http://localhost:1313/pages/services/piper/readme/">
+  <meta property="og:site_name" content="My New Hugo Site">
+  <meta property="og:title" content="My New Hugo Site">
+  <meta property="og:description" content="Piper Text-to-Speech Service Overview Piper is a fast, local text-to-speech (TTS) service deployed in the Fako cluster. It converts text into natural-sounding speech using neural voice models and exposes its functionality via the Wyoming protocol, making it compatible with voice assistant platforms like Home Assistant.
+Key Features CPU-Optimized: Runs efficiently on CPU without requiring GPU Wyoming Protocol: Compatible with Home Assistant and other voice platforms Multiple Voice Support: Various voice models with different qualities Voice Management: Automatic voice model management via sidecar container Persistent Storage: Voice models cached to avoid re-downloading Scalable: Supports multiple concurrent TTS processes Architecture Components Deployment: Single-replica deployment with node affinity rules Service: ClusterIP service on port 10200 (Wyoming protocol) Storage: PersistentVolumeClaim for voice model storage ConfigMap: Configuration for default voice settings Sidecar Container: Voice manager for monitoring voice models Resource Requirements GPU: Not required (CPU-only) Memory: 4Gi (request), 8Gi (limit) CPU: 2 cores (request), 4 cores (limit) Storage: Persistent volume for voice model storage Configuration Environment Settings Parameter Default Description DEFAULT_VOICE en_US-amy-medium Default voice model to use --max-piper-procs 8 Maximum concurrent TTS processes --data-dir /data Directory for voice data --download-dir /data Directory for downloading voices Available Voice Models Piper supports various voice models with different qualities:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="pages">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My New Hugo Site">
+  <meta name="twitter:description" content="Piper Text-to-Speech Service Overview Piper is a fast, local text-to-speech (TTS) service deployed in the Fako cluster. It converts text into natural-sounding speech using neural voice models and exposes its functionality via the Wyoming protocol, making it compatible with voice assistant platforms like Home Assistant.
+Key Features CPU-Optimized: Runs efficiently on CPU without requiring GPU Wyoming Protocol: Compatible with Home Assistant and other voice platforms Multiple Voice Support: Various voice models with different qualities Voice Management: Automatic voice model management via sidecar container Persistent Storage: Voice models cached to avoid re-downloading Scalable: Supports multiple concurrent TTS processes Architecture Components Deployment: Single-replica deployment with node affinity rules Service: ClusterIP service on port 10200 (Wyoming protocol) Storage: PersistentVolumeClaim for voice model storage ConfigMap: Configuration for default voice settings Sidecar Container: Voice manager for monitoring voice models Resource Requirements GPU: Not required (CPU-only) Memory: 4Gi (request), 8Gi (limit) CPU: 2 cores (request), 4 cores (limit) Storage: Persistent volume for voice model storage Configuration Environment Settings Parameter Default Description DEFAULT_VOICE en_US-amy-medium Default voice model to use --max-piper-procs 8 Maximum concurrent TTS processes --data-dir /data Directory for voice data --download-dir /data Directory for downloading voices Available Voice Models Piper supports various voice models with different qualities:">
+
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/pages/services/piper/readme/">
+    <link href="/style.min.e390ba7da26222f4dc42a349955d76dbbe44e5ce2535a43de5a70633a0a9ec3c.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="http://localhost:1313/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+</head>
+<body data-theme = "" class="notransition">
+
+<script src="/js/theme.js"></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="http://localhost:1313/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title></title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        About
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/projects/">
+                        Projects
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/ollama/">
+                                Ollama AI Server
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/open-webui/">
+                                Open WebUI
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/n8n/">
+                                N8N Automation
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/projects/oura-dashboard/">
+                                Oura Dashboard
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="">
+                        Architecture
+                    </a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a class="menu-link "
+                                href="/pages/architecture/overview/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title"></h1>
+                
+                
+            </header>
+            
+            <div class="page-content">
+                <h1 id="piper-text-to-speech-service">Piper Text-to-Speech Service</h1>
+<h2 id="overview">Overview</h2>
+<p>Piper is a fast, local text-to-speech (TTS) service deployed in the Fako cluster. It converts text into natural-sounding speech using neural voice models and exposes its functionality via the Wyoming protocol, making it compatible with voice assistant platforms like Home Assistant.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>CPU-Optimized</strong>: Runs efficiently on CPU without requiring GPU</li>
+<li><strong>Wyoming Protocol</strong>: Compatible with Home Assistant and other voice platforms</li>
+<li><strong>Multiple Voice Support</strong>: Various voice models with different qualities</li>
+<li><strong>Voice Management</strong>: Automatic voice model management via sidecar container</li>
+<li><strong>Persistent Storage</strong>: Voice models cached to avoid re-downloading</li>
+<li><strong>Scalable</strong>: Supports multiple concurrent TTS processes</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<h3 id="components">Components</h3>
+<ol>
+<li><strong>Deployment</strong>: Single-replica deployment with node affinity rules</li>
+<li><strong>Service</strong>: ClusterIP service on port 10200 (Wyoming protocol)</li>
+<li><strong>Storage</strong>: PersistentVolumeClaim for voice model storage</li>
+<li><strong>ConfigMap</strong>: Configuration for default voice settings</li>
+<li><strong>Sidecar Container</strong>: Voice manager for monitoring voice models</li>
+</ol>
+<h3 id="resource-requirements">Resource Requirements</h3>
+<ul>
+<li><strong>GPU</strong>: Not required (CPU-only)</li>
+<li><strong>Memory</strong>: 4Gi (request), 8Gi (limit)</li>
+<li><strong>CPU</strong>: 2 cores (request), 4 cores (limit)</li>
+<li><strong>Storage</strong>: Persistent volume for voice model storage</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<h3 id="environment-settings">Environment Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>DEFAULT_VOICE</code></td>
+          <td><code>en_US-amy-medium</code></td>
+          <td>Default voice model to use</td>
+      </tr>
+      <tr>
+          <td><code>--max-piper-procs</code></td>
+          <td><code>8</code></td>
+          <td>Maximum concurrent TTS processes</td>
+      </tr>
+      <tr>
+          <td><code>--data-dir</code></td>
+          <td><code>/data</code></td>
+          <td>Directory for voice data</td>
+      </tr>
+      <tr>
+          <td><code>--download-dir</code></td>
+          <td><code>/data</code></td>
+          <td>Directory for downloading voices</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="available-voice-models">Available Voice Models</h3>
+<p>Piper supports various voice models with different qualities:</p>
+<h4 id="english-us-voices">English (US) Voices</h4>
+<ul>
+<li><strong>amy</strong>: low, medium quality variants</li>
+<li><strong>lessac</strong>: medium quality, clear pronunciation</li>
+<li><strong>ryan</strong>: high quality male voice</li>
+<li><strong>kusal</strong>: medium quality</li>
+<li><strong>ljspeech</strong>: high quality, trained on LJSpeech dataset</li>
+</ul>
+<h4 id="english-gb-voices">English (GB) Voices</h4>
+<ul>
+<li><strong>alan</strong>: low quality British accent</li>
+</ul>
+<p>Each voice has different characteristics:</p>
+<ul>
+<li><strong>Low</strong>: Faster, smaller size (~15-30MB), lower quality</li>
+<li><strong>Medium</strong>: Balanced speed and quality (~50-100MB)</li>
+<li><strong>High</strong>: Best quality, larger size (~100-200MB), slower</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="accessing-the-service">Accessing the Service</h3>
+<p>Within the cluster:</p>
+<pre tabindex="0"><code>piper.piper.svc.cluster.local:10200
+</code></pre><h3 id="wyoming-protocol-integration">Wyoming Protocol Integration</h3>
+<p>The service implements the Wyoming protocol for TTS:</p>
+<h4 id="home-assistant-configuration">Home Assistant Configuration</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># In configuration.yaml</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">wyoming</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;Piper&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">host</span>: <span style="color:#ae81ff">piper.piper.svc.cluster.local</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">10200</span>
+</span></span></code></pre></div><h3 id="testing-the-service">Testing the Service</h3>
+<p>Port-forward for local testing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl port-forward -n piper svc/piper 10200:10200
+</span></span></code></pre></div><h3 id="example-tts-request">Example TTS Request</h3>
+<p>Using Wyoming protocol client:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> wyoming.tts <span style="color:#f92672">import</span> synthesize
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Connect to Piper</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> WyomingClient(<span style="color:#e6db74">&#39;piper.piper.svc.cluster.local&#39;</span>, <span style="color:#ae81ff">10200</span>) <span style="color:#66d9ef">as</span> client:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Generate speech</span>
+</span></span><span style="display:flex;"><span>    audio <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>synthesize(
+</span></span><span style="display:flex;"><span>        text<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Hello, this is Piper speaking&#34;</span>,
+</span></span><span style="display:flex;"><span>        voice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en_US-amy-low&#34;</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><h2 id="operations">Operations</h2>
+<h3 id="checking-service-status">Checking Service Status</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check pod status</span>
+</span></span><span style="display:flex;"><span>kubectl get pods -n piper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View main container logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n piper deployment/piper -c piper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># View voice manager logs</span>
+</span></span><span style="display:flex;"><span>kubectl logs -n piper deployment/piper -c voice-manager
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check available voices</span>
+</span></span><span style="display:flex;"><span>kubectl exec -n piper deployment/piper -- ls -la /data/*.onnx
+</span></span></code></pre></div><h3 id="managing-voice-models">Managing Voice Models</h3>
+<h4 id="list-available-voices">List Available Voices</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n piper deployment/piper -- ls -la /data/
+</span></span></code></pre></div><h4 id="voice-model-sizes">Voice Model Sizes</h4>
+<ul>
+<li><strong>Low quality</strong>: ~15-30 MB per voice</li>
+<li><strong>Medium quality</strong>: ~50-100 MB per voice</li>
+<li><strong>High quality</strong>: ~100-200 MB per voice</li>
+</ul>
+<h4 id="manual-voice-download">Manual Voice Download</h4>
+<p>If needed, you can manually download voices:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n piper deployment/piper -- wget <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  https://github.com/rhasspy/piper/releases/download/2023.11.14-2/en_US-amy-medium.onnx <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  -O /data/en_US-amy-medium.onnx
+</span></span></code></pre></div><h3 id="changing-default-voice">Changing Default Voice</h3>
+<ol>
+<li>Edit the ConfigMap:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl edit configmap piper-configmap -n piper
+</span></span></code></pre></div><ol start="2">
+<li>Update deployment args if needed:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl edit deployment piper -n piper
+</span></span></code></pre></div><ol start="3">
+<li>Restart the deployment:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl rollout restart deployment/piper -n piper
+</span></span></code></pre></div><h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="pod-not-starting">Pod Not Starting</h3>
+<ol>
+<li><strong>Check node availability</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get nodes -o wide
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify node affinity</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl describe pod -n piper -l app<span style="color:#f92672">=</span>piper
+</span></span></code></pre></div><ol start="3">
+<li><strong>Check storage</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get pvc -n piper
+</span></span></code></pre></div><h3 id="no-audio-output">No Audio Output</h3>
+<ol>
+<li><strong>Verify voice model exists</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n piper deployment/piper -- ls -la /data/*.onnx
+</span></span></code></pre></div><ol start="2">
+<li><strong>Check logs for errors</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n piper deployment/piper -c piper | grep ERROR
+</span></span></code></pre></div><ol start="3">
+<li><strong>Test with different voice</strong>:
+<ul>
+<li>Try using a different voice model</li>
+<li>Ensure the voice file and its JSON config exist</li>
+</ul>
+</li>
+</ol>
+<h3 id="high-cpu-usage">High CPU Usage</h3>
+<ol>
+<li><strong>Monitor CPU</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl top pod -n piper
+</span></span></code></pre></div><ol start="2">
+<li><strong>Reduce concurrent processes</strong>:
+<ul>
+<li>Lower <code>--max-piper-procs</code> value</li>
+<li>Use lower quality voices for better performance</li>
+</ul>
+</li>
+</ol>
+<h3 id="voice-download-issues">Voice Download Issues</h3>
+<ol>
+<li><strong>Check voice manager logs</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl logs -n piper deployment/piper -c voice-manager
+</span></span></code></pre></div><ol start="2">
+<li><strong>Verify internet connectivity</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n piper deployment/piper -- wget -O- https://github.com
+</span></span></code></pre></div><ol start="3">
+<li><strong>Check storage space</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -n piper deployment/piper -- df -h /data
+</span></span></code></pre></div><h2 id="performance-tuning">Performance Tuning</h2>
+<h3 id="cpu-optimization">CPU Optimization</h3>
+<ul>
+<li><strong>Process count</strong>: Adjust <code>--max-piper-procs</code> based on CPU cores</li>
+<li><strong>Voice selection</strong>: Use lower quality voices for faster synthesis</li>
+<li><strong>Caching</strong>: Voice models are cached in memory after first use</li>
+</ul>
+<h3 id="quality-vs-speed-trade-offs">Quality vs Speed Trade-offs</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Voice Quality</th>
+          <th>Speed</th>
+          <th>CPU Usage</th>
+          <th>Use Case</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Low</td>
+          <td>Fast</td>
+          <td>Low</td>
+          <td>Real-time responses, IoT</td>
+      </tr>
+      <tr>
+          <td>Medium</td>
+          <td>Moderate</td>
+          <td>Moderate</td>
+          <td>General use, assistants</td>
+      </tr>
+      <tr>
+          <td>High</td>
+          <td>Slow</td>
+          <td>High</td>
+          <td>Audiobooks, presentations</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="scaling-considerations">Scaling Considerations</h3>
+<p>For high-traffic scenarios:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Increase replicas</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add HPA</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">autoscaling/v2</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">HorizontalPodAutoscaler</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">piper-hpa</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">scaleTargetRef</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">piper</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">minReplicas</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">maxReplicas</span>: <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">metrics</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">type</span>: <span style="color:#ae81ff">Resource</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">resource</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cpu</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">target</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">type</span>: <span style="color:#ae81ff">Utilization</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">averageUtilization</span>: <span style="color:#ae81ff">70</span>
+</span></span></code></pre></div><h2 id="integration-examples">Integration Examples</h2>
+<h3 id="python-integration">Python Integration</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> wyoming.client <span style="color:#f92672">import</span> AsyncTcpClient
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> wyoming.tts <span style="color:#f92672">import</span> Synthesize
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">text_to_speech</span>(text, voice<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en_US-amy-low&#34;</span>):
+</span></span><span style="display:flex;"><span>    client <span style="color:#f92672">=</span> AsyncTcpClient(<span style="color:#e6db74">&#39;piper.piper.svc.cluster.local&#39;</span>, <span style="color:#ae81ff">10200</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>connect()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Send synthesize request</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>send(Synthesize(
+</span></span><span style="display:flex;"><span>        text<span style="color:#f92672">=</span>text,
+</span></span><span style="display:flex;"><span>        voice<span style="color:#f92672">=</span>voice
+</span></span><span style="display:flex;"><span>    ))
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Receive audio data</span>
+</span></span><span style="display:flex;"><span>    audio_data <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>receive_audio()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>disconnect()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> audio_data
+</span></span></code></pre></div><h3 id="nodejs-integration">Node.js Integration</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">net</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;net&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">synthesizeSpeech</span>(<span style="color:#a6e22e">text</span>, <span style="color:#a6e22e">voice</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;en_US-amy-low&#39;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Promise((<span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">client</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">createConnection</span>({
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">host</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;piper.piper.svc.cluster.local&#39;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">port</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">10200</span>
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;connect&#39;</span>, () =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Send Wyoming protocol message
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">message</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;synthesize&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">text</span>, <span style="color:#a6e22e">voice</span> }
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">write</span>(<span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">message</span>));
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">audioBuffer</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">Buffer</span>.<span style="color:#a6e22e">alloc</span>(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;data&#39;</span>, (<span style="color:#a6e22e">data</span>) =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">audioBuffer</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">Buffer</span>.<span style="color:#a6e22e">concat</span>([<span style="color:#a6e22e">audioBuffer</span>, <span style="color:#a6e22e">data</span>]);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;end&#39;</span>, () =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">resolve</span>(<span style="color:#a6e22e">audioBuffer</span>);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="home-assistant-automation">Home Assistant Automation</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">automation</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">alias</span>: <span style="color:#e6db74">&#34;Announce Weather&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">trigger</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">platform</span>: <span style="color:#ae81ff">time</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">at</span>: <span style="color:#e6db74">&#34;08:00:00&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">action</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">service</span>: <span style="color:#ae81ff">tts.speak</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">data</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">entity_id</span>: <span style="color:#ae81ff">media_player.living_room</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">message</span>: <span style="color:#e6db74">&#34;Good morning! Today&#39;s weather is sunny with a high of 75 degrees.&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">options</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">voice</span>: <span style="color:#e6db74">&#34;en_US-amy-medium&#34;</span>
+</span></span></code></pre></div><h2 id="security-considerations">Security Considerations</h2>
+<ul>
+<li>Service runs as non-root user (UID 1000)</li>
+<li>No external network access required after initial setup</li>
+<li>Voice models are read-only after download</li>
+<li>Consider network policies to restrict access</li>
+</ul>
+<h2 id="monitoring">Monitoring</h2>
+<p>Recommended metrics to monitor:</p>
+<ul>
+<li>CPU and memory usage</li>
+<li>TTS request rate and latency</li>
+<li>Voice model disk usage</li>
+<li>Error rates by voice model</li>
+<li>Concurrent process count</li>
+</ul>
+<h3 id="prometheus-metrics">Prometheus Metrics</h3>
+<p>Add Prometheus annotations:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">prometheus.io/scrape</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">prometheus.io/port</span>: <span style="color:#e6db74">&#34;9090&#34;</span>
+</span></span></code></pre></div><h2 id="backup-and-recovery">Backup and Recovery</h2>
+<h3 id="voice-model-backup">Voice Model Backup</h3>
+<p>Voice models are stored in the PVC. To backup:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Create snapshot of PVC</span>
+</span></span><span style="display:flex;"><span>kubectl snapshot create piper-voices-backup -n piper
+</span></span></code></pre></div><h3 id="recovery">Recovery</h3>
+<ol>
+<li>Restore PVC from backup</li>
+<li>Restart deployment</li>
+<li>Voice manager will verify models</li>
+</ol>
+<h2 id="future-improvements">Future Improvements</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Add Prometheus metrics exporter</li>
+<li><input disabled="" type="checkbox"> Implement voice model version management</li>
+<li><input disabled="" type="checkbox"> Create web UI for voice selection</li>
+<li><input disabled="" type="checkbox"> Add support for SSML (Speech Synthesis Markup Language)</li>
+<li><input disabled="" type="checkbox"> Implement request queuing for better resource management</li>
+<li><input disabled="" type="checkbox"> Add voice cloning capabilities</li>
+<li><input disabled="" type="checkbox"> Create Grafana dashboard for monitoring</li>
+<li><input disabled="" type="checkbox"> Add multi-language support</li>
+</ul>
+
+            </div>
+        </article></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+</div>
+    <small class="footer_copyright">
+        © 2025 .
+        
+    </small>
+</footer>
+
+
+
+
+
+
+
+    
+    <script async src="http://localhost:1313/js/main.js" ></script>
+
+    
+
+</body>
+</html>
