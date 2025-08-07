@@ -1,33 +1,23 @@
-# Build stage
-FROM klakegg/hugo:ext-alpine AS builder
+FROM alpine:latest AS builder
 
-WORKDIR /src
+RUN apk add --update \
+    wget
 
-# Install dependencies
-RUN apk add --no-cache git npm
+ARG HUGO_VERSION="0.72.0"
+RUN wget --quiet "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz" && \
+    tar xzf hugo_${HUGO_VERSION}_Linux-64bit.tar.gz && \
+    rm -r hugo_${HUGO_VERSION}_Linux-64bit.tar.gz && \
+    mv hugo /usr/bin
 
-# Copy the Hugo configuration files
-COPY config.toml .
-COPY content/ /src/content/
-COPY docs/ /src/content/docs/
+COPY . /site
+WORKDIR /site
+RUN hugo --minify
 
-# Download the theme and its dependencies
-RUN npm install --save-dev autoprefixer postcss-cli postcss
-RUN hugo mod init github.com/user/repo
-RUN hugo mod get -u github.com/google/docsy
-RUN hugo mod get -u github.com/twbs/bootstrap
-RUN hugo mod get -u github.com/FortAwesome/Font-Awesome
-
-# Build the Hugo site
-RUN hugo --minify --baseURL https://blog.landryzetam.net
-
-# Runtime stage - using nginx to serve static files
 FROM nginx:alpine
-
-# Copy the built site from builder
-COPY --from=builder /src/public /usr/share/nginx/html
-
-# Copy custom nginx config if needed
+# Remove default nginx static assets
+RUN rm -rf /usr/share/nginx/html/*
+# Copy Hugo generated files
+COPY --from=builder /site/public /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
