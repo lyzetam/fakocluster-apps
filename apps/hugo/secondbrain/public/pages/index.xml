@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pages on My New Hugo Site</title>
+    <link>http://localhost:1313/pages/</link>
+    <description>Recent content in Pages on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="http://localhost:1313/pages/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>http://localhost:1313/pages/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/pages/about/</guid>
+      
+      <description>&lt;p&gt;Landry and Sheer Curiousity&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://localhost:1313/pages/projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/pages/projects/</guid>
+      
+      <description>&lt;h1 id=&#34;the-fako-cluster-a-production-gradish-homelab&#34;&gt;The Fako Cluster: A Production-Gradish HomeLab&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;How I built a production-gradish Kubernetes homelab that connects learning and real-world engineering&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&#34;the-story-behind-this-project&#34;&gt;The Story Behind This Project&lt;/h2&gt;
+&lt;p&gt;As a mechanical engineer, I&amp;rsquo;ve always been fascinated by how things work under the hood. Just as I used to design complex mechanical systems and rebuild engines with my dad during the summers, I wanted to deconstruct modern cloud infrastructure and rebuild it from scratch, within my 4 walls. Those summer days taught me that understanding comes from getting your hands dirty – whether it&amp;rsquo;s adjusting valve clearances or configuring Kubernetes operators. The Fako Cluster is that same journey in the digital realm – a homelab that doesn&amp;rsquo;t just run applications, but tries to implement how enterprise-grade systems are designed, secured, and operated.
+What does this mean?&lt;/p&gt;</description>
+      
+    </item>
+    
+  </channel>
+</rss>
