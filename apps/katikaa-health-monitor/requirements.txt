@@ -27,6 +27,9 @@ seaborn==0.12.2
 urllib3==2.0.4
 certifi==2023.7.22
 
+# Template Engine
+jinja2==3.1.2
+
 # Utilities
 pydantic==2.4.1
 typing-extensions==4.7.1

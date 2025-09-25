@@ -1,0 +1,47 @@
+name: Build & Publish katikaa-health-monitor Image
+
+on:
+  push:
+    paths:
+      - 'apps/katikaa-health-monitor/**'
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:latest
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push katikaa-health-monitor
+        uses: docker/build-push-action@v4
+        with:
+          context: ./apps/katikaa-health-monitor
+          file: ./apps/katikaa-health-monitor/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          no-cache: true
+          pull: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/katikaa-health-monitor:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/katikaa-health-monitor:${{ github.sha }}
+          build-args: |
+            BUILDKIT_INLINE_CACHE=0
