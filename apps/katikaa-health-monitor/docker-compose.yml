@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  katikaa-health-monitor:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      # Database Configuration
+      - DB_HOST=${DB_HOST:-localhost}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME:-katikaa_db}
+      - DB_USER=${DB_USER:-katikaa_user}
+      - DB_PASSWORD=${DB_PASSWORD}
+      
+      # External APIs
+      - FAPSHI_PAYMENT_API_USER=${FAPSHI_PAYMENT_API_USER}
+      - FAPSHI_PAYMENT_API_KEY=${FAPSHI_PAYMENT_API_KEY}
+      - FAPSHI_CASHOUT_API_USER=${FAPSHI_CASHOUT_API_USER}
+      - FAPSHI_CASHOUT_API_KEY=${FAPSHI_CASHOUT_API_KEY}
+      - SPORTMONKS_API_TOKEN=${SPORTMONKS_API_TOKEN}
+      
+      # AWS Configuration
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      
+      # Alerting Configuration
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL}
+      
+      # Health Monitor Configuration
+      - HEALTH_CHECK_INTERVAL=${HEALTH_CHECK_INTERVAL:-300}
+      - ALERT_THRESHOLD_CRITICAL=${ALERT_THRESHOLD_CRITICAL:-80}
+      - ALERT_THRESHOLD_WARNING=${ALERT_THRESHOLD_WARNING:-60}
+      
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - katikaa-network
+
+  # Optional: Redis for caching health metrics
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - katikaa-network
+
+  # Optional: Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - katikaa-network
+
+volumes:
+  redis_data:
+  prometheus_data:
+
+networks:
+  katikaa-network:
+    driver: bridge
