@@ -11,6 +11,7 @@ from typing import Dict, List, Any, Optional
 from contextlib import contextmanager
 import time
 import os
+from .aws_integration import aws_integration
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,18 @@ class DatabaseManager:
         self._setup_connection_pool()
     
     def _get_database_config(self) -> Dict[str, Any]:
-        """Get database configuration from environment variables"""
+        """Get database configuration from environment variables or AWS Secrets Manager"""
+        # Try AWS Secrets Manager first if configured
+        if os.getenv('USE_AWS_SECRETS', 'false').lower() == 'true':
+            try:
+                logger.info("Using AWS Secrets Manager for database credentials")
+                secret_name = os.getenv('DB_SECRET_NAME', 'katikaa/views/mysql_db_credentials')
+                return aws_integration.get_database_credentials(secret_name)
+            except Exception as e:
+                logger.warning(f"Failed to get credentials from AWS Secrets Manager: {e}")
+                logger.info("Falling back to environment variables")
+        
+        # Fallback to environment variables
         return {
             'host': os.getenv('DB_HOST', 'localhost'),
             'port': int(os.getenv('DB_PORT', 3306)),
