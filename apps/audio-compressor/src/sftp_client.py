@@ -1,6 +1,7 @@
 """SFTP client for audio file retrieval"""
 import logging
 import re
+import stat
 import time
 from typing import List, Dict, Optional, Tuple
 import paramiko
@@ -84,7 +85,7 @@ class SFTPClient:
             
             for item in items:
                 # Check if it's a directory and matches the pattern
-                if paramiko.sftp_attr.S_ISDIR(item.st_mode):
+                if stat.S_ISDIR(item.st_mode):
                     if pattern.match(item.filename):
                         matching_dirs.append(item.filename)
                         logger.debug(f"Found matching directory: {item.filename}")
