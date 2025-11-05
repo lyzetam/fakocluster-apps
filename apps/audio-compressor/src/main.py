@@ -9,7 +9,7 @@ from typing import Dict, List
 from . import config
 from .sftp_client import SFTPClient
 from .compressor import AudioCompressor
-from .storage import StorageManager
+from .storage import StorageFactory
 from .exceptions import (
     AudioCompressorError,
     SFTPConnectionError,
@@ -75,7 +75,7 @@ def process_directory(
     directory: str,
     sftp_client: SFTPClient,
     compressor: AudioCompressor,
-    storage: StorageManager
+    storage
 ) -> Dict:
     """
     Process a single directory
@@ -215,10 +215,11 @@ def main() -> int:
             logger.error("FFmpeg not found - cannot proceed")
             return 2
         
-        # Initialize components
-        storage = StorageManager(config.OUTPUT_DIR)
+        logger.info(f"Storage backend: {config.STORAGE_BACKEND}")
         logger.info(f"Output directory: {config.OUTPUT_DIR}")
         logger.info(f"Remote path: {config.SFTP_REMOTE_PATH}")
+        if config.STORAGE_BACKEND.lower() == 'sftp':
+            logger.info(f"SFTP destination path: {config.SFTP_DEST_PATH}")
         
         # Load credentials
         credentials = load_sftp_credentials()
@@ -231,6 +232,9 @@ def main() -> int:
             credentials['username'],
             credentials['password']
         ) as sftp:
+            
+            # Initialize storage backend with SFTP client
+            storage = StorageFactory.create_storage(sftp_client=sftp)
             
             # List directories
             logger.info("Scanning for audio directories...")
@@ -324,8 +328,9 @@ def main() -> int:
         # Clean up temp directory
         if os.path.exists(config.TEMP_DIR):
             try:
-                storage = StorageManager(config.OUTPUT_DIR)
-                storage.cleanup_temp_files(config.TEMP_DIR)
+                from .storage import LocalStorage
+                local_storage = LocalStorage(config.OUTPUT_DIR)
+                local_storage.cleanup_temp_files(config.TEMP_DIR)
             except:
                 pass
 

@@ -198,6 +198,122 @@ class SFTPClient:
         
         return info
     
+    def upload_file(self, local_path: str, remote_path: str, retry_attempts: int = None, retry_delay: int = None) -> Tuple[bool, str]:
+        """
+        Upload a file to SFTP server with retry logic
+        
+        Args:
+            local_path: Path to local file to upload
+            remote_path: Destination path on SFTP server
+            retry_attempts: Number of retry attempts (defaults to config.UPLOAD_RETRY_ATTEMPTS)
+            retry_delay: Delay between retries in seconds (defaults to config.UPLOAD_RETRY_DELAY)
+            
+        Returns:
+            Tuple of (success: bool, final_remote_path: str)
+        """
+        if not self.sftp:
+            raise SFTPConnectionError("Not connected to SFTP server")
+        
+        retry_attempts = retry_attempts or config.UPLOAD_RETRY_ATTEMPTS
+        retry_delay = retry_delay or config.UPLOAD_RETRY_DELAY
+        
+        logger.info(f"Uploading {local_path} to {remote_path}")
+        
+        for attempt in range(1, retry_attempts + 1):
+            try:
+                # Ensure destination directory exists
+                remote_dir = '/'.join(remote_path.split('/')[:-1])
+                self._ensure_remote_directory(remote_dir)
+                
+                # Upload file
+                self.sftp.put(local_path, remote_path)
+                logger.info(f"Successfully uploaded to {remote_path}")
+                return True, remote_path
+                
+            except Exception as e:
+                logger.error(f"Upload attempt {attempt}/{retry_attempts} failed: {e}")
+                if attempt < retry_attempts:
+                    time.sleep(retry_delay * attempt)
+                else:
+                    logger.error(f"Failed to upload after {retry_attempts} attempts: {e}")
+                    return False, remote_path
+        
+        return False, remote_path
+    
+    def _ensure_remote_directory(self, remote_dir: str) -> None:
+        """
+        Ensure remote directory exists, create if needed
+        
+        Args:
+            remote_dir: Remote directory path
+        """
+        if not self.sftp:
+            raise SFTPConnectionError("Not connected to SFTP server")
+        
+        try:
+            self.sftp.stat(remote_dir)
+            logger.debug(f"Remote directory exists: {remote_dir}")
+        except FileNotFoundError:
+            logger.info(f"Creating remote directory: {remote_dir}")
+            try:
+                # Create parent directories recursively
+                parts = remote_dir.strip('/').split('/')
+                current_path = ''
+                for part in parts:
+                    current_path += f'/{part}'
+                    try:
+                        self.sftp.stat(current_path)
+                    except FileNotFoundError:
+                        self.sftp.mkdir(current_path)
+                        logger.debug(f"Created directory: {current_path}")
+            except Exception as e:
+                logger.warning(f"Failed to create directory {remote_dir}: {e}")
+    
+    def get_unique_remote_filename(self, remote_path: str) -> str:
+        """
+        Generate unique filename by appending timestamp if file exists
+        
+        Args:
+            remote_path: Desired remote file path
+            
+        Returns:
+            Unique remote path (may have timestamp appended if duplicate)
+            
+        Example:
+            /compressed/10-17-25_compressed.wav 
+            -> /compressed/10-17-25_compressed_20251104_214530.wav (if exists)
+        """
+        if not self.check_file_exists(remote_path):
+            return remote_path
+        
+        # File exists, append timestamp
+        from datetime import datetime
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
+        # Split path and filename
+        parts = remote_path.rsplit('/', 1)
+        if len(parts) == 2:
+            directory, filename = parts
+        else:
+            directory = ''
+            filename = parts[0]
+        
+        # Split filename and extension
+        if '.' in filename:
+            name, ext = filename.rsplit('.', 1)
+            unique_filename = f"{name}_{timestamp}.{ext}"
+        else:
+            unique_filename = f"{filename}_{timestamp}"
+        
+        # Reconstruct path
+        if directory:
+            unique_path = f"{directory}/{unique_filename}"
+        else:
+            unique_path = unique_filename
+        
+        logger.info(f"File exists, using unique filename: {unique_path}")
+        return unique_path
+    
     def __enter__(self):
         """Context manager entry"""
         self.connect()

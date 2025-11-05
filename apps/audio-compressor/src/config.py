@@ -14,6 +14,14 @@ SFTP_SECRETS_NAME = os.environ.get('SFTP_SECRETS_NAME', 'sftp/audio-server')
 OUTPUT_DIR = os.environ.get('OUTPUT_DIR', '/data/compressed')
 KEEP_ORIGINALS = os.environ.get('KEEP_ORIGINALS', 'false').lower() == 'true'
 
+# Storage Backend Configuration
+STORAGE_BACKEND = os.environ.get('STORAGE_BACKEND', 'local').lower()  # Options: 'local', 'sftp'
+SFTP_DEST_PATH = os.environ.get('SFTP_DEST_PATH', '/compressed')  # Remote path when STORAGE_BACKEND='sftp'
+
+# Upload Retry Configuration (for SFTP storage backend)
+UPLOAD_RETRY_ATTEMPTS = int(os.environ.get('UPLOAD_RETRY_ATTEMPTS', '3'))
+UPLOAD_RETRY_DELAY = int(os.environ.get('UPLOAD_RETRY_DELAY', '5'))  # seconds
+
 # Compression Configuration
 SAMPLE_RATE = int(os.environ.get('SAMPLE_RATE', '16000'))  # 16kHz for speech
 CHANNELS = int(os.environ.get('CHANNELS', '1'))  # Mono

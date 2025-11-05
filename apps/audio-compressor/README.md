@@ -4,15 +4,17 @@ Nightly batch processing service that downloads audio files from an SFTP server,
 
 ## Features
 
-- 🔄 **SFTP Integration**: Connects to SFTP server running on Kubernetes
+- 🔄 **SFTP Integration**: Connects to SFTP server for source audio and optional destination
 - 🗜️ **Audio Compression**: Uses FFmpeg to compress audio files (16kHz, mono, 32kbps)
-- 💾 **Persistent Storage**: Saves compressed files to PVC with flat directory structure
+- 💾 **Flexible Storage**: Configuration-driven storage backends (Local PVC or SFTP)
+- 🔄 **Automatic Fallback**: Falls back to local storage if SFTP upload fails
 - 📊 **Manifest Tracking**: Maintains JSON manifest with processing history and statistics
 - ⚙️ **Configuration-Driven**: All settings via environment variables
 - 🔐 **AWS Secrets Manager**: Secure credential management
 - 🔁 **Smart Processing**: Skips already processed files
 - 📝 **Comprehensive Logging**: Detailed logging with structured output
 - 🎯 **Error Handling**: Robust retry logic and graceful error handling
+- 🔄 **Duplicate Handling**: Appends timestamps to avoid overwriting existing files
 
 ## Architecture
 
@@ -31,6 +33,8 @@ SFTP Server: /audio/
 ```
 
 ### Output Structure
+
+**Local Storage (default):**
 ```
 PVC: /data/compressed/
 ├── 10-17-25_compressed.wav
@@ -38,6 +42,18 @@ PVC: /data/compressed/
 ├── 10-17-25-02_compressed.wav
 ├── 10-17-25_meta.xml (optional)
 ├── 10-17-25-01_meta.xml (optional)
+└── manifest.json
+```
+
+**SFTP Storage:**
+```
+SFTP Server: /compressed/
+├── 10-17-25_compressed.wav
+├── 10-17-25_compressed_20251104_214530.wav (duplicate with timestamp)
+├── 10-17-25-01_compressed.wav
+└── 10-17-25-02_compressed.wav
+
+Local PVC (manifest always stored locally):
 └── manifest.json
 ```
 
@@ -49,10 +65,10 @@ All configuration is done via environment variables:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `SFTP_HOST` | SFTP server hostname | `sftp-service.default.svc.cluster.local` |
+| `SFTP_HOST` | SFTP server hostname (source & destination) | `sftp-service.default.svc.cluster.local` |
 | `SFTP_PORT` | SFTP server port | `22` |
-| `SFTP_REMOTE_PATH` | Base path on SFTP server | `/audio` |
-| `OUTPUT_DIR` | Output directory (PVC mount) | `/data/compressed` |
+| `SFTP_REMOTE_PATH` | Source path on SFTP server | `/audio` |
+| `OUTPUT_DIR` | Local output directory (PVC mount, also used as fallback) | `/data/compressed` |
 
 ### Credentials
 
@@ -66,12 +82,21 @@ Credentials are loaded from AWS Secrets Manager or environment variables:
 - `SFTP_USERNAME`: SFTP username
 - `SFTP_PASSWORD`: SFTP password
 
+### Storage Backend Configuration
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `STORAGE_BACKEND` | `local` | Storage destination: `local` (PVC) or `sftp` (upload to SFTP) |
+| `SFTP_DEST_PATH` | `/compressed` | Remote path on SFTP server when `STORAGE_BACKEND=sftp` |
+| `UPLOAD_RETRY_ATTEMPTS` | `3` | Number of upload retry attempts for SFTP backend |
+| `UPLOAD_RETRY_DELAY` | `5` | Delay between upload retries (seconds) |
+
 ### Optional Configuration
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AWS_DEFAULT_REGION` | `us-east-1` | AWS region for Secrets Manager |
-| `SFTP_SECRETS_NAME` | `sftp/audio-server` | AWS Secrets Manager secret name |
+| `SFTP_SECRETS_NAME` | `sftp/audio-server` | AWS Secrets Manager secret name (same credentials for source & destination) |
 | `SAMPLE_RATE` | `16000` | Target sample rate (Hz) |
 | `CHANNELS` | `1` | Number of audio channels (1=mono) |
 | `BITRATE` | `32k` | Target bitrate for compression |
@@ -169,16 +194,21 @@ spec:
 
 1. **Initialize**: Load configuration and validate settings
 2. **Connect**: Establish SFTP connection with credentials from AWS Secrets Manager
-3. **Scan**: List all directories matching pattern (e.g., `10-17-25`, `10-17-25-01`)
-4. **Process Each Directory**:
-   - Check if already processed (skip if `SKIP_PROCESSED=true`)
-   - Download `StereoMix.wav` to temp directory
+3. **Initialize Storage**: Create storage backend (Local or SFTP) based on `STORAGE_BACKEND` config
+4. **Scan**: List all directories matching pattern (e.g., `10-17-25`, `10-17-25-01`)
+5. **Process Each Directory**:
+   - Check if already processed (checks SFTP destination or local storage)
+   - Download `StereoMix.wav` from source SFTP to temp directory
    - Compress with FFmpeg: `ffmpeg -i input.wav -ar 16000 -ac 1 -b:a 32k output.wav`
-   - Save compressed file to PVC: `/data/compressed/{dirname}_compressed.wav`
-   - Optionally copy `Meta.xml` to PVC
-   - Update manifest with results
+   - Save compressed file to configured destination:
+     - **Local backend**: Save to `/data/compressed/{dirname}_compressed.wav`
+     - **SFTP backend**: Upload to `{SFTP_DEST_PATH}/{dirname}_compressed.wav`
+       - If upload fails after retries, automatically falls back to local storage
+       - If file exists, appends timestamp: `{dirname}_compressed_YYYYMMDD_HHMMSS.wav`
+   - Optionally copy `Meta.xml` to same destination
+   - Update manifest (always stored locally) with results and storage location
    - Clean up temp files
-5. **Summary**: Generate processing report with statistics
+6. **Summary**: Generate processing report with statistics
 
 ## Compression Details
 
@@ -196,7 +226,7 @@ Example:
 
 ## Manifest Tracking
 
-The service maintains a `manifest.json` file in the output directory:
+The service maintains a `manifest.json` file in the local output directory (regardless of storage backend):
 
 ```json
 {
@@ -211,11 +241,14 @@ The service maintains a `manifest.json` file in the output directory:
       "original_size_mb": 156.3,
       "compressed_size_mb": 8.2,
       "compression_ratio": 19.0,
-      "status": "success"
+      "status": "success",
+      "storage_location": "sftp"
     }
   ]
 }
 ```
+
+The `storage_location` field indicates where the compressed file was saved: `local` or `sftp`.
 
 ## Exit Codes
 
@@ -228,13 +261,26 @@ The service maintains a `manifest.json` file in the output directory:
 
 ### Local Testing
 
-1. Set up environment variables:
+**Example 1: Local storage (default)**
 ```bash
 export SFTP_HOST=your-sftp-host
 export SFTP_USERNAME=your-username
 export SFTP_PASSWORD=your-password
 export SFTP_REMOTE_PATH=/audio
+export STORAGE_BACKEND=local
 export OUTPUT_DIR=/tmp/compressed
+export LOG_LEVEL=DEBUG
+```
+
+**Example 2: SFTP destination**
+```bash
+export SFTP_HOST=your-sftp-host
+export SFTP_USERNAME=your-username
+export SFTP_PASSWORD=your-password
+export SFTP_REMOTE_PATH=/audio
+export STORAGE_BACKEND=sftp
+export SFTP_DEST_PATH=/compressed
+export OUTPUT_DIR=/tmp/compressed  # Used as fallback
 export LOG_LEVEL=DEBUG
 ```
 
@@ -292,7 +338,15 @@ kubectl exec -it pod-name -- du -sh /data/compressed
 ### Files Not Being Processed
 - Check `SKIP_PROCESSED` setting
 - Verify directory pattern matches your directory names
+- For SFTP backend: Check if files already exist on SFTP destination
 - Check logs for specific errors
+
+### SFTP Upload Failures
+- Check network connectivity to SFTP server
+- Verify `SFTP_DEST_PATH` exists or can be created
+- Check SFTP server permissions
+- Files will automatically fall back to local storage if upload fails
+- Review manifest for `storage_location` field to see where files were saved
 
 ### Out of Space
 - Monitor PVC usage
