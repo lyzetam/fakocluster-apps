@@ -106,7 +106,7 @@ Credentials are loaded from AWS Secrets Manager or environment variables:
 | `COPY_METADATA` | `true` | Copy metadata files |
 | `SKIP_PROCESSED` | `true` | Skip already processed directories |
 | `DIR_PATTERN` | `^\d{2}-\d{2}-\d{2}(-\d{2})?$` | Regex pattern for directories |
-| `MAX_FILE_SIZE_MB` | `2000` | Skip files larger than this |
+| `MAX_FILE_SIZE_MB` | `10000` | Skip files larger than this (10 GB) |
 | `MAX_RETRIES` | `3` | Max retry attempts for downloads |
 | `RETRY_DELAY` | `5` | Delay between retries (seconds) |
 | `LOG_LEVEL` | `INFO` | Logging level (DEBUG, INFO, WARNING, ERROR) |

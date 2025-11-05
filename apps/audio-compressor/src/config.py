@@ -34,7 +34,7 @@ METADATA_FILENAME = os.environ.get('METADATA_FILENAME', 'Meta.xml')
 COPY_METADATA = os.environ.get('COPY_METADATA', 'true').lower() == 'true'
 SKIP_PROCESSED = os.environ.get('SKIP_PROCESSED', 'true').lower() == 'true'
 DIR_PATTERN = os.environ.get('DIR_PATTERN', r'^\d{2}-\d{2}-\d{2}(-\d{2})?$')
-MAX_FILE_SIZE_MB = int(os.environ.get('MAX_FILE_SIZE_MB', '2000'))  # Skip if larger
+MAX_FILE_SIZE_MB = int(os.environ.get('MAX_FILE_SIZE_MB', '10000'))  # Skip if larger (10 GB default)
 
 # Retry Configuration
 MAX_RETRIES = int(os.environ.get('MAX_RETRIES', '3'))
