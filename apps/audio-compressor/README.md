@@ -37,9 +37,9 @@ SFTP Server: /audio/
 **Local Storage (default):**
 ```
 PVC: /data/compressed/
-├── 10-17-25_compressed.wav
-├── 10-17-25-01_compressed.wav
-├── 10-17-25-02_compressed.wav
+├── 10-17-25_compressed.mp3
+├── 10-17-25-01_compressed.mp3
+├── 10-17-25-02_compressed.mp3
 ├── 10-17-25_meta.xml (optional)
 ├── 10-17-25-01_meta.xml (optional)
 └── manifest.json
@@ -48,10 +48,10 @@ PVC: /data/compressed/
 **SFTP Storage:**
 ```
 SFTP Server: /compressed/
-├── 10-17-25_compressed.wav
-├── 10-17-25_compressed_20251104_214530.wav (duplicate with timestamp)
-├── 10-17-25-01_compressed.wav
-└── 10-17-25-02_compressed.wav
+├── 10-17-25_compressed.mp3
+├── 10-17-25_compressed_20251104_214530.mp3 (duplicate with timestamp)
+├── 10-17-25-01_compressed.mp3
+└── 10-17-25-02_compressed.mp3
 
 Local PVC (manifest always stored locally):
 └── manifest.json
@@ -100,7 +100,7 @@ Credentials are loaded from AWS Secrets Manager or environment variables:
 | `SAMPLE_RATE` | `16000` | Target sample rate (Hz) |
 | `CHANNELS` | `1` | Number of audio channels (1=mono) |
 | `BITRATE` | `32k` | Target bitrate for compression |
-| `AUDIO_FORMAT` | `wav` | Output audio format |
+| `AUDIO_FORMAT` | `mp3` | Output audio format (mp3 for smaller files, wav for lossless) |
 | `AUDIO_FILENAME` | `StereoMix.wav` | Audio filename to look for |
 | `METADATA_FILENAME` | `Meta.xml` | Metadata filename to copy |
 | `COPY_METADATA` | `true` | Copy metadata files |
@@ -199,12 +199,12 @@ spec:
 5. **Process Each Directory**:
    - Check if already processed (checks SFTP destination or local storage)
    - Download `StereoMix.wav` from source SFTP to temp directory
-   - Compress with FFmpeg: `ffmpeg -i input.wav -ar 16000 -ac 1 -b:a 32k output.wav`
+   - Compress with FFmpeg: `ffmpeg -i input.wav -ar 16000 -ac 1 -b:a 32k output.mp3`
    - Save compressed file to configured destination:
-     - **Local backend**: Save to `/data/compressed/{dirname}_compressed.wav`
-     - **SFTP backend**: Upload to `{SFTP_DEST_PATH}/{dirname}_compressed.wav`
+     - **Local backend**: Save to `/data/compressed/{dirname}_compressed.mp3`
+     - **SFTP backend**: Upload to `{SFTP_DEST_PATH}/{dirname}_compressed.mp3`
        - If upload fails after retries, automatically falls back to local storage
-       - If file exists, appends timestamp: `{dirname}_compressed_YYYYMMDD_HHMMSS.wav`
+       - If file exists, appends timestamp: `{dirname}_compressed_YYYYMMDD_HHMMSS.mp3`
    - Optionally copy `Meta.xml` to same destination
    - Update manifest (always stored locally) with results and storage location
    - Clean up temp files
@@ -217,12 +217,15 @@ The service uses FFmpeg with the following settings optimized for speech:
 - **Sample Rate**: 16kHz (Whisper's native rate)
 - **Channels**: Mono (sufficient for speech)
 - **Bitrate**: 32 kbps (good quality for speech)
-- **Expected Reduction**: 10-20x smaller files
+- **Format**: MP3 (default) or WAV (set `AUDIO_FORMAT=wav` for lossless)
+- **Expected Reduction**: 30-50x smaller files with MP3
 
-Example:
-- Original: 156.3 MB
-- Compressed: 8.2 MB
-- Ratio: 19.0x
+Example (1GB original WAV file):
+- Original: 1000 MB
+- Compressed (MP3): 20-30 MB
+- Ratio: 30-50x
+
+> **Note**: Use `AUDIO_FORMAT=wav` if you need lossless output, but files will be larger (~100-200MB for 1GB input).
 
 ## Manifest Tracking
 

@@ -26,7 +26,7 @@ UPLOAD_RETRY_DELAY = int(os.environ.get('UPLOAD_RETRY_DELAY', '5'))  # seconds
 SAMPLE_RATE = int(os.environ.get('SAMPLE_RATE', '16000'))  # 16kHz for speech
 CHANNELS = int(os.environ.get('CHANNELS', '1'))  # Mono
 BITRATE = os.environ.get('BITRATE', '32k')  # 32 kbps
-AUDIO_FORMAT = os.environ.get('AUDIO_FORMAT', 'wav')
+AUDIO_FORMAT = os.environ.get('AUDIO_FORMAT', 'mp3')  # mp3 for smaller files, wav for lossless
 
 # Processing Configuration
 AUDIO_FILENAME = os.environ.get('AUDIO_FILENAME', 'StereoMix.wav')
