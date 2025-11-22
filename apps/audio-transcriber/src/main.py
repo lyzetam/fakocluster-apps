@@ -229,7 +229,7 @@ def main() -> int:
 
         logger.info(f"Input directory: {config.INPUT_DIR}")
         logger.info(f"Output directory: {config.OUTPUT_DIR}")
-        logger.info(f"Whisper endpoint: {config.WHISPER_ENDPOINT}")
+        logger.info(f"Whisper base URL: {config.WHISPER_BASE_URL}")
         logger.info(f"Model: {config.WHISPER_MODEL}")
         logger.info(f"Language: {config.WHISPER_LANGUAGE}")
         logger.info(f"Output format: {config.OUTPUT_FORMAT}")
