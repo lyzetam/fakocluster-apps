@@ -16,13 +16,12 @@ All configuration is done via environment variables:
 - `AUDIO_EXTENSIONS` - Comma-separated list of extensions (default: `.mp3,.wav,.m4a,.flac,.ogg`)
 - `OUTPUT_FORMAT` - Output format: `json`, `text`, `srt`, `vtt` (default: `json`)
 
-### Whisper API
-- `WHISPER_ENDPOINT` - Whisper API URL (default: `http://localhost:9000/asr`)
-- `WHISPER_MODEL` - Model to use (default: `base`)
-- `WHISPER_LANGUAGE` - Language code (default: `en`)
-- `WHISPER_TASK` - Task: `transcribe` or `translate` (default: `transcribe`)
+### Whisper API (OpenAI SDK format)
+- `WHISPER_BASE_URL` - Whisper API base URL (default: `http://localhost:9000/v1`)
+- `WHISPER_API_KEY` - API key for authentication (**required**)
+- `WHISPER_MODEL` - Model to use (default: `whisper-1`)
+- `WHISPER_LANGUAGE` - Language code or `auto` (default: `auto`)
 - `WHISPER_TIMEOUT` - Request timeout in seconds (default: `600`)
-- `WHISPER_WORD_TIMESTAMPS` - Enable word timestamps (default: `false`)
 
 ### Processing
 - `SKIP_PROCESSED` - Skip already transcribed files (default: `true`)
@@ -43,41 +42,122 @@ docker build -t audio-transcriber .
 
 docker run -v /path/to/audio:/data/compressed \
            -v /path/to/output:/data/transcriptions \
-           -e WHISPER_ENDPOINT=http://whisper-server:9000/asr \
-           -e WHISPER_MODEL=large-v3 \
+           -e WHISPER_BASE_URL=http://your-whisper-server/v1 \
+           -e WHISPER_API_KEY=your-api-key \
+           -e WHISPER_MODEL=faster-distil-whisper-large-v3-en \
            audio-transcriber
 ```
 
-### Kubernetes Job
+### Kubernetes Deployment
+
+#### 1. Create Secret for API Key
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: whisper-credentials
+  namespace: audio-processing
+type: Opaque
+stringData:
+  api-key: YOUR_GPUSTACK_API_KEY
+```
+
+#### 2. Create ConfigMap for Settings (Optional)
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: audio-transcriber-config
+  namespace: audio-processing
+data:
+  WHISPER_BASE_URL: "http://your-whisper-server/v1"
+  WHISPER_MODEL: "faster-distil-whisper-large-v3-en"
+  WHISPER_LANGUAGE: "auto"
+  INPUT_DIR: "/data/compressed"
+  OUTPUT_DIR: "/data/transcriptions"
+  OUTPUT_FORMAT: "json"
+  SKIP_PROCESSED: "true"
+  MAX_FILE_SIZE_MB: "500"
+  BATCH_SIZE: "0"
+  LOG_LEVEL: "INFO"
+```
+
+#### 3. Create the Job
 
 ```yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: audio-transcriber
+  namespace: audio-processing
 spec:
+  backoffLimit: 3
   template:
     spec:
       containers:
       - name: transcriber
-        image: audio-transcriber:latest
+        image: YOUR_DOCKERHUB_USERNAME/audio-transcriber:latest
+        envFrom:
+        - configMapRef:
+            name: audio-transcriber-config
         env:
-        - name: INPUT_DIR
-          value: /data/compressed
-        - name: OUTPUT_DIR
-          value: /data/transcriptions
-        - name: WHISPER_ENDPOINT
-          value: http://whisper-service:9000/asr
-        - name: WHISPER_MODEL
-          value: large-v3
+        - name: WHISPER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: whisper-credentials
+              key: api-key
         volumeMounts:
         - name: data
           mountPath: /data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: audio-data
       restartPolicy: OnFailure
+```
+
+#### Required Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `WHISPER_API_KEY` | **Yes** | GPUStack API key for authentication |
+| `WHISPER_BASE_URL` | Yes | Whisper API endpoint (default: `http://localhost:9000/v1`) |
+| `WHISPER_MODEL` | Yes | Model name (default: `whisper-1`) |
+| `INPUT_DIR` | Yes | Directory with audio files (default: `/data/compressed`) |
+| `OUTPUT_DIR` | Yes | Directory for transcriptions (default: `/data/transcriptions`) |
+
+#### Optional Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `WHISPER_LANGUAGE` | `auto` | Language code or `auto` for detection |
+| `WHISPER_TIMEOUT` | `600` | Request timeout in seconds |
+| `OUTPUT_FORMAT` | `json` | Output format: `json`, `text`, `srt`, `vtt` |
+| `SKIP_PROCESSED` | `true` | Skip already transcribed files |
+| `MAX_FILE_SIZE_MB` | `500` | Skip files larger than this |
+| `BATCH_SIZE` | `0` | Limit files per run (0 = all) |
+| `MAX_RETRIES` | `3` | Retry attempts for failures |
+| `RETRY_DELAY` | `10` | Delay between retries (seconds) |
+| `LOG_LEVEL` | `INFO` | Logging level |
+
+#### Apply to Cluster
+
+```bash
+kubectl apply -f secret.yaml
+kubectl apply -f configmap.yaml
+kubectl apply -f job.yaml
+
+# Watch progress
+kubectl logs -f job/audio-transcriber -n audio-processing
 ```
 
 ## Output

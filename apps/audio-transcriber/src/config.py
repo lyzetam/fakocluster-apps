@@ -9,13 +9,12 @@ AUDIO_EXTENSIONS = os.environ.get('AUDIO_EXTENSIONS', '.mp3,.wav,.m4a,.flac,.ogg
 OUTPUT_DIR = os.environ.get('OUTPUT_DIR', '/data/transcriptions')
 OUTPUT_FORMAT = os.environ.get('OUTPUT_FORMAT', 'json')  # Options: 'json', 'text', 'srt', 'vtt'
 
-# Whisper API Configuration
-WHISPER_ENDPOINT = os.environ.get('WHISPER_ENDPOINT', 'http://localhost:9000/asr')
-WHISPER_MODEL = os.environ.get('WHISPER_MODEL', 'base')
-WHISPER_LANGUAGE = os.environ.get('WHISPER_LANGUAGE', 'en')
-WHISPER_TASK = os.environ.get('WHISPER_TASK', 'transcribe')  # Options: 'transcribe', 'translate'
+# Whisper API Configuration (OpenAI SDK format)
+WHISPER_BASE_URL = os.environ.get('WHISPER_BASE_URL', 'http://localhost:9000/v1')
+WHISPER_API_KEY = os.environ.get('WHISPER_API_KEY')  # Required - no default
+WHISPER_MODEL = os.environ.get('WHISPER_MODEL', 'whisper-1')
+WHISPER_LANGUAGE = os.environ.get('WHISPER_LANGUAGE', 'auto')
 WHISPER_TIMEOUT = int(os.environ.get('WHISPER_TIMEOUT', '600'))  # 10 minutes default
-WHISPER_WORD_TIMESTAMPS = os.environ.get('WHISPER_WORD_TIMESTAMPS', 'false').lower() == 'true'
 
 # Processing Configuration
 SKIP_PROCESSED = os.environ.get('SKIP_PROCESSED', 'true').lower() == 'true'

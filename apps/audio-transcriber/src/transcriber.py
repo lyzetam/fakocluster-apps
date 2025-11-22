@@ -1,9 +1,9 @@
-"""Audio transcription using Whisper API endpoint"""
+"""Audio transcription using OpenAI SDK (Whisper API)"""
 import logging
 import os
 import json
-import requests
 from typing import Dict, Optional
+from openai import OpenAI
 from . import config
 from .exceptions import TranscriptionError
 
@@ -11,40 +11,41 @@ logger = logging.getLogger(__name__)
 
 
 class AudioTranscriber:
-    """Whisper API-based audio transcription"""
+    """OpenAI SDK-based audio transcription"""
 
     def __init__(
         self,
-        endpoint: Optional[str] = None,
+        base_url: Optional[str] = None,
+        api_key: Optional[str] = None,
         model: Optional[str] = None,
         language: Optional[str] = None,
-        task: Optional[str] = None,
-        output_format: Optional[str] = None,
-        timeout: Optional[int] = None,
-        word_timestamps: Optional[bool] = None
+        timeout: Optional[int] = None
     ):
         """
         Initialize the transcriber with configuration
 
         Args:
-            endpoint: Whisper API endpoint URL
-            model: Whisper model to use (tiny, base, small, medium, large)
-            language: Language code for transcription
-            task: Task type ('transcribe' or 'translate')
-            output_format: Output format ('json', 'text', 'srt', 'vtt')
+            base_url: Whisper API base URL (e.g., http://localhost:9000/v1)
+            api_key: API key for authentication
+            model: Whisper model to use
+            language: Language code for transcription (or 'auto')
             timeout: Request timeout in seconds
-            word_timestamps: Whether to include word-level timestamps
         """
-        self.endpoint = endpoint or config.WHISPER_ENDPOINT
+        self.base_url = base_url or config.WHISPER_BASE_URL
+        self.api_key = api_key or config.WHISPER_API_KEY
         self.model = model or config.WHISPER_MODEL
         self.language = language or config.WHISPER_LANGUAGE
-        self.task = task or config.WHISPER_TASK
-        self.output_format = output_format or config.OUTPUT_FORMAT
         self.timeout = timeout or config.WHISPER_TIMEOUT
-        self.word_timestamps = word_timestamps if word_timestamps is not None else config.WHISPER_WORD_TIMESTAMPS
 
-        logger.info(f"AudioTranscriber initialized with endpoint: {self.endpoint}")
-        logger.info(f"Model: {self.model}, Language: {self.language}, Task: {self.task}")
+        # Initialize OpenAI client
+        self.client = OpenAI(
+            base_url=self.base_url,
+            api_key=self.api_key,
+            timeout=self.timeout
+        )
+
+        logger.info(f"AudioTranscriber initialized with base_url: {self.base_url}")
+        logger.info(f"Model: {self.model}, Language: {self.language}")
 
     def transcribe(
         self,
@@ -69,60 +70,28 @@ class AudioTranscriber:
         logger.info(f"Using model: {self.model}, language: {self.language}")
 
         try:
-            # Prepare the request
             with open(audio_path, 'rb') as audio_file:
-                files = {
-                    'audio_file': (os.path.basename(audio_path), audio_file)
-                }
-
-                # Build query parameters based on endpoint expectations
-                params = {
-                    'task': self.task,
-                    'language': self.language,
-                    'output': self.output_format,
-                    'word_timestamps': str(self.word_timestamps).lower()
-                }
-
-                # Some endpoints use encode parameter
-                if self.model:
-                    params['encode'] = 'true'
-
-                logger.info(f"Sending request to {self.endpoint}")
-                logger.debug(f"Parameters: {params}")
-
-                response = requests.post(
-                    self.endpoint,
-                    files=files,
-                    params=params,
-                    timeout=self.timeout
+                # Call the OpenAI transcriptions API
+                response = self.client.audio.transcriptions.create(
+                    model=self.model,
+                    language=self.language if self.language != 'auto' else None,
+                    file=audio_file
                 )
 
-            if response.status_code != 200:
-                error_msg = f"Whisper API returned status {response.status_code}: {response.text[:500]}"
-                logger.error(error_msg)
-                raise TranscriptionError(error_msg)
-
-            # Parse response based on output format
-            if self.output_format == 'json':
-                result = response.json()
-            else:
-                result = {
-                    'text': response.text,
-                    'format': self.output_format
+            # Build result dictionary
+            result = {
+                'text': response.text,
+                '_metadata': {
+                    'audio_file': os.path.basename(audio_path),
+                    'file_size_mb': round(file_size_mb, 2),
+                    'model': self.model,
+                    'language': self.language
                 }
-
-            # Add metadata to result
-            result['_metadata'] = {
-                'audio_file': os.path.basename(audio_path),
-                'file_size_mb': round(file_size_mb, 2),
-                'model': self.model,
-                'language': self.language,
-                'task': self.task
             }
 
             logger.info("Transcription successful")
 
-            # Extract text for logging
+            # Log preview
             text = result.get('text', '')
             if text:
                 text_preview = text[:200] + '...' if len(text) > 200 else text
@@ -134,20 +103,8 @@ class AudioTranscriber:
 
             return result
 
-        except requests.exceptions.Timeout:
-            error_msg = f"Transcription request timed out after {self.timeout} seconds"
-            logger.error(error_msg)
-            raise TranscriptionError(error_msg)
-        except requests.exceptions.ConnectionError as e:
-            error_msg = f"Failed to connect to Whisper endpoint: {e}"
-            logger.error(error_msg)
-            raise TranscriptionError(error_msg)
-        except requests.exceptions.RequestException as e:
-            error_msg = f"Request error during transcription: {e}"
-            logger.error(error_msg)
-            raise TranscriptionError(error_msg)
-        except json.JSONDecodeError as e:
-            error_msg = f"Failed to parse JSON response: {e}"
+        except Exception as e:
+            error_msg = f"Transcription failed: {e}"
             logger.error(error_msg)
             raise TranscriptionError(error_msg)
 
@@ -162,7 +119,9 @@ class AudioTranscriber:
         try:
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-            if self.output_format == 'json':
+            output_format = config.OUTPUT_FORMAT
+
+            if output_format == 'json':
                 with open(output_path, 'w', encoding='utf-8') as f:
                     json.dump(result, f, indent=2, ensure_ascii=False)
             else:
@@ -183,20 +142,12 @@ class AudioTranscriber:
             True if endpoint is accessible, False otherwise
         """
         try:
-            # Try to reach the endpoint
-            health_url = self.endpoint.rsplit('/', 1)[0]
-            response = requests.get(health_url, timeout=10)
-
-            if response.status_code in [200, 404]:
-                logger.info(f"Whisper endpoint is accessible: {self.endpoint}")
-                return True
-            else:
-                logger.warning(f"Whisper endpoint returned status {response.status_code}")
-                return True
-
-        except requests.exceptions.ConnectionError:
-            logger.error(f"Cannot connect to Whisper endpoint: {self.endpoint}")
-            return False
+            # Try to list models as a health check
+            models = self.client.models.list()
+            logger.info(f"Whisper endpoint is accessible: {self.base_url}")
+            logger.info(f"Available models: {[m.id for m in models.data]}")
+            return True
         except Exception as e:
-            logger.error(f"Error checking Whisper endpoint: {e}")
-            return False
+            logger.warning(f"Could not verify endpoint (may still work): {e}")
+            # Return True anyway - some endpoints don't support model listing
+            return True

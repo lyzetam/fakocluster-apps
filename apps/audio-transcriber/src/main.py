@@ -31,7 +31,8 @@ def validate_configuration() -> None:
     required_configs = {
         'INPUT_DIR': config.INPUT_DIR,
         'OUTPUT_DIR': config.OUTPUT_DIR,
-        'WHISPER_ENDPOINT': config.WHISPER_ENDPOINT,
+        'WHISPER_BASE_URL': config.WHISPER_BASE_URL,
+        'WHISPER_API_KEY': config.WHISPER_API_KEY,
     }
 
     missing = [key for key, value in required_configs.items() if not value]

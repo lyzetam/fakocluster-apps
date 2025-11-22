@@ -16,9 +16,9 @@ ENV PYTHONUNBUFFERED=1
 # Default environment variables
 ENV INPUT_DIR=/data/compressed
 ENV OUTPUT_DIR=/data/transcriptions
-ENV WHISPER_ENDPOINT=http://whisper:9000/asr
-ENV WHISPER_MODEL=base
-ENV WHISPER_LANGUAGE=en
+ENV WHISPER_BASE_URL=http://whisper:9000/v1
+ENV WHISPER_MODEL=whisper-1
+ENV WHISPER_LANGUAGE=auto
 ENV LOG_LEVEL=INFO
 
 # Run the transcription service
