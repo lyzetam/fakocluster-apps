@@ -30,6 +30,13 @@ All configuration is done via environment variables:
 - `MAX_RETRIES` - Retry attempts for failed transcriptions (default: `3`)
 - `RETRY_DELAY` - Delay between retries in seconds (default: `10`)
 
+### Audio Chunking
+Large files are automatically split into smaller chunks for reliable transcription:
+- `ENABLE_CHUNKING` - Enable automatic chunking (default: `true`)
+- `CHUNK_DURATION_SECONDS` - Duration per chunk (default: `300` = 5 minutes)
+- `CHUNK_OVERLAP_SECONDS` - Overlap between chunks for context (default: `5`)
+- `MAX_FILE_SIZE_FOR_CHUNKING_MB` - Chunk files larger than this (default: `24`)
+
 ### Logging
 - `LOG_LEVEL` - Logging level (default: `INFO`)
 
@@ -147,6 +154,9 @@ spec:
 | `BATCH_SIZE` | `0` | Limit files per run (0 = all) |
 | `MAX_RETRIES` | `3` | Retry attempts for failures |
 | `RETRY_DELAY` | `10` | Delay between retries (seconds) |
+| `ENABLE_CHUNKING` | `true` | Auto-split large files |
+| `CHUNK_DURATION_SECONDS` | `300` | Duration per chunk (5 min) |
+| `MAX_FILE_SIZE_FOR_CHUNKING_MB` | `24` | Chunk files larger than this |
 | `LOG_LEVEL` | `INFO` | Logging level |
 
 #### Apply to Cluster

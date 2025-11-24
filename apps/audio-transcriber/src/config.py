@@ -21,6 +21,12 @@ SKIP_PROCESSED = os.environ.get('SKIP_PROCESSED', 'true').lower() == 'true'
 MAX_FILE_SIZE_MB = int(os.environ.get('MAX_FILE_SIZE_MB', '500'))  # Skip files larger than this
 BATCH_SIZE = int(os.environ.get('BATCH_SIZE', '0'))  # 0 = process all, >0 = limit per run
 
+# Audio Chunking Configuration
+ENABLE_CHUNKING = os.environ.get('ENABLE_CHUNKING', 'true').lower() == 'true'
+CHUNK_DURATION_SECONDS = int(os.environ.get('CHUNK_DURATION_SECONDS', '300'))  # 5 minutes per chunk
+CHUNK_OVERLAP_SECONDS = int(os.environ.get('CHUNK_OVERLAP_SECONDS', '5'))  # Overlap for context
+MAX_FILE_SIZE_FOR_CHUNKING_MB = int(os.environ.get('MAX_FILE_SIZE_FOR_CHUNKING_MB', '24'))  # Chunk files larger than this
+
 # Retry Configuration
 MAX_RETRIES = int(os.environ.get('MAX_RETRIES', '3'))
 RETRY_DELAY = int(os.environ.get('RETRY_DELAY', '10'))  # seconds

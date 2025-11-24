@@ -9,6 +9,7 @@ from typing import Dict, List
 
 from . import config
 from .transcriber import AudioTranscriber
+from .splitter import AudioSplitter
 from .exceptions import (
     AudioTranscriberError,
     TranscriptionError,
@@ -171,8 +172,8 @@ def process_file(
         try:
             logger.info(f"Attempt {attempt}/{config.MAX_RETRIES}")
 
-            # Transcribe
-            transcription = transcriber.transcribe(audio_path, output_path)
+            # Transcribe (auto-chunks large files)
+            transcription = transcriber.transcribe_auto(audio_path, output_path)
 
             elapsed = time.time() - start_time
             result['status'] = 'success'
@@ -233,6 +234,19 @@ def main() -> int:
         logger.info(f"Model: {config.WHISPER_MODEL}")
         logger.info(f"Language: {config.WHISPER_LANGUAGE}")
         logger.info(f"Output format: {config.OUTPUT_FORMAT}")
+
+        # Log chunking configuration
+        if config.ENABLE_CHUNKING:
+            logger.info(f"Chunking enabled: files > {config.MAX_FILE_SIZE_FOR_CHUNKING_MB} MB will be split")
+            logger.info(f"Chunk duration: {config.CHUNK_DURATION_SECONDS}s, Overlap: {config.CHUNK_OVERLAP_SECONDS}s")
+        else:
+            logger.info("Chunking disabled")
+
+        # Verify FFmpeg is available (needed for chunking)
+        if config.ENABLE_CHUNKING and not AudioSplitter.verify_ffmpeg():
+            logger.error("FFmpeg not found - chunking will not work")
+            logger.info("Install FFmpeg or set ENABLE_CHUNKING=false")
+            return 2
 
         # Create output directory
         os.makedirs(config.OUTPUT_DIR, exist_ok=True)
