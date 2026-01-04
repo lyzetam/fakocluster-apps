@@ -26,6 +26,7 @@ ENABLE_CHUNKING = os.environ.get('ENABLE_CHUNKING', 'true').lower() == 'true'
 CHUNK_DURATION_SECONDS = int(os.environ.get('CHUNK_DURATION_SECONDS', '300'))  # 5 minutes per chunk
 CHUNK_OVERLAP_SECONDS = int(os.environ.get('CHUNK_OVERLAP_SECONDS', '5'))  # Overlap for context
 MAX_FILE_SIZE_FOR_CHUNKING_MB = int(os.environ.get('MAX_FILE_SIZE_FOR_CHUNKING_MB', '24'))  # Chunk files larger than this
+CONCURRENT_CHUNKS = int(os.environ.get('CONCURRENT_CHUNKS', '4'))  # Parallel chunk transcription
 
 # Retry Configuration
 MAX_RETRIES = int(os.environ.get('MAX_RETRIES', '3'))

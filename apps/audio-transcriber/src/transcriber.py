@@ -2,7 +2,8 @@
 import logging
 import os
 import json
-from typing import Dict, Optional, List
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict, Optional, List, Tuple
 from openai import OpenAI
 from . import config
 from .exceptions import TranscriptionError
@@ -166,21 +167,32 @@ class AudioTranscriber:
             logger.warning("Could not split audio, falling back to regular transcription")
             return self.transcribe(audio_path, output_path)
 
-        logger.info(f"Transcribing {len(chunk_paths)} chunks...")
+        logger.info(f"Transcribing {len(chunk_paths)} chunks with {config.CONCURRENT_CHUNKS} workers...")
 
-        # Transcribe each chunk
-        transcriptions = []
+        # Transcribe chunks in parallel
+        transcriptions = [''] * len(chunk_paths)  # Pre-allocate to maintain order
         failed_chunks = []
 
-        for i, chunk_path in enumerate(chunk_paths):
+        def transcribe_chunk(args: Tuple[int, str]) -> Tuple[int, str, Optional[str]]:
+            """Transcribe a single chunk, returning (index, text, error)"""
+            idx, chunk_path = args
             try:
-                logger.info(f"Transcribing chunk {i+1}/{len(chunk_paths)}")
+                logger.info(f"Transcribing chunk {idx+1}/{len(chunk_paths)}")
                 result = self.transcribe(chunk_path)
-                transcriptions.append(result.get('text', ''))
+                return (idx, result.get('text', ''), None)
             except TranscriptionError as e:
-                logger.error(f"Failed to transcribe chunk {i+1}: {e}")
-                failed_chunks.append(i+1)
-                transcriptions.append('')  # Empty placeholder
+                return (idx, '', str(e))
+
+        with ThreadPoolExecutor(max_workers=config.CONCURRENT_CHUNKS) as executor:
+            futures = {executor.submit(transcribe_chunk, (i, path)): i
+                      for i, path in enumerate(chunk_paths)}
+
+            for future in as_completed(futures):
+                idx, text, error = future.result()
+                if error:
+                    logger.error(f"Failed to transcribe chunk {idx+1}: {error}")
+                    failed_chunks.append(idx+1)
+                transcriptions[idx] = text
 
         # Clean up chunk files
         AudioSplitter.cleanup_chunks(chunk_paths)
