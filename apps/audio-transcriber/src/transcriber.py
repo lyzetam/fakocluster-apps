@@ -1,7 +1,9 @@
-"""Audio transcription using OpenAI SDK (Whisper API)"""
+"""Audio transcription using OpenAI SDK or WhisperX native API"""
 import logging
 import os
 import json
+import urllib.request
+import urllib.error
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, Optional, List, Tuple
 from openai import OpenAI
@@ -12,8 +14,73 @@ from .splitter import AudioSplitter
 logger = logging.getLogger(__name__)
 
 
+def _create_multipart_form(file_path: str, language: Optional[str], align: bool, diarize: bool,
+                           min_speakers: Optional[int], max_speakers: Optional[int]) -> Tuple[bytes, str]:
+    """Create multipart/form-data request body for WhisperX API"""
+    import uuid
+    boundary = f'----WebKitFormBoundary{uuid.uuid4().hex}'
+
+    body_parts = []
+
+    # Add file part
+    filename = os.path.basename(file_path)
+    with open(file_path, 'rb') as f:
+        file_data = f.read()
+
+    body_parts.append(
+        f'--{boundary}\r\n'
+        f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+        f'Content-Type: audio/mpeg\r\n\r\n'.encode('utf-8') + file_data + b'\r\n'
+    )
+
+    # Add language if specified
+    if language and language != 'auto':
+        body_parts.append(
+            f'--{boundary}\r\n'
+            f'Content-Disposition: form-data; name="language"\r\n\r\n'
+            f'{language}\r\n'.encode('utf-8')
+        )
+
+    # Add align parameter
+    body_parts.append(
+        f'--{boundary}\r\n'
+        f'Content-Disposition: form-data; name="align"\r\n\r\n'
+        f'{"true" if align else "false"}\r\n'.encode('utf-8')
+    )
+
+    # Add diarize parameter
+    body_parts.append(
+        f'--{boundary}\r\n'
+        f'Content-Disposition: form-data; name="diarize"\r\n\r\n'
+        f'{"true" if diarize else "false"}\r\n'.encode('utf-8')
+    )
+
+    # Add speaker parameters if diarization is enabled
+    if diarize:
+        if min_speakers is not None:
+            body_parts.append(
+                f'--{boundary}\r\n'
+                f'Content-Disposition: form-data; name="min_speakers"\r\n\r\n'
+                f'{min_speakers}\r\n'.encode('utf-8')
+            )
+        if max_speakers is not None:
+            body_parts.append(
+                f'--{boundary}\r\n'
+                f'Content-Disposition: form-data; name="max_speakers"\r\n\r\n'
+                f'{max_speakers}\r\n'.encode('utf-8')
+            )
+
+    # Close boundary
+    body_parts.append(f'--{boundary}--\r\n'.encode('utf-8'))
+
+    body = b''.join(body_parts)
+    content_type = f'multipart/form-data; boundary={boundary}'
+
+    return body, content_type
+
+
 class AudioTranscriber:
-    """OpenAI SDK-based audio transcription"""
+    """Audio transcription supporting OpenAI SDK and WhisperX native API"""
 
     def __init__(
         self,
@@ -21,33 +88,47 @@ class AudioTranscriber:
         api_key: Optional[str] = None,
         model: Optional[str] = None,
         language: Optional[str] = None,
-        timeout: Optional[int] = None
+        timeout: Optional[int] = None,
+        api_type: Optional[str] = None
     ):
         """
         Initialize the transcriber with configuration
 
         Args:
-            base_url: Whisper API base URL (e.g., http://localhost:9000/v1)
+            base_url: Whisper API base URL (e.g., http://localhost:9000/v1 or http://whisperx:8000)
             api_key: API key for authentication
             model: Whisper model to use
             language: Language code for transcription (or 'auto')
             timeout: Request timeout in seconds
+            api_type: API type ('openai' or 'whisperx')
         """
+        self.api_type = api_type or config.WHISPER_API_TYPE
         self.base_url = base_url or config.WHISPER_BASE_URL
         self.api_key = api_key or config.WHISPER_API_KEY
         self.model = model or config.WHISPER_MODEL
         self.language = language or config.WHISPER_LANGUAGE
         self.timeout = timeout or config.WHISPER_TIMEOUT
 
-        # Initialize OpenAI client
-        self.client = OpenAI(
-            base_url=self.base_url,
-            api_key=self.api_key,
-            timeout=self.timeout
-        )
+        # WhisperX-specific settings
+        self.whisperx_align = config.WHISPERX_ALIGN
+        self.whisperx_diarize = config.WHISPERX_DIARIZE
+        self.whisperx_min_speakers = int(config.WHISPERX_MIN_SPEAKERS) if config.WHISPERX_MIN_SPEAKERS else None
+        self.whisperx_max_speakers = int(config.WHISPERX_MAX_SPEAKERS) if config.WHISPERX_MAX_SPEAKERS else None
 
-        logger.info(f"AudioTranscriber initialized with base_url: {self.base_url}")
+        # Initialize OpenAI client only for OpenAI API type
+        self.client = None
+        if self.api_type == 'openai':
+            self.client = OpenAI(
+                base_url=self.base_url,
+                api_key=self.api_key,
+                timeout=self.timeout
+            )
+
+        logger.info(f"AudioTranscriber initialized with API type: {self.api_type}")
+        logger.info(f"Base URL: {self.base_url}")
         logger.info(f"Model: {self.model}, Language: {self.language}")
+        if self.api_type == 'whisperx':
+            logger.info(f"WhisperX settings: align={self.whisperx_align}, diarize={self.whisperx_diarize}")
 
     def transcribe(
         self,
@@ -55,7 +136,7 @@ class AudioTranscriber:
         output_path: Optional[str] = None
     ) -> Dict:
         """
-        Transcribe an audio file using the Whisper API
+        Transcribe an audio file using the configured Whisper API
 
         Args:
             audio_path: Path to the audio file to transcribe
@@ -69,46 +150,126 @@ class AudioTranscriber:
 
         file_size_mb = os.path.getsize(audio_path) / (1024 * 1024)
         logger.info(f"Transcribing: {audio_path} ({file_size_mb:.2f} MB)")
-        logger.info(f"Using model: {self.model}, language: {self.language}")
+        logger.info(f"Using API type: {self.api_type}, language: {self.language}")
+
+        # Route to appropriate implementation
+        if self.api_type == 'whisperx':
+            result = self._transcribe_whisperx(audio_path, file_size_mb)
+        else:
+            result = self._transcribe_openai(audio_path, file_size_mb)
+
+        # Save result if output path provided
+        if output_path:
+            self._save_result(result, output_path)
+
+        return result
+
+    def _transcribe_openai(self, audio_path: str, file_size_mb: float) -> Dict:
+        """Transcribe using OpenAI SDK (OpenAI-compatible APIs)"""
+        logger.info(f"Using OpenAI SDK with model: {self.model}")
 
         try:
             with open(audio_path, 'rb') as audio_file:
-                # Call the OpenAI transcriptions API
                 response = self.client.audio.transcriptions.create(
                     model=self.model,
                     language=self.language if self.language != 'auto' else None,
                     file=audio_file
                 )
 
-            # Build result dictionary
             result = {
                 'text': response.text,
                 '_metadata': {
                     'audio_file': os.path.basename(audio_path),
                     'file_size_mb': round(file_size_mb, 2),
                     'model': self.model,
-                    'language': self.language
+                    'language': self.language,
+                    'api_type': 'openai'
                 }
             }
 
-            logger.info("Transcription successful")
-
-            # Log preview
-            text = result.get('text', '')
-            if text:
-                text_preview = text[:200] + '...' if len(text) > 200 else text
-                logger.info(f"Transcription preview: {text_preview}")
-
-            # Save result if output path provided
-            if output_path:
-                self._save_result(result, output_path)
-
+            logger.info("Transcription successful (OpenAI)")
+            self._log_preview(result.get('text', ''))
             return result
 
         except Exception as e:
-            error_msg = f"Transcription failed: {e}"
+            error_msg = f"OpenAI transcription failed: {e}"
             logger.error(error_msg)
             raise TranscriptionError(error_msg)
+
+    def _transcribe_whisperx(self, audio_path: str, file_size_mb: float) -> Dict:
+        """Transcribe using WhisperX native API"""
+        logger.info(f"Using WhisperX API at {self.base_url}")
+
+        try:
+            # Build the WhisperX endpoint URL
+            base = self.base_url.rstrip('/')
+            url = f"{base}/transcribe"
+
+            # Create multipart form data
+            body, content_type = _create_multipart_form(
+                file_path=audio_path,
+                language=self.language if self.language != 'auto' else None,
+                align=self.whisperx_align,
+                diarize=self.whisperx_diarize,
+                min_speakers=self.whisperx_min_speakers,
+                max_speakers=self.whisperx_max_speakers
+            )
+
+            # Create request
+            request = urllib.request.Request(url, data=body, method='POST')
+            request.add_header('Content-Type', content_type)
+            request.add_header('Content-Length', str(len(body)))
+
+            logger.info(f"Sending request to {url}")
+
+            # Send request with timeout
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                response_data = json.loads(response.read().decode('utf-8'))
+
+            # Extract text from WhisperX response
+            # WhisperX returns: {"segments": [...], "language": "...", "word_segments": [...]}
+            segments = response_data.get('segments', [])
+            text = ' '.join(seg.get('text', '').strip() for seg in segments)
+
+            result = {
+                'text': text,
+                'segments': segments,
+                'language': response_data.get('language'),
+                'word_segments': response_data.get('word_segments'),
+                '_metadata': {
+                    'audio_file': os.path.basename(audio_path),
+                    'file_size_mb': round(file_size_mb, 2),
+                    'model': 'whisperx',
+                    'language': self.language,
+                    'api_type': 'whisperx',
+                    'align': self.whisperx_align,
+                    'diarize': self.whisperx_diarize
+                }
+            }
+
+            logger.info("Transcription successful (WhisperX)")
+            self._log_preview(text)
+            return result
+
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode('utf-8') if e.fp else 'No response body'
+            error_msg = f"WhisperX HTTP error {e.code}: {e.reason}. Body: {error_body}"
+            logger.error(error_msg)
+            raise TranscriptionError(error_msg)
+        except urllib.error.URLError as e:
+            error_msg = f"WhisperX URL error: {e.reason}"
+            logger.error(error_msg)
+            raise TranscriptionError(error_msg)
+        except Exception as e:
+            error_msg = f"WhisperX transcription failed: {e}"
+            logger.error(error_msg)
+            raise TranscriptionError(error_msg)
+
+    def _log_preview(self, text: str) -> None:
+        """Log a preview of the transcription text"""
+        if text:
+            text_preview = text[:200] + '...' if len(text) > 200 else text
+            logger.info(f"Transcription preview: {text_preview}")
 
     def transcribe_auto(
         self,
@@ -263,13 +424,32 @@ class AudioTranscriber:
         Returns:
             True if endpoint is accessible, False otherwise
         """
+        if self.api_type == 'whisperx':
+            return self._verify_whisperx_endpoint()
+        else:
+            return self._verify_openai_endpoint()
+
+    def _verify_openai_endpoint(self) -> bool:
+        """Verify OpenAI-compatible endpoint"""
         try:
-            # Try to list models as a health check
             models = self.client.models.list()
-            logger.info(f"Whisper endpoint is accessible: {self.base_url}")
+            logger.info(f"OpenAI endpoint is accessible: {self.base_url}")
             logger.info(f"Available models: {[m.id for m in models.data]}")
             return True
         except Exception as e:
-            logger.warning(f"Could not verify endpoint (may still work): {e}")
-            # Return True anyway - some endpoints don't support model listing
+            logger.warning(f"Could not verify OpenAI endpoint (may still work): {e}")
             return True
+
+    def _verify_whisperx_endpoint(self) -> bool:
+        """Verify WhisperX endpoint by checking /docs or /openapi.json"""
+        try:
+            base = self.base_url.rstrip('/')
+            url = f"{base}/openapi.json"
+            request = urllib.request.Request(url, method='GET')
+            with urllib.request.urlopen(request, timeout=10) as response:
+                if response.status == 200:
+                    logger.info(f"WhisperX endpoint is accessible: {self.base_url}")
+                    return True
+        except Exception as e:
+            logger.warning(f"Could not verify WhisperX endpoint (may still work): {e}")
+        return True

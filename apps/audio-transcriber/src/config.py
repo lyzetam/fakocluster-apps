@@ -9,12 +9,19 @@ AUDIO_EXTENSIONS = os.environ.get('AUDIO_EXTENSIONS', '.mp3,.wav,.m4a,.flac,.ogg
 OUTPUT_DIR = os.environ.get('OUTPUT_DIR', '/data/transcriptions')
 OUTPUT_FORMAT = os.environ.get('OUTPUT_FORMAT', 'json')  # Options: 'json', 'text', 'srt', 'vtt'
 
-# Whisper API Configuration (OpenAI SDK format)
+# Whisper API Configuration
+WHISPER_API_TYPE = os.environ.get('WHISPER_API_TYPE', 'openai')  # Options: 'openai', 'whisperx'
 WHISPER_BASE_URL = os.environ.get('WHISPER_BASE_URL', 'http://localhost:9000/v1')
-WHISPER_API_KEY = os.environ.get('WHISPER_API_KEY')  # Required - no default
+WHISPER_API_KEY = os.environ.get('WHISPER_API_KEY')  # Required for OpenAI, optional for WhisperX
 WHISPER_MODEL = os.environ.get('WHISPER_MODEL', 'whisper-1')
 WHISPER_LANGUAGE = os.environ.get('WHISPER_LANGUAGE', 'auto')
 WHISPER_TIMEOUT = int(os.environ.get('WHISPER_TIMEOUT', '600'))  # 10 minutes default
+
+# WhisperX-specific Configuration
+WHISPERX_ALIGN = os.environ.get('WHISPERX_ALIGN', 'true').lower() == 'true'
+WHISPERX_DIARIZE = os.environ.get('WHISPERX_DIARIZE', 'false').lower() == 'true'
+WHISPERX_MIN_SPEAKERS = os.environ.get('WHISPERX_MIN_SPEAKERS')  # Optional int
+WHISPERX_MAX_SPEAKERS = os.environ.get('WHISPERX_MAX_SPEAKERS')  # Optional int
 
 # Processing Configuration
 SKIP_PROCESSED = os.environ.get('SKIP_PROCESSED', 'true').lower() == 'true'
