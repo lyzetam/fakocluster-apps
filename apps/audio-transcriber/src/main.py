@@ -77,8 +77,8 @@ def find_audio_files(input_dir: str) -> List[str]:
 
                 audio_files.append(filepath)
 
-    # Sort by modification time (oldest first)
-    audio_files.sort(key=lambda x: os.path.getmtime(x))
+    # Sort by modification time (newest first) to prioritize recent recordings
+    audio_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
 
     return audio_files
 
