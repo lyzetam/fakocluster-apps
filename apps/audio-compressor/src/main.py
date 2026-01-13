@@ -450,7 +450,8 @@ def main() -> int:
         logger.info("="*60)
         
         # Return appropriate exit code
-        if failed_count == len(directories):
+        total_items = len(results)
+        if failed_count == total_items and total_items > 0:
             return 2  # Total failure
         elif failed_count > 0:
             return 1  # Partial failure
