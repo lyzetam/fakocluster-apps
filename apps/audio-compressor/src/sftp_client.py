@@ -98,6 +98,78 @@ class SFTPClient:
             logger.error(f"Failed to list directories in {remote_path}: {e}")
             raise SFTPConnectionError(f"Failed to list directories: {e}")
     
+    def list_audio_files(self, remote_path: str, file_extension: str = '.m4a') -> List[Dict]:
+        """
+        List audio files in flat directory structure matching filename pattern
+        Expected format: "YYYY MM DD HH MM SS .ext" (note space before extension)
+        Example: "2026 01 08 06 07 44 .m4a"
+
+        Args:
+            remote_path: Path to scan for audio files
+            file_extension: File extension to match (default: '.m4a')
+
+        Returns:
+            List of dictionaries with file information:
+            {
+                'filename': str,
+                'date': str (YYYY-MM-DD),
+                'time': str (HH:MM:SS),
+                'timestamp': str (YYYY-MM-DD_HH-MM-SS),
+                'full_path': str,
+                'size_bytes': int
+            }
+        """
+        if not self.sftp:
+            raise SFTPConnectionError("Not connected to SFTP server")
+
+        logger.info(f"Scanning {remote_path} for {file_extension} files")
+
+        # Regex pattern: "YYYY MM DD HH MM SS .ext" (with space before extension)
+        pattern = re.compile(
+            r'^(\d{4})\s+(\d{2})\s+(\d{2})\s+(\d{2})\s+(\d{2})\s+(\d{2})\s+' +
+            re.escape(file_extension) + '$'
+        )
+
+        matching_files = []
+
+        try:
+            # List all items in the remote path
+            items = self.sftp.listdir_attr(remote_path)
+
+            for item in items:
+                # Check if it's a file (not directory) and matches the pattern
+                if not stat.S_ISDIR(item.st_mode):
+                    match = pattern.match(item.filename)
+                    if match:
+                        year, month, day, hour, minute, second = match.groups()
+
+                        # Format date and timestamp
+                        date_str = f"{year}-{month}-{day}"
+                        time_str = f"{hour}:{minute}:{second}"
+                        timestamp = f"{year}-{month}-{day}_{hour}-{minute}-{second}"
+                        full_path = f"{remote_path}/{item.filename}"
+
+                        file_info = {
+                            'filename': item.filename,
+                            'date': date_str,
+                            'time': time_str,
+                            'timestamp': timestamp,
+                            'full_path': full_path,
+                            'size_bytes': item.st_size
+                        }
+
+                        matching_files.append(file_info)
+                        logger.debug(f"Found matching file: {item.filename} (timestamp: {timestamp})")
+
+            # Sort by timestamp (chronologically)
+            matching_files.sort(key=lambda x: x['timestamp'])
+            logger.info(f"Found {len(matching_files)} matching audio files")
+            return matching_files
+
+        except Exception as e:
+            logger.error(f"Failed to list files in {remote_path}: {e}")
+            raise SFTPConnectionError(f"Failed to list files: {e}")
+
     def check_file_exists(self, remote_path: str) -> bool:
         """Check if a file exists on the SFTP server"""
         if not self.sftp:

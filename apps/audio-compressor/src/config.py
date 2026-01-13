@@ -29,11 +29,13 @@ BITRATE = os.environ.get('BITRATE', '32k')  # 32 kbps
 AUDIO_FORMAT = os.environ.get('AUDIO_FORMAT', 'mp3')  # mp3 for smaller files, wav for lossless
 
 # Processing Configuration
-AUDIO_FILENAME = os.environ.get('AUDIO_FILENAME', 'StereoMix.wav')
+PROCESSING_MODE = os.environ.get('PROCESSING_MODE', 'directory')  # Options: 'directory', 'flat'
+FILE_EXTENSION = os.environ.get('FILE_EXTENSION', '.m4a')  # File extension to process in flat mode
+AUDIO_FILENAME = os.environ.get('AUDIO_FILENAME', 'StereoMix.wav')  # Used in directory mode
 METADATA_FILENAME = os.environ.get('METADATA_FILENAME', 'Meta.xml')
 COPY_METADATA = os.environ.get('COPY_METADATA', 'true').lower() == 'true'
 SKIP_PROCESSED = os.environ.get('SKIP_PROCESSED', 'true').lower() == 'true'
-DIR_PATTERN = os.environ.get('DIR_PATTERN', r'^\d{2}-\d{2}-\d{2}(-\d{2})?$')
+DIR_PATTERN = os.environ.get('DIR_PATTERN', r'^\d{2}-\d{2}-\d{2}(-\d{2})?$')  # Used in directory mode
 MAX_FILE_SIZE_MB = int(os.environ.get('MAX_FILE_SIZE_MB', '10000'))  # Skip if larger (10 GB default)
 
 # Retry Configuration
