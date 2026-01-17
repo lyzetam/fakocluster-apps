@@ -29,3 +29,13 @@ RETRY_DELAY = 5
 
 # Logging Configuration
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
+
+# Stale Data Detection
+STALE_DATA_THRESHOLD_DAYS = int(os.environ.get('STALE_DATA_THRESHOLD_DAYS', '3'))
+ALERT_ON_STALE_DATA = os.environ.get('ALERT_ON_STALE_DATA', 'true').lower() == 'true'
+DISCORD_WEBHOOK_URL = os.environ.get('DISCORD_WEBHOOK_URL', '')
+
+# Critical tables that should have recent data (detailed data from ring sync)
+CRITICAL_TABLES = ['sleep_periods', 'activity']
+# Score tables that may have data even without ring sync
+SCORE_TABLES = ['daily_sleep', 'readiness']

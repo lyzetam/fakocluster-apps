@@ -18,6 +18,7 @@ from data_processor import DataProcessor
 from storage import DataStorage
 from postgres_storage import PostgresStorage
 from healthcheck import HealthStatus, start_health_server
+from stale_data_detector import StaleDataDetector
 
 
 # Configure logging
@@ -63,7 +64,14 @@ class OuraCollector:
         # Test connection
         if not self.oura_client.test_connection():
             raise RuntimeError("Failed to connect to Oura API")
-        
+
+        # Initialize stale data detector (only for PostgreSQL backend)
+        if config.STORAGE_BACKEND.lower() == 'postgres':
+            self.stale_detector = StaleDataDetector(self.storage)
+            logger.info("Stale data detector initialized")
+        else:
+            self.stale_detector = None
+
         logger.info("Enhanced Oura Collector initialized successfully")
     
     def _load_configuration(self) -> Dict[str, Any]:
@@ -186,12 +194,20 @@ class OuraCollector:
             # Don't collect future data
             if start_date > end_date:
                 logger.info("All data is up to date, nothing to collect")
-                return {
+
+                # Still check for stale data even when no new collection needed
+                summary = {
                     'start_date': str(start_date),
                     'end_date': str(end_date),
                     'collection_time': datetime.now().isoformat(),
                     'results': {'status': 'up_to_date'}
                 }
+
+                if self.stale_detector:
+                    freshness = self.stale_detector.check_and_alert()
+                    summary['freshness_check'] = freshness
+
+                return summary
             
             logger.info(f"Starting comprehensive data collection from {start_date} to {end_date}")
             
@@ -492,8 +508,14 @@ class OuraCollector:
             
             # Save collection summary
             self.storage.save_collection_summary(summary)
-            
+
             logger.info("Comprehensive data collection completed")
+
+            # Check for stale data after collection
+            if self.stale_detector:
+                freshness = self.stale_detector.check_and_alert()
+                summary['freshness_check'] = freshness
+
             success = True
             return summary
             
