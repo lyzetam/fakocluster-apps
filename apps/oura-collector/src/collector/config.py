@@ -35,6 +35,16 @@ STALE_DATA_THRESHOLD_DAYS = int(os.environ.get('STALE_DATA_THRESHOLD_DAYS', '3')
 ALERT_ON_STALE_DATA = os.environ.get('ALERT_ON_STALE_DATA', 'true').lower() == 'true'
 DISCORD_WEBHOOK_URL = os.environ.get('DISCORD_WEBHOOK_URL', '')
 
+# Daily Health Report Configuration
+DAILY_REPORT_ENABLED = os.environ.get('DAILY_REPORT_ENABLED', 'true').lower() == 'true'
+DAILY_REPORT_HOUR = int(os.environ.get('DAILY_REPORT_HOUR', '10'))  # Hour to post daily report (24h format)
+OBSIDIAN_VAULT_PATH = os.environ.get('OBSIDIAN_VAULT_PATH', '/vault')
+
+# Weekly Health Report Configuration
+WEEKLY_REPORT_ENABLED = os.environ.get('WEEKLY_REPORT_ENABLED', 'true').lower() == 'true'
+WEEKLY_REPORT_DAY = int(os.environ.get('WEEKLY_REPORT_DAY', '0'))  # Day of week (0=Monday, 6=Sunday)
+WEEKLY_REPORT_HOUR = int(os.environ.get('WEEKLY_REPORT_HOUR', '10'))  # Hour to post weekly report
+
 # Critical tables that should have recent data (detailed data from ring sync)
 CRITICAL_TABLES = ['sleep_periods', 'activity']
 # Score tables that may have data even without ring sync

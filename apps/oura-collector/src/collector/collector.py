@@ -19,6 +19,7 @@ from storage import DataStorage
 from postgres_storage import PostgresStorage
 from healthcheck import HealthStatus, start_health_server
 from stale_data_detector import StaleDataDetector
+from daily_reporter import DailyHealthReporter
 
 
 # Configure logging
@@ -72,6 +73,18 @@ class OuraCollector:
         else:
             self.stale_detector = None
 
+        # Initialize daily health reporter (only for PostgreSQL backend)
+        if config.STORAGE_BACKEND.lower() == 'postgres' and config.DAILY_REPORT_ENABLED:
+            self.daily_reporter = DailyHealthReporter(
+                storage=self.storage,
+                discord_webhook_url=config.DISCORD_WEBHOOK_URL,
+                vault_path=config.OBSIDIAN_VAULT_PATH,
+            )
+            self._last_report_date = None
+            logger.info(f"Daily health reporter initialized (will run at {config.DAILY_REPORT_HOUR}:00)")
+        else:
+            self.daily_reporter = None
+
         logger.info("Enhanced Oura Collector initialized successfully")
     
     def _load_configuration(self) -> Dict[str, Any]:
@@ -123,30 +136,38 @@ class OuraCollector:
             raise
     
     def get_last_collection_date(self) -> Optional[datetime]:
-        """Get the date of the most recent data in the database
-        
+        """Get the OLDEST most recent date across all critical tables.
+
+        This ensures all tables get backfilled, not just the ones that happen
+        to have recent data. Uses MIN instead of MAX to catch stale tables.
+
         Returns:
-            The most recent date with data, or None if no data exists
+            The oldest "most recent" date across critical tables, or None if no data exists
         """
         try:
-            # This method should be implemented in the storage classes
-            # For now, we'll use a simple query approach
             if hasattr(self.storage, 'get_session'):
                 with self.storage.get_session() as session:
-                    # Query for the most recent date across key tables
                     from sqlalchemy import func
-                    from database_models import Activity, Readiness, DailySleep
-                    
+                    from database_models import Activity, Readiness, DailySleep, SleepPeriod
+
+                    # Get most recent date from each critical table
                     max_activity = session.query(func.max(Activity.date)).scalar()
                     max_readiness = session.query(func.max(Readiness.date)).scalar()
-                    max_sleep = session.query(func.max(DailySleep.date)).scalar()
-                    
-                    dates = [d for d in [max_activity, max_readiness, max_sleep] if d is not None]
+                    max_daily_sleep = session.query(func.max(DailySleep.date)).scalar()
+                    # SleepPeriod uses bedtime_start instead of date
+                    max_sleep_period = session.query(func.max(func.date(SleepPeriod.bedtime_start))).scalar()
+
+                    # Log individual table dates for debugging
+                    logger.info(f"Table freshness - activity: {max_activity}, readiness: {max_readiness}, "
+                               f"daily_sleep: {max_daily_sleep}, sleep_periods: {max_sleep_period}")
+
+                    dates = [d for d in [max_activity, max_readiness, max_daily_sleep, max_sleep_period] if d is not None]
                     if dates:
-                        most_recent = max(dates)
-                        logger.info(f"Most recent data found: {most_recent}")
-                        return datetime.combine(most_recent, datetime.min.time())
-            
+                        # Use MIN to ensure we backfill from the oldest stale table
+                        oldest_recent = min(dates)
+                        logger.info(f"Oldest recent data across tables: {oldest_recent} (will backfill from here)")
+                        return datetime.combine(oldest_recent, datetime.min.time())
+
             return None
         except Exception as e:
             logger.warning(f"Could not determine last collection date: {e}")
@@ -527,9 +548,88 @@ class OuraCollector:
             # Update health status
             self.health_status.update_collection(success, error_msg)
     
+    def check_and_run_daily_report(self) -> None:
+        """Check if it's time to run the daily report and run it if so.
+
+        The report runs once per day at the configured hour, for yesterday's data.
+        """
+        if not self.daily_reporter:
+            return
+
+        from datetime import date
+        now = datetime.now()
+        today = date.today()
+
+        # Check if we've already run today's report
+        if self._last_report_date == today:
+            return
+
+        # Check if it's time to run (at or after the configured hour)
+        if now.hour >= config.DAILY_REPORT_HOUR:
+            logger.info(f"Running daily health report for yesterday ({today - timedelta(days=1)})")
+            try:
+                results = self.daily_reporter.generate_and_publish()
+                self._last_report_date = today
+
+                if results["discord"]:
+                    logger.info("Daily report posted to Discord")
+                else:
+                    logger.warning("Failed to post daily report to Discord")
+
+                if results["vault"]:
+                    logger.info("Daily report saved to Obsidian vault")
+                else:
+                    logger.warning("Failed to save daily report to vault")
+
+            except Exception as e:
+                logger.error(f"Error generating daily report: {e}")
+
+    def check_and_run_weekly_report(self) -> None:
+        """Check if it's time to run the weekly report and run it if so.
+
+        The report runs once per week on the configured day at the configured hour.
+        """
+        if not self.daily_reporter or not config.WEEKLY_REPORT_ENABLED:
+            return
+
+        from datetime import date
+        now = datetime.now()
+        today = date.today()
+
+        # Check if we've already run this week's report
+        current_week = today.isocalendar()[1]
+        if hasattr(self, '_last_weekly_report_week') and self._last_weekly_report_week == current_week:
+            return
+
+        # Check if it's the right day (0=Monday, 6=Sunday)
+        if now.weekday() != config.WEEKLY_REPORT_DAY:
+            return
+
+        # Check if it's time to run (at or after the configured hour)
+        if now.hour >= config.WEEKLY_REPORT_HOUR:
+            # Generate report for the previous week (Sunday to Saturday if running on Monday)
+            end_date = today - timedelta(days=1)
+            logger.info(f"Running weekly health report for week ending {end_date}")
+            try:
+                results = self.daily_reporter.generate_weekly_report(end_date)
+                self._last_weekly_report_week = current_week
+
+                if results["discord"]:
+                    logger.info("Weekly report posted to Discord")
+                else:
+                    logger.warning("Failed to post weekly report to Discord")
+
+                if results["vault"]:
+                    logger.info("Weekly report saved to Obsidian vault")
+                else:
+                    logger.warning("Failed to save weekly report to vault")
+
+            except Exception as e:
+                logger.error(f"Error generating weekly report: {e}")
+
     def run_once(self, days_back: Optional[int] = None):
         """Run collection once and exit
-        
+
         Args:
             days_back: Number of days to collect
         """
@@ -561,16 +661,30 @@ class OuraCollector:
         """Run continuous collection on schedule"""
         # Run initial collection with smart backfill
         self.collect_data(use_smart_backfill=True)
-        
+
+        # Check if we should run the daily/weekly reports on startup
+        self.check_and_run_daily_report()
+        self.check_and_run_weekly_report()
+
         # Schedule periodic collections with smart backfill
         interval = self.config['collection_interval']
         schedule.every(interval).seconds.do(lambda: self.collect_data(use_smart_backfill=True))
-        
+
         logger.info(f"Starting continuous collection every {interval} seconds")
-        
+        if self.daily_reporter:
+            logger.info(f"Daily health report scheduled at {config.DAILY_REPORT_HOUR}:00")
+            if config.WEEKLY_REPORT_ENABLED:
+                day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+                logger.info(f"Weekly health report scheduled on {day_names[config.WEEKLY_REPORT_DAY]}s at {config.WEEKLY_REPORT_HOUR}:00")
+
         while True:
             try:
                 schedule.run_pending()
+
+                # Check if it's time for daily/weekly reports
+                self.check_and_run_daily_report()
+                self.check_and_run_weekly_report()
+
                 time.sleep(60)  # Check every minute
             except KeyboardInterrupt:
                 logger.info("Stopping continuous collection")
