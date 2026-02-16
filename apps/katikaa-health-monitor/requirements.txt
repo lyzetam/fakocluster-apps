@@ -42,7 +42,7 @@ pytest==7.4.2
 pytest-cov==4.1.0
 
 # Production Dependencies
-gunicorn==21.2.0
+gunicorn==22.0.0
 uvicorn==0.23.2
 
 # Monitoring
