@@ -24,7 +24,7 @@ matplotlib==3.7.2
 seaborn==0.12.2
 
 # HTTP and API
-urllib3==2.0.4
+urllib3==2.6.3
 certifi==2023.7.22
 
 # Template Engine
