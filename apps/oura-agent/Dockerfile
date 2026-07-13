@@ -50,5 +50,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose health check port
 EXPOSE 8080
 
-# Run the application
-CMD ["python", "-m", "src.main"]
+# Run the application (with Supabase memory integration)
+CMD ["python", "-m", "src.deepagent_with_memory"]
