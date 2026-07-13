@@ -365,7 +365,7 @@ class DataProcessor:
                 
         logger.info(f"Processed {len(processed)} stress records")
         return processed
-    
+
     @staticmethod
     def process_session_data(raw_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Process session data (breathing, meditation, etc.)
@@ -537,6 +537,264 @@ class DataProcessor:
                 insights['stress_summary'] = summary['stress']['day_summary']
             
             summaries.append(summary)
-        
+
         logger.info(f"Created {len(summaries)} daily summaries")
         return summaries
+
+    @staticmethod
+    def create_daily_health_composite(daily_sleep: Dict[str, Any],
+                                     activity: Dict[str, Any],
+                                     readiness: Dict[str, Any],
+                                     stress: Optional[Dict[str, Any]] = None,
+                                     spo2: Optional[Dict[str, Any]] = None,
+                                     vo2_max: Optional[Dict[str, Any]] = None,
+                                     cardio_age: Optional[Dict[str, Any]] = None,
+                                     resilience: Optional[Dict[str, Any]] = None,
+                                     workouts: Optional[List[Dict[str, Any]]] = None,
+                                     sessions: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+        """Create comprehensive daily health composite with wellness assessment
+
+        Args:
+            daily_sleep: Daily sleep data
+            activity: Daily activity data
+            readiness: Daily readiness data
+            stress: Daily stress data (optional)
+            spo2: SpO2 data (optional)
+            vo2_max: VO2 Max data (optional)
+            cardio_age: Cardiovascular age data (optional)
+            resilience: Resilience data (optional)
+            workouts: Workout list (optional)
+            sessions: Session list (optional)
+
+        Returns:
+            Comprehensive health composite for the day
+        """
+        date_str = daily_sleep.get('date') or activity.get('date') or readiness.get('date')
+
+        sleep_score = daily_sleep.get('sleep_score', 0)
+        activity_score = activity.get('activity_score', 0)
+        readiness_score = readiness.get('readiness_score', 0)
+
+        # Calculate overall health score (weighted average)
+        overall_score = (sleep_score * 0.35 + activity_score * 0.35 + readiness_score * 0.30)
+
+        # Determine wellness status
+        if overall_score >= 80:
+            wellness_status = 'excellent'
+        elif overall_score >= 65:
+            wellness_status = 'good'
+        elif overall_score >= 50:
+            wellness_status = 'fair'
+        elif overall_score >= 35:
+            wellness_status = 'poor'
+        else:
+            wellness_status = 'at_risk'
+
+        # Aggregate workout data
+        total_workouts = len(workouts) if workouts else 0
+        total_workout_minutes = sum(w.get('duration_minutes', 0) for w in workouts) if workouts else 0
+        workout_calories = sum(w.get('calories', 0) for w in workouts) if workouts else 0
+
+        # Aggregate meditation data
+        meditation_sessions = 0
+        total_meditation_minutes = 0
+        if sessions:
+            for session in sessions:
+                if session.get('type') in ['breathing', 'meditation']:
+                    meditation_sessions += 1
+                    duration = session.get('duration_minutes', 0)
+                    total_meditation_minutes += duration if duration else 0
+
+        # Risk factor analysis
+        risk_factors = []
+        if sleep_score < 60:
+            risk_factors.append('poor_sleep')
+        if activity_score < 50:
+            risk_factors.append('low_activity')
+        if readiness_score < 60:
+            risk_factors.append('low_readiness')
+        if stress and stress.get('stress_high_minutes', 0) > 240:  # More than 4 hours
+            risk_factors.append('high_stress')
+        if spo2 and spo2.get('spo2_percentage_avg', 100) < 95:
+            risk_factors.append('low_spo2')
+
+        # Generate recommendations
+        recommendations = []
+        if sleep_score < 70:
+            recommendations.append('Prioritize sleep: aim for 7-9 hours tonight')
+        if activity_score < 60:
+            recommendations.append('Increase daily activity: target 10,000 steps')
+        if stress and stress.get('stress_high_minutes', 0) > 180:
+            recommendations.append('Practice stress management: try meditation or breathing exercises')
+        if readiness_score < 70:
+            recommendations.append('Consider a recovery day: reduce intense exercise')
+
+        # Calculate parasympathetic balance (HRV-based, normalized 0-1)
+        hrv_index = readiness.get('hrv_balance', 0)
+        parasympathetic_balance = min(1.0, max(0.0, (hrv_index or 0) / 100))
+
+        # Determine stress level
+        stress_minutes = stress.get('stress_high_minutes', 0) if stress else 0
+        if stress_minutes > 240:
+            stress_level = 'high'
+        elif stress_minutes > 120:
+            stress_level = 'elevated'
+        elif stress_minutes > 60:
+            stress_level = 'moderate'
+        else:
+            stress_level = 'low'
+
+        # Determine recovery status
+        if readiness_score >= 75 and sleep_score >= 70:
+            recovery_status = 'optimal'
+        elif readiness_score >= 60 and sleep_score >= 60:
+            recovery_status = 'good'
+        elif readiness_score >= 50 or sleep_score >= 50:
+            recovery_status = 'adequate'
+        else:
+            recovery_status = 'compromised'
+
+        composite = {
+            'date': date_str,
+
+            # Overall assessment
+            'overall_health_score': round(overall_score, 1),
+            'wellness_status': wellness_status,
+
+            # Sleep metrics
+            'sleep_score': sleep_score,
+            'sleep_duration_hours': round(daily_sleep.get('total_sleep_duration_secs', 0) / 3600, 1),
+            'sleep_quality_indicator': 'excellent' if sleep_score >= 80 else ('good' if sleep_score >= 65 else ('fair' if sleep_score >= 50 else 'poor')),
+            'deep_sleep_percentage': daily_sleep.get('score_deep_sleep', 0),
+            'rem_sleep_percentage': daily_sleep.get('score_rem_sleep', 0),
+
+            # Activity metrics
+            'activity_score': activity_score,
+            'activity_status': 'exceeding' if activity_score >= 90 else ('meeting' if activity_score >= 70 else 'below_target'),
+            'total_active_minutes': activity.get('high_activity_minutes', 0) + activity.get('medium_activity_minutes', 0),
+            'steps': activity.get('steps', 0),
+            'met_minutes': activity.get('met_minutes', 0),
+
+            # Recovery & readiness
+            'readiness_score': readiness_score,
+            'recovery_status': recovery_status,
+            'resting_heart_rate': readiness.get('resting_heart_rate'),
+            'hrv_index': hrv_index,
+
+            # Stress & nervous system
+            'stress_level': stress_level,
+            'recovery_index': stress.get('recovery_high_minutes', 0) if stress else 0,
+            'parasympathetic_balance': round(parasympathetic_balance, 2),
+
+            # Respiratory & cardiovascular
+            'spo2_status': 'normal' if (spo2.get('spo2_percentage_avg', 100) >= 95 if spo2 else True) else 'watch',
+            'spo2_average': spo2.get('spo2_percentage_avg') if spo2 else None,
+            'spo2_lowest': spo2.get('lowest_spo2') if spo2 else None,
+            'vo2_max': vo2_max.get('vo2_max') if vo2_max else None,
+            'cardiovascular_age': cardio_age.get('cardiovascular_age') if cardio_age else None,
+
+            # Behavioral
+            'meditation_sessions': meditation_sessions,
+            'total_meditation_minutes': int(total_meditation_minutes),
+            'workout_sessions': total_workouts,
+            'workout_minutes': int(total_workout_minutes),
+            'workout_calories': int(workout_calories),
+
+            # Resilience
+            'resilience_level': resilience.get('resilience_level') if resilience else None,
+
+            # Analysis
+            'risk_factors': risk_factors,
+            'wellness_trends': [],
+            'recommendations': recommendations,
+            'alerts': [f'High stress level detected' if stress_level in ['high', 'elevated'] else None,
+                      f'Low sleep quality' if sleep_score < 60 else None,
+                      f'Low SpO2' if spo2 and spo2.get('spo2_percentage_avg', 100) < 95 else None],
+            'alerts': [a for a in [
+                'High stress level detected' if stress_level in ['high', 'elevated'] else None,
+                'Low sleep quality' if sleep_score < 60 else None,
+                'Low SpO2' if spo2 and spo2.get('spo2_percentage_avg', 100) < 95 else None,
+                'Low activity level' if activity_score < 50 else None,
+                'Poor recovery' if recovery_status == 'compromised' else None,
+            ] if a],
+
+            'raw_data': {
+                'sleep': daily_sleep,
+                'activity': activity,
+                'readiness': readiness,
+                'stress': stress,
+                'spo2': spo2,
+            }
+        }
+
+        return composite
+
+    @staticmethod
+    def process_sleep_phase_timeseries(sleep_period_id: str,
+                                      bedtime_start: str,
+                                      sleep_phase_5_min: Optional[str] = None,
+                                      sleep_phase_30_sec: Optional[str] = None,
+                                      movement_30_sec: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Process sleep phase time-series data (5-min and 30-sec granularity)
+
+        Args:
+            sleep_period_id: ID of the sleep period
+            bedtime_start: Start time of sleep period
+            sleep_phase_5_min: Encoded sleep phases for each 5-minute interval
+            sleep_phase_30_sec: Encoded sleep phases for each 30-second interval
+            movement_30_sec: Encoded movement data for each 30-second interval
+
+        Returns:
+            List of time-series records for storage
+        """
+        timeseries = []
+
+        try:
+            if not bedtime_start:
+                return []
+
+            bedtime_dt = datetime.fromisoformat(bedtime_start.replace('Z', '+00:00'))
+
+            # Process 30-second data (highest granularity)
+            if sleep_phase_30_sec or movement_30_sec:
+                # These are typically encoded strings; store as-is for decoding later
+                ts_record = {
+                    'sleep_period_id': sleep_period_id,
+                    'timestamp': bedtime_dt.isoformat(),
+                    'sleep_phase_5_min': sleep_phase_5_min,
+                    'sleep_phase_30_sec': sleep_phase_30_sec,
+                    'movement_30_sec': movement_30_sec,
+                }
+                timeseries.append(ts_record)
+
+        except Exception as e:
+            logger.error(f"Error processing sleep phase timeseries for period {sleep_period_id}: {e}")
+
+        return timeseries
+
+    @staticmethod
+    def process_activity_met_timeseries(activity_date: str,
+                                       met_data: Optional[Dict[str, Any]] = None,
+                                       class_5_min: Optional[str] = None) -> Dict[str, Any]:
+        """Process activity MET time-series and 5-minute activity class data
+
+        Args:
+            activity_date: Date of the activity
+            met_data: MET time-series dict with interval, items, timestamp
+            class_5_min: Encoded activity class for each 5-minute interval
+
+        Returns:
+            Time-series record for storage
+        """
+        if not met_data and not class_5_min:
+            return {}
+
+        ts_record = {
+            'activity_date': activity_date,
+            'class_5_min': class_5_min,
+            'met_interval': met_data.get('interval') if met_data else None,
+            'met_items': met_data.get('items') if met_data else None,
+            'met_timestamp': met_data.get('timestamp') if met_data else None,
+        }
+
+        return ts_record

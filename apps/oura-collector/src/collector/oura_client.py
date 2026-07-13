@@ -245,70 +245,106 @@ class OuraAPIClient:
     def get_sleep_periods(self, start_date: Optional[Union[str, date]] = None,
                          end_date: Optional[Union[str, date]] = None,
                          document_id: Optional[str] = None) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
-        """Get detailed sleep period data
-        
+        """Get detailed sleep period data with all available fields
+
         Args:
             start_date: Start date
             end_date: End date
             document_id: Specific document ID to fetch
-            
+
         Returns:
             List of sleep period records or single record if document_id provided
         """
         if document_id:
             logger.info(f"Fetching sleep period document: {document_id}")
             return self._make_request(f'usercollection/sleep/{document_id}')
-            
+
         start_str, end_str = self._format_dates(start_date, end_date)
-        params = {'start_date': start_str, 'end_date': end_str}
-        
-        logger.info(f"Fetching sleep period data from {start_str} to {end_str}")
+        # Request all available sleep fields (28 total)
+        all_fields = [
+            'id', 'average_breath', 'average_heart_rate', 'average_hrv', 'awake_time',
+            'bedtime_end', 'bedtime_start', 'day', 'deep_sleep_duration', 'efficiency',
+            'heart_rate', 'hrv', 'latency', 'light_sleep_duration', 'low_battery_alert',
+            'lowest_heart_rate', 'movement_30_sec', 'period', 'readiness', 'readiness_score_delta',
+            'rem_sleep_duration', 'restless_periods', 'sleep_algorithm_version', 'sleep_analysis_reason',
+            'sleep_phase_30_sec', 'sleep_phase_5_min', 'sleep_score_delta', 'time_in_bed',
+            'total_sleep_duration', 'type', 'ring_id', 'app_sleep_phase_5_min'
+        ]
+        params = {
+            'start_date': start_str,
+            'end_date': end_str,
+            'fields': ','.join(all_fields)
+        }
+
+        logger.info(f"Fetching sleep period data from {start_str} to {end_str} with all fields")
         return self._make_paginated_request('usercollection/sleep', params)
     
     def get_daily_activity(self, start_date: Optional[Union[str, date]] = None,
                           end_date: Optional[Union[str, date]] = None,
                           document_id: Optional[str] = None) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
-        """Get daily activity data
-        
+        """Get daily activity data with all available fields
+
         Args:
             start_date: Start date
             end_date: End date
             document_id: Specific document ID to fetch
-            
+
         Returns:
             List of activity records or single record if document_id provided
         """
         if document_id:
             logger.info(f"Fetching activity document: {document_id}")
             return self._make_request(f'usercollection/daily_activity/{document_id}')
-            
+
         start_str, end_str = self._format_dates(start_date, end_date)
-        params = {'start_date': start_str, 'end_date': end_str}
-        
-        logger.info(f"Fetching activity data from {start_str} to {end_str}")
+        # Request all available activity fields (24 total)
+        all_fields = [
+            'id', 'active_calories', 'average_met_minutes', 'class_5_min', 'contributors',
+            'day', 'equivalent_walking_distance', 'high_activity_met_minutes', 'high_activity_time',
+            'inactivity_alerts', 'low_activity_met_minutes', 'low_activity_time',
+            'medium_activity_met_minutes', 'medium_activity_time', 'met', 'meters_to_target',
+            'non_wear_time', 'resting_time', 'score', 'sedentary_met_minutes', 'sedentary_time',
+            'steps', 'target_calories', 'target_meters', 'timestamp', 'total_calories'
+        ]
+        params = {
+            'start_date': start_str,
+            'end_date': end_str,
+            'fields': ','.join(all_fields)
+        }
+
+        logger.info(f"Fetching activity data from {start_str} to {end_str} with all fields")
         return self._make_paginated_request('usercollection/daily_activity', params)
     
     def get_daily_readiness(self, start_date: Optional[Union[str, date]] = None,
                            end_date: Optional[Union[str, date]] = None,
                            document_id: Optional[str] = None) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
-        """Get daily readiness data
-        
+        """Get daily readiness data with all available fields including all 9 contributors
+
         Args:
             start_date: Start date
             end_date: End date
             document_id: Specific document ID to fetch
-            
+
         Returns:
             List of readiness records or single record if document_id provided
         """
         if document_id:
             logger.info(f"Fetching readiness document: {document_id}")
             return self._make_request(f'usercollection/daily_readiness/{document_id}')
-            
+
         start_str, end_str = self._format_dates(start_date, end_date)
-        params = {'start_date': start_str, 'end_date': end_str}
-        
-        logger.info(f"Fetching readiness data from {start_str} to {end_str}")
+        # Request all available readiness fields (11 total with 9 contributors)
+        all_fields = [
+            'id', 'contributors', 'day', 'score', 'temperature_deviation',
+            'temperature_trend_deviation', 'timestamp'
+        ]
+        params = {
+            'start_date': start_str,
+            'end_date': end_str,
+            'fields': ','.join(all_fields)
+        }
+
+        logger.info(f"Fetching readiness data from {start_str} to {end_str} with all fields")
         return self._make_paginated_request('usercollection/daily_readiness', params)
     
     def get_heart_rate(self, start_datetime: Optional[Union[str, datetime]] = None,
@@ -585,22 +621,22 @@ class OuraAPIClient:
                            end_date: Optional[Union[str, date]] = None,
                            document_id: Optional[str] = None) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
         """Get daily resilience data
-        
+
         Args:
             start_date: Start date
             end_date: End date
             document_id: Specific document ID to fetch
-            
+
         Returns:
             List of resilience records or single record if document_id provided
         """
         if document_id:
             logger.info(f"Fetching resilience document: {document_id}")
             return self._make_request(f'usercollection/daily_resilience/{document_id}')
-            
+
         start_str, end_str = self._format_dates(start_date, end_date)
         params = {'start_date': start_str, 'end_date': end_str}
-        
+
         logger.info(f"Fetching resilience data from {start_str} to {end_str}")
         return self._make_paginated_request('usercollection/daily_resilience', params)
     

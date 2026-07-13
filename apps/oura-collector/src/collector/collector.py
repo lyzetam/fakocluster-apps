@@ -278,7 +278,35 @@ class OuraCollector:
             except Exception as e:
                 logger.error(f"Failed to collect sleep period data: {e}")
                 summary['results']['sleep_periods'] = {'error': str(e)}
-            
+
+            # Sleep phase time-series data (5-min and 30-sec granularity)
+            try:
+                logger.info("Collecting sleep phase time-series data...")
+                sleep_phase_timeseries = []
+                for period in raw_sleep_periods:
+                    ts_data = self.processor.process_sleep_phase_timeseries(
+                        sleep_period_id=period.get('id'),
+                        bedtime_start=period.get('bedtime_start'),
+                        sleep_phase_5_min=period.get('sleep_phase_5_min'),
+                        sleep_phase_30_sec=period.get('sleep_phase_30_sec'),
+                        movement_30_sec=period.get('movement_30_sec')
+                    )
+                    sleep_phase_timeseries.extend(ts_data)
+
+                # Save time-series data
+                if sleep_phase_timeseries:
+                    count = self.storage.save_data(sleep_phase_timeseries, 'sleep_phase_timeseries')
+                    summary['results']['sleep_phase_timeseries'] = {
+                        'records_collected': len(sleep_phase_timeseries),
+                        'records_saved': count
+                    }
+                else:
+                    summary['results']['sleep_phase_timeseries'] = {'records_collected': 0}
+
+            except Exception as e:
+                logger.error(f"Failed to collect sleep phase time-series data: {e}")
+                summary['results']['sleep_phase_timeseries'] = {'error': str(e)}
+
             # Daily sleep scores
             try:
                 logger.info("Collecting daily sleep scores...")
@@ -318,7 +346,34 @@ class OuraCollector:
             except Exception as e:
                 logger.error(f"Failed to collect activity data: {e}")
                 summary['results']['activity'] = {'error': str(e)}
-            
+
+            # Activity MET time-series data
+            try:
+                logger.info("Collecting activity MET time-series data...")
+                activity_met_timeseries = []
+                for activity in raw_activity:
+                    ts_data = self.processor.process_activity_met_timeseries(
+                        activity_date=activity.get('day'),
+                        met_data=activity.get('met'),
+                        class_5_min=activity.get('class_5_min')
+                    )
+                    if ts_data and ts_data.get('activity_date'):
+                        activity_met_timeseries.append(ts_data)
+
+                # Save time-series data
+                if activity_met_timeseries:
+                    count = self.storage.save_data(activity_met_timeseries, 'activity_met_timeseries')
+                    summary['results']['activity_met_timeseries'] = {
+                        'records_collected': len(activity_met_timeseries),
+                        'records_saved': count
+                    }
+                else:
+                    summary['results']['activity_met_timeseries'] = {'records_collected': 0}
+
+            except Exception as e:
+                logger.error(f"Failed to collect activity MET time-series data: {e}")
+                summary['results']['activity_met_timeseries'] = {'error': str(e)}
+
             # Readiness data
             try:
                 logger.info("Collecting readiness data...")
@@ -491,15 +546,15 @@ class OuraCollector:
                 try:
                     logger.info("Collecting resilience data...")
                     raw_resilience = self.oura_client.get_daily_resilience(start_date, end_date)
-                    
+
                     # Save raw data
                     count = self.storage.save_data(raw_resilience, 'resilience')
-                    
+
                     summary['results']['resilience'] = {
                         'records_collected': len(raw_resilience),
                         'records_saved': count
                     }
-                    
+
                 except Exception as e:
                     logger.error(f"Failed to collect resilience data: {e}")
                     summary['results']['resilience'] = {'error': str(e)}

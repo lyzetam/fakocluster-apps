@@ -23,35 +23,36 @@ class PersonalInfo(Base):
 class SleepPeriod(Base):
     """Detailed sleep period data"""
     __tablename__ = 'oura_sleep_periods'
-    
+
     id = Column(Integer, primary_key=True)
     period_id = Column(String(50), unique=True, nullable=False)
     date = Column(Date, nullable=False)
-    type = Column(String(50))
+    type = Column(String(50))  # main, nap, deleted
+    period_number = Column(Integer)  # Which sleep period (1st, 2nd, etc)
     score = Column(Integer)
-    
+
     # Time metrics
     bedtime_start = Column(DateTime)
     bedtime_end = Column(DateTime)
     total_sleep_hours = Column(Float)
     time_in_bed_hours = Column(Float)
-    
+
     # Sleep stages
     rem_hours = Column(Float)
     deep_hours = Column(Float)
     light_hours = Column(Float)
     awake_time = Column(Float)
-    
+
     # Percentages
     rem_percentage = Column(Float)
     deep_percentage = Column(Float)
     light_percentage = Column(Float)
-    
+
     # Efficiency and quality
     efficiency_percent = Column(Float)
     latency_minutes = Column(Float)
     restless_periods = Column(Integer)
-    
+
     # Physiological metrics
     heart_rate_avg = Column(Float)
     heart_rate_min = Column(Float)
@@ -60,14 +61,29 @@ class SleepPeriod(Base):
     hrv_min = Column(Float)
     hrv_stdev = Column(Float)
     respiratory_rate = Column(Float)
-    
+
+    # Breathing
+    average_breath = Column(Float)
+
     # Additional flags
     has_heart_rate_data = Column(Boolean)
     has_hrv_data = Column(Boolean)
-    
+    low_battery_alert = Column(Boolean)
+
+    # Sleep quality deltas
+    sleep_score_delta = Column(Float)
+    readiness_score_delta = Column(Float)
+
+    # Algorithm info
+    sleep_algorithm_version = Column(String(50))
+    sleep_analysis_reason = Column(String(100))
+
+    # Device info
+    ring_id = Column(String(50))
+
     created_at = Column(DateTime, default=datetime.utcnow)
     raw_data = Column(JSON)
-    
+
     __table_args__ = (Index('idx_sleep_date', 'date'),)
 
 class DailySleep(Base):
@@ -96,37 +112,44 @@ class DailySleep(Base):
 class Activity(Base):
     """Daily activity data"""
     __tablename__ = 'oura_activity'
-    
+
     id = Column(Integer, primary_key=True)
     date = Column(Date, unique=True, nullable=False)
     activity_score = Column(Integer)
     steps = Column(Integer)
+    distance_meters = Column(Integer)
     distance_km = Column(Float)
-    
+
     # Calories
     calories_active = Column(Integer)
     calories_total = Column(Integer)
     calories_target = Column(Integer)
-    
+
     # Activity time breakdown
     high_activity_minutes = Column(Float)
     medium_activity_minutes = Column(Float)
     low_activity_minutes = Column(Float)
     sedentary_minutes = Column(Float)
+    sedentary_met_minutes = Column(Float)  # NEW
     non_wear_minutes = Column(Float)
+    resting_time_minutes = Column(Float)
     total_active_minutes = Column(Float)
-    
+
     # MET metrics
     met_minutes = Column(Float)
-    average_met = Column(Float)
+    average_met_minutes = Column(Float)
     high_activity_met_minutes = Column(Float)
     medium_activity_met_minutes = Column(Float)
     low_activity_met_minutes = Column(Float)
-    
+
+    # Target metrics (NEW)
+    target_meters = Column(Integer)
+    meters_to_target = Column(Integer)
+    equivalent_walking_distance = Column(Float)
+
     # Other metrics
     inactivity_alerts = Column(Integer)
-    resting_time_minutes = Column(Float)
-    
+
     # Contributors
     score_meet_daily_targets = Column(Integer)
     score_move_every_hour = Column(Integer)
@@ -134,10 +157,10 @@ class Activity(Base):
     score_stay_active = Column(Integer)
     score_training_frequency = Column(Integer)
     score_training_volume = Column(Integer)
-    
+
     created_at = Column(DateTime, default=datetime.utcnow)
     raw_data = Column(JSON)
-    
+
     __table_args__ = (Index('idx_activity_date', 'date'),)
 
 class Readiness(Base):
@@ -166,6 +189,7 @@ class Readiness(Base):
     score_recovery_index = Column(Integer)
     score_resting_heart_rate = Column(Integer)
     score_sleep_balance = Column(Integer)
+    score_sleep_regularity = Column(Integer)  # NEW - 9th contributor
     
     created_at = Column(DateTime, default=datetime.utcnow)
     raw_data = Column(JSON)
@@ -370,21 +394,60 @@ class RingConfiguration(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     raw_data = Column(JSON)
 
+class SleepPhaseTimeSeries(Base):
+    """Sleep phase and movement time-series data (5-min and 30-sec granularity)"""
+    __tablename__ = 'oura_sleep_phase_timeseries'
+
+    id = Column(Integer, primary_key=True)
+    sleep_period_id = Column(String(50), nullable=False)  # FK to SleepPeriod.period_id
+    timestamp = Column(DateTime, nullable=False)
+
+    # 5-minute granularity
+    sleep_phase_5_min = Column(String(50))  # Encoded sleep stage
+
+    # 30-second granularity
+    sleep_phase_30_sec = Column(String(50))  # Encoded sleep stage
+    movement_30_sec = Column(String(50))  # Encoded movement data
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (Index('idx_sleep_phase_period', 'sleep_period_id'),
+                      Index('idx_sleep_phase_timestamp', 'timestamp'))
+
+class ActivityMetTimeSeries(Base):
+    """Activity MET and class time-series data"""
+    __tablename__ = 'oura_activity_met_timeseries'
+
+    id = Column(Integer, primary_key=True)
+    activity_date = Column(Date, nullable=False)  # FK to Activity.date
+
+    # 5-minute granularity
+    class_5_min = Column(String(50))  # Activity class for each 5-minute interval
+
+    # MET time-series with granular data
+    met_interval = Column(Integer)  # Sample interval in seconds
+    met_items = Column(JSON)  # Array of MET values
+    met_timestamp = Column(DateTime)  # When series started
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (Index('idx_activity_met_date', 'activity_date'),)
+
 class DailySummary(Base):
     """Comprehensive daily summaries"""
     __tablename__ = 'oura_daily_summaries'
-    
+
     id = Column(Integer, primary_key=True)
     date = Column(Date, unique=True, nullable=False)
     overall_health_score = Column(Float)
-    
+
     # Counts
     total_sleep_periods = Column(Integer)
     total_workouts = Column(Integer)
-    
+
     # Insights stored as JSON
     insights = Column(JSON)
-    
+
     # References to primary data (stored as JSON)
     sleep_periods_data = Column(JSON)
     daily_sleep_data = Column(JSON)
@@ -392,25 +455,161 @@ class DailySummary(Base):
     readiness_data = Column(JSON)
     stress_data = Column(JSON)
     workouts_data = Column(JSON)
-    
+
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     __table_args__ = (Index('idx_summary_date', 'date'),)
+
+class DailyHealthComposite(Base):
+    """Comprehensive daily health composite with all key metrics and wellness status"""
+    __tablename__ = 'oura_daily_health_composite'
+
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, unique=True, nullable=False)
+
+    # Overall wellness assessment
+    overall_health_score = Column(Float)  # Weighted 0-100
+    wellness_status = Column(String(50))  # excellent, good, fair, poor, at_risk
+
+    # Sleep health
+    sleep_score = Column(Integer)
+    sleep_duration_hours = Column(Float)
+    sleep_quality_indicator = Column(String(50))  # excellent, good, fair, poor
+    deep_sleep_percentage = Column(Float)
+    rem_sleep_percentage = Column(Float)
+
+    # Activity health
+    activity_score = Column(Integer)
+    activity_status = Column(String(50))  # exceeding, meeting, below_target
+    total_active_minutes = Column(Integer)
+    steps = Column(Integer)
+    met_minutes = Column(Float)
+
+    # Recovery & readiness
+    readiness_score = Column(Integer)
+    recovery_status = Column(String(50))  # optimal, good, adequate, compromised
+    resting_heart_rate = Column(Float)
+    hrv_index = Column(Float)
+
+    # Stress & nervous system
+    stress_level = Column(String(50))  # low, moderate, elevated, high
+    recovery_index = Column(Float)
+    parasympathetic_balance = Column(Float)  # 0-1, higher is better
+
+    # Respiratory & cardiovascular
+    spo2_status = Column(String(50))  # normal, watch, concern
+    spo2_average = Column(Float)
+    spo2_lowest = Column(Float)
+    vo2_max = Column(Float)
+    cardiovascular_age = Column(Integer)
+
+    # Behavioral
+    meditation_sessions = Column(Integer)
+    total_meditation_minutes = Column(Integer)
+    workout_sessions = Column(Integer)
+    workout_minutes = Column(Integer)
+    workout_calories = Column(Integer)
+
+    # Resilience
+    resilience_level = Column(String(50))  # strong, solid, adequate, limited
+
+    # Health analysis
+    risk_factors = Column(JSON)  # ['poor_sleep', 'high_stress', 'low_activity', ...]
+    wellness_trends = Column(JSON)  # 7-day trend indicators
+    recommendations = Column(JSON)  # Personalized health recommendations
+    alerts = Column(JSON)  # Critical health alerts
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+
+    __table_args__ = (Index('idx_composite_date', 'date'),)
+
+class WeeklyHealthTrend(Base):
+    """Weekly health trends, aggregates, and pattern analysis"""
+    __tablename__ = 'oura_weekly_health_trends'
+
+    id = Column(Integer, primary_key=True)
+    week_start_date = Column(Date, nullable=False)
+    week_end_date = Column(Date, nullable=False)
+
+    # Weekly score averages
+    avg_sleep_score = Column(Float)
+    avg_activity_score = Column(Float)
+    avg_readiness_score = Column(Float)
+    avg_overall_health = Column(Float)
+
+    # Weekly health metrics
+    avg_sleep_duration_hours = Column(Float)
+    avg_resting_heart_rate = Column(Float)
+    avg_daily_steps = Column(Integer)
+    avg_active_minutes = Column(Integer)
+
+    # Weekly totals
+    total_workouts = Column(Integer)
+    total_workout_minutes = Column(Integer)
+    total_workout_calories = Column(Integer)
+    total_meditation_minutes = Column(Integer)
+    total_steps = Column(Integer)
+
+    # Weekly health status
+    best_day_date = Column(Date)
+    best_day_score = Column(Float)
+    worst_day_date = Column(Date)
+    worst_day_score = Column(Float)
+    most_stressful_day = Column(Date)
+    best_recovery_day = Column(Date)
+
+    # Trend analysis
+    sleep_trend = Column(String(50))  # improving, stable, declining
+    activity_trend = Column(String(50))
+    stress_trend = Column(String(50))
+    recovery_trend = Column(String(50))
+    overall_health_trend = Column(String(50))
+
+    # Weekly insights
+    consistency_score = Column(Float)  # How consistent health behaviors are
+    stress_management_index = Column(Float)  # Ratio of recovery to stress
+    activity_consistency = Column(Float)  # Days meeting activity targets
+
+    # Health analysis
+    insights = Column(JSON)  # Weekly patterns and observations
+    warnings = Column(JSON)  # Health concerns for the week
+    achievements = Column(JSON)  # Notable achievements
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (Index('idx_trend_week_start', 'week_start_date'),)
+
+class RingBatteryLevel(Base):
+    """Ring battery status and charging state"""
+    __tablename__ = 'oura_ring_battery_level'
+
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, nullable=False)
+    timestamp_unix = Column(Integer)
+    level = Column(Integer)  # Battery percentage 0-100
+    charging = Column(Boolean)
+    in_charger = Column(Boolean)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    raw_data = Column(JSON)
+
+    __table_args__ = (Index('idx_battery_timestamp', 'timestamp'),)
 
 class CollectionLog(Base):
     """Track collection runs and statistics"""
     __tablename__ = 'oura_collection_logs'
-    
+
     id = Column(Integer, primary_key=True)
     collection_time = Column(DateTime, nullable=False)
     start_date = Column(Date)
     end_date = Column(Date)
-    
+
     # Results summary
     results = Column(JSON)
     total_records = Column(Integer)
     successful_endpoints = Column(Integer)
     failed_endpoints = Column(Integer)
     errors = Column(JSON)
-    
+
     created_at = Column(DateTime, default=datetime.utcnow)
