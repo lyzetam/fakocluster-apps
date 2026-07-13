@@ -40,44 +40,54 @@ class DataProcessor:
                     'date': record.get('day'),
                     'period_id': record.get('id'),
                     'type': record.get('type', 'long_sleep'),
-                    'score': record.get('sleep_score_delta'),
-                    
+                    'score': record.get('score'),
+
                     # Time metrics
                     'bedtime_start': record.get('bedtime_start'),
                     'bedtime_end': record.get('bedtime_end'),
                     'total_sleep_hours': round(total_sleep / 3600, 2) if total_sleep else 0,
                     'time_in_bed_hours': round(time_in_bed / 3600, 2) if time_in_bed else 0,
-                    
+
                     # Sleep stages
                     'rem_hours': round(rem_duration / 3600, 2),
                     'deep_hours': round(deep_duration / 3600, 2),
                     'light_hours': round(light_duration / 3600, 2),
                     'awake_time': round(record.get('awake_time', 0) / 3600, 2),
-                    
+
                     # Sleep stage percentages
                     'rem_percentage': round((rem_duration / total_sleep_stages * 100), 1) if total_sleep_stages > 0 else 0,
                     'deep_percentage': round((deep_duration / total_sleep_stages * 100), 1) if total_sleep_stages > 0 else 0,
                     'light_percentage': round((light_duration / total_sleep_stages * 100), 1) if total_sleep_stages > 0 else 0,
-                    
+
                     # Efficiency and quality
                     'efficiency_percent': efficiency,
                     'latency_minutes': round(record.get('latency', 0) / 60, 1),
                     'restless_periods': record.get('restless_periods', 0),
-                    
+
                     # Physiological metrics
                     'heart_rate_avg': record.get('average_heart_rate'),
                     'heart_rate_min': record.get('lowest_heart_rate'),
                     'hrv_avg': record.get('average_hrv'),
                     'respiratory_rate': record.get('average_breath'),
-                    
+                    'lowest_heart_rate': record.get('lowest_heart_rate'),
+
                     # Movement data
                     'movement_30_sec': record.get('movement_30_sec'),
                     'sleep_phase_5_min': record.get('sleep_phase_5_min'),
-                    
+
+                    # New comprehensive fields (schema v2)
+                    'period_number': record.get('period_number'),
+                    'low_battery_alert': record.get('low_battery_alert'),
+                    'sleep_score_delta': record.get('sleep_score_delta'),
+                    'readiness_score_delta': record.get('readiness_score_delta'),
+                    'sleep_algorithm_version': record.get('sleep_algorithm_version'),
+                    'sleep_analysis_reason': record.get('sleep_analysis_reason'),
+                    'ring_id': record.get('ring_id'),
+
                     # Time series data references
                     'has_heart_rate_data': bool(record.get('heart_rate')),
                     'has_hrv_data': bool(record.get('hrv')),
-                    
+
                     'raw_data': record
                 }
                 
@@ -173,12 +183,12 @@ class DataProcessor:
                     'activity_score': record.get('score'),
                     'steps': record.get('steps'),
                     'distance_km': round(distance_km, 2),
-                    
+
                     # Calories
                     'calories_active': record.get('active_calories'),
                     'calories_total': record.get('total_calories'),
                     'calories_target': record.get('target_calories'),
-                    
+
                     # Activity time breakdown
                     'high_activity_minutes': round(high_minutes, 1),
                     'medium_activity_minutes': round(medium_minutes, 1),
@@ -186,22 +196,24 @@ class DataProcessor:
                     'sedentary_minutes': round(sedentary_minutes, 1),
                     'non_wear_minutes': round(non_wear_minutes, 1),
                     'total_active_minutes': round(total_active_minutes, 1),
-                    
+
                     # MET metrics
                     'met_minutes': record.get('met_minutes'),
                     'average_met': record.get('average_met_minutes'),
                     'high_activity_met_minutes': record.get('high_activity_met_minutes'),
                     'medium_activity_met_minutes': record.get('medium_activity_met_minutes'),
                     'low_activity_met_minutes': record.get('low_activity_met_minutes'),
-                    
+                    'sedentary_met_minutes': record.get('sedentary_met_minutes'),
+
                     # Goals
                     'target_meters': record.get('target_meters'),
                     'meters_to_target': record.get('meters_to_target'),
-                    
+                    'equivalent_walking_distance': record.get('equivalent_walking_distance'),
+
                     # Other metrics
                     'inactivity_alerts': record.get('inactivity_alerts', 0),
                     'resting_time_minutes': round(record.get('resting_time', 0) / 60, 1),
-                    
+
                     # Contributor scores
                     'score_meet_daily_targets': contributors.get('meet_daily_targets'),
                     'score_move_every_hour': contributors.get('move_every_hour'),
@@ -209,11 +221,11 @@ class DataProcessor:
                     'score_stay_active': contributors.get('stay_active'),
                     'score_training_frequency': contributors.get('training_frequency'),
                     'score_training_volume': contributors.get('training_volume'),
-                    
+
                     # Time series reference
                     'has_met_data': bool(record.get('met')),
                     'class_5_min': record.get('class_5_min'),
-                    
+
                     'raw_data': record
                 }
                 
@@ -244,16 +256,16 @@ class DataProcessor:
                 processed_record = {
                     'date': record.get('day'),
                     'readiness_score': record.get('score'),
-                    
+
                     # Temperature metrics
                     'temperature_deviation': record.get('temperature_deviation'),
                     'temperature_trend_deviation': record.get('temperature_trend_deviation'),
-                    
+
                     # Recovery metrics
                     'recovery_index': record.get('recovery_index'),
                     'resting_heart_rate': record.get('resting_heart_rate'),
                     'hrv_balance': record.get('hrv_balance'),
-                    
+
                     # Contributor scores
                     'score_activity_balance': contributors.get('activity_balance'),
                     'score_body_temperature': contributors.get('body_temperature'),
@@ -263,7 +275,8 @@ class DataProcessor:
                     'score_recovery_index': contributors.get('recovery_index'),
                     'score_resting_heart_rate': contributors.get('resting_heart_rate'),
                     'score_sleep_balance': contributors.get('sleep_balance'),
-                    
+                    'score_sleep_regularity': contributors.get('sleep_regularity'),
+
                     'raw_data': record
                 }
                 
