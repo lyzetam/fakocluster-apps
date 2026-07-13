@@ -61,9 +61,7 @@ class SleepPeriod(Base):
     hrv_min = Column(Float)
     hrv_stdev = Column(Float)
     respiratory_rate = Column(Float)
-
-    # Breathing
-    average_breath = Column(Float)
+    lowest_heart_rate = Column(Float)
 
     # Additional flags
     has_heart_rate_data = Column(Boolean)
