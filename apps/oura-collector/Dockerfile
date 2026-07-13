@@ -20,6 +20,8 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 # Copy application - paths relative to build context (./apps/oura-collector)
 COPY externalconnections/ ./externalconnections/
 COPY src/ ./src/
+COPY alembic/ ./alembic/
+COPY alembic.ini .
 
 # Set Python path - must include /app for externalconnections to be found
 ENV PYTHONPATH=/app
