@@ -199,10 +199,6 @@ class DataProcessor:
 
                     # MET metrics
                     'met_minutes': record.get('met_minutes'),
-                    'average_met_minutes': record.get('average_met_minutes'),
-                    'high_activity_met_minutes': record.get('high_activity_met_minutes'),
-                    'medium_activity_met_minutes': record.get('medium_activity_met_minutes'),
-                    'low_activity_met_minutes': record.get('low_activity_met_minutes'),
                     'sedentary_met_minutes': record.get('sedentary_met_minutes'),
 
                     # Goals
