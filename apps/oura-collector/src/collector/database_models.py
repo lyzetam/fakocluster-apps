@@ -115,7 +115,6 @@ class Activity(Base):
     date = Column(Date, unique=True, nullable=False)
     activity_score = Column(Integer)
     steps = Column(Integer)
-    distance_meters = Column(Integer)
     distance_km = Column(Float)
 
     # Calories
