@@ -5,7 +5,7 @@ import os
 import logging
 import schedule
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from typing import Optional, Dict, Any, List
 
 # Import configuration - use relative imports since we're in src/collector/
@@ -80,7 +80,7 @@ class OuraCollector:
                 discord_webhook_url=config.DISCORD_WEBHOOK_URL,
                 vault_path=config.OBSIDIAN_VAULT_PATH,
             )
-            self._last_report_date = None
+            self._load_last_report_date()
             logger.info(f"Daily health reporter initialized (will run at {config.DAILY_REPORT_HOUR}:00)")
         else:
             self.daily_reporter = None
@@ -602,7 +602,32 @@ class OuraCollector:
         finally:
             # Update health status
             self.health_status.update_collection(success, error_msg)
-    
+
+    def _load_last_report_date(self) -> None:
+        """Load the last report date from disk to persist across pod restarts."""
+        try:
+            report_state_file = "/tmp/last_daily_report.txt"
+            if os.path.exists(report_state_file):
+                with open(report_state_file, "r") as f:
+                    date_str = f.read().strip()
+                    self._last_report_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                    logger.info(f"Loaded last report date from disk: {self._last_report_date}")
+            else:
+                self._last_report_date = None
+        except Exception as e:
+            logger.warning(f"Failed to load last report date: {e}")
+            self._last_report_date = None
+
+    def _save_last_report_date(self, report_date: 'date') -> None:
+        """Save the last report date to disk to persist across pod restarts."""
+        try:
+            report_state_file = "/tmp/last_daily_report.txt"
+            with open(report_state_file, "w") as f:
+                f.write(report_date.strftime("%Y-%m-%d"))
+            logger.debug(f"Saved last report date to disk: {report_date}")
+        except Exception as e:
+            logger.warning(f"Failed to save last report date: {e}")
+
     def check_and_run_daily_report(self) -> None:
         """Check if it's time to run the daily report and run it if so.
 
@@ -624,7 +649,7 @@ class OuraCollector:
             logger.info(f"Running daily health report for yesterday ({today - timedelta(days=1)})")
             try:
                 results = self.daily_reporter.generate_and_publish()
-                self._last_report_date = today
+                self._save_last_report_date(today)
 
                 if results["discord"]:
                     logger.info("Daily report posted to Discord")
