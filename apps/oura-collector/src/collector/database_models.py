@@ -134,6 +134,10 @@ class Activity(Base):
 
     # MET metrics
     met_minutes = Column(Float)
+    average_met = Column(Float)
+    high_activity_met_minutes = Column(Float)
+    medium_activity_met_minutes = Column(Float)
+    low_activity_met_minutes = Column(Float)
 
     # Target metrics (NEW)
     target_meters = Column(Integer)

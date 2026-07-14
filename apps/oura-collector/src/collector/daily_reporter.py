@@ -123,7 +123,9 @@ class DailyHealthReporter:
                             "light_sleep_mins": int((sleep_period.light_hours or 0) * 60),
                             "efficiency": sleep_period.efficiency_percent,
                             "avg_hrv": sleep_period.hrv_avg,
-                            "lowest_hr": sleep_period.lowest_heart_rate,
+                            # lowest_heart_rate is often unmapped/NULL; heart_rate_min is the
+                            # real overnight resting-HR bpm. Fall back between them.
+                            "lowest_hr": sleep_period.lowest_heart_rate or sleep_period.heart_rate_min,
                         }
                 except Exception as e:
                     logger.warning(f"Error fetching sleep period data: {e}")
@@ -234,13 +236,18 @@ class DailyHealthReporter:
             emoji = self._score_emoji(readiness_score)
             lines.append(f"{emoji} **Readiness:** {readiness_score}/100 {trend}")
 
-            # HRV and HR
+            # HRV and HR. The readiness endpoint carries no bpm resting-HR (only a
+            # contributor score), so it's structurally NULL — fall back to the real
+            # overnight resting bpm from the sleep period.
             rhr = data["readiness"]["resting_hr"]
+            if rhr is None and data["sleep_period"]:
+                rhr = data["sleep_period"].get("lowest_hr")
+            rhr_str = f"{rhr} bpm" if rhr is not None else "n/a"
             if data["sleep_period"] and data["sleep_period"]["avg_hrv"]:
                 hrv = data["sleep_period"]["avg_hrv"]
-                lines.append(f"   └ Resting HR: {rhr} bpm | HRV: {hrv}ms")
+                lines.append(f"   └ Resting HR: {rhr_str} | HRV: {hrv}ms")
             else:
-                lines.append(f"   └ Resting HR: {rhr} bpm")
+                lines.append(f"   └ Resting HR: {rhr_str}")
 
         # Stress (if available)
         if data["stress"] and data["stress"]["day_summary"]:

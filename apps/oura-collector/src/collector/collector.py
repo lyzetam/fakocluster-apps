@@ -649,7 +649,8 @@ class OuraCollector:
             logger.info(f"Running daily health report for yesterday ({today - timedelta(days=1)})")
             try:
                 results = self.daily_reporter.generate_and_publish()
-                self._save_last_report_date(today)
+                self._last_report_date = today  # in-memory guard: stops the per-minute re-post loop
+                self._save_last_report_date(today)  # disk: best-effort dedup across restarts
 
                 if results["discord"]:
                     logger.info("Daily report posted to Discord")
