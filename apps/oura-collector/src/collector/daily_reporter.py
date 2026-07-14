@@ -121,8 +121,8 @@ class DailyHealthReporter:
                             "deep_sleep_mins": int((sleep_period.deep_hours or 0) * 60),
                             "rem_sleep_mins": int((sleep_period.rem_hours or 0) * 60),
                             "light_sleep_mins": int((sleep_period.light_hours or 0) * 60),
-                            "efficiency": sleep_period.efficiency,
-                            "avg_hrv": sleep_period.average_hrv,
+                            "efficiency": sleep_period.efficiency_percent,
+                            "avg_hrv": sleep_period.hrv_avg,
                             "lowest_hr": sleep_period.lowest_heart_rate,
                         }
                 except Exception as e:
