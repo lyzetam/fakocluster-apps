@@ -116,12 +116,11 @@ class DailyHealthReporter:
                         func.date(SleepPeriod.bedtime_start) == target_date - timedelta(days=1)
                     ).first()
                     if sleep_period:
-                        total_hours = (sleep_period.total_sleep_duration or 0) / 3600
                         data["sleep_period"] = {
-                            "total_hours": round(total_hours, 1),
-                            "deep_sleep_mins": (sleep_period.deep_sleep_duration or 0) // 60,
-                            "rem_sleep_mins": (sleep_period.rem_sleep_duration or 0) // 60,
-                            "light_sleep_mins": (sleep_period.light_sleep_duration or 0) // 60,
+                            "total_hours": round(sleep_period.total_sleep_hours or 0, 1),
+                            "deep_sleep_mins": int((sleep_period.deep_hours or 0) * 60),
+                            "rem_sleep_mins": int((sleep_period.rem_hours or 0) * 60),
+                            "light_sleep_mins": int((sleep_period.light_hours or 0) * 60),
                             "efficiency": sleep_period.efficiency,
                             "avg_hrv": sleep_period.average_hrv,
                             "lowest_hr": sleep_period.lowest_heart_rate,
@@ -536,13 +535,13 @@ class DailyHealthReporter:
                     func.date(SleepPeriod.bedtime_start) <= end_date
                 ).all()
                 for sp in sleep_periods:
-                    if sp.total_sleep_duration:
-                        data["sleep"]["durations"].append(sp.total_sleep_duration / 3600)
-                    if sp.deep_sleep_duration:
-                        data["sleep"]["deep_mins"].append(sp.deep_sleep_duration / 60)
-                    if sp.rem_sleep_duration:
-                        data["sleep"]["rem_mins"].append(sp.rem_sleep_duration / 60)
-                    if sp.average_hrv:
+                    if sp.total_sleep_hours:
+                        data["sleep"]["durations"].append(sp.total_sleep_hours)
+                    if sp.deep_hours:
+                        data["sleep"]["deep_mins"].append(sp.deep_hours * 60)
+                    if sp.rem_hours:
+                        data["sleep"]["rem_mins"].append(sp.rem_hours * 60)
+                    if sp.hrv_avg:
                         data["readiness"]["hrvs"].append(sp.average_hrv)
 
                 # Activity data
