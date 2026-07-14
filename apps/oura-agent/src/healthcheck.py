@@ -43,6 +43,10 @@ _health_state = {
     "last_poll": None,
 }
 
+# Global agent references (set by main.py)
+_agent = None
+_discord_client = None
+
 
 def update_health_state(
     database_ok: Optional[bool] = None,
@@ -56,6 +60,17 @@ def update_health_state(
         _health_state["discord_ok"] = discord_ok
     if last_poll is not None:
         _health_state["last_poll"] = last_poll
+
+
+def set_agent_dependencies(agent, discord_client):
+    """Set agent and Discord client for webhook processing.
+
+    Called by main.py after agents are initialized.
+    """
+    global _agent, _discord_client
+    _agent = agent
+    _discord_client = discord_client
+    logger.info("Agent dependencies set for webhook processing")
 
 
 @asynccontextmanager
@@ -163,22 +178,47 @@ async def discord_webhook(message: DiscordMessage):
         message: DiscordMessage with user_id, channel_id, content
 
     Returns:
-        {"status": "received", "message_id": "..."}
+        {"status": "ok", "response": "..."}
     """
     try:
-        logger.info(f"Webhook message from {message.username or message.user_id}: {message.content[:50]}")
+        if not _agent or not _discord_client:
+            raise HTTPException(
+                status_code=503,
+                detail="Agent not initialized yet"
+            )
 
-        # TODO: Connect to agent's process_message() here
-        # For now, just acknowledge
+        logger.info(
+            f"Webhook message from {message.username or message.user_id}: "
+            f"{message.content[:50]}..."
+        )
+
+        # Process message through supervisor agent
+        response = await _agent.process_message(
+            message=message.content,
+            user_id=message.user_id,
+            channel_id=message.channel_id,
+            session_id=None,
+        )
+
+        # Send response back to Discord
+        if response:
+            await _discord_client.send_health_response(
+                channel_id=message.channel_id,
+                user_id=message.user_id,
+                response_text=response,
+            )
+            logger.info(f"Sent response to Discord")
+        else:
+            logger.warning(f"Agent returned empty response")
+
         return {
-            "status": "received",
-            "message_id": "pending",
-            "content": message.content,
+            "status": "ok",
+            "response": response[:100] if response else "No response",
         }
 
     except Exception as e:
-        logger.error(f"Webhook error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        logger.error(f"Webhook error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 def run_health_server(host: str = "0.0.0.0", port: int = 8080):

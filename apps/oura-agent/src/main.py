@@ -19,7 +19,7 @@ from memory.long_term import LongTermMemory
 from memory.working import WorkingMemory, get_working_memory
 from src.agents.supervisor import SupervisorAgent
 from src.config import get_config, setup_logging
-from src.healthcheck import run_health_server_async, update_health_state
+from src.healthcheck import run_health_server_async, update_health_state, set_agent_dependencies
 
 logger = logging.getLogger(__name__)
 
@@ -260,6 +260,9 @@ async def main() -> int:
     try:
         # Update health state now that we're initialized
         update_health_state(database_ok=True, discord_ok=True)
+
+        # Set agent dependencies for webhook processing
+        set_agent_dependencies(agent=agent, discord_client=discord_client)
 
         # Start health server in background
         logger.info("Starting health check server on port 8080...")
