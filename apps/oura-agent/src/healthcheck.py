@@ -8,8 +8,10 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Optional
 
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Request, HTTPException
 from pydantic import BaseModel
+import hmac
+import hashlib
 
 from database.connection import test_connection
 from src.config import get_config
@@ -23,6 +25,15 @@ class HealthStatus(BaseModel):
     status: str
     database: str
     details: Optional[dict] = None
+
+
+class DiscordMessage(BaseModel):
+    """Discord webhook message payload."""
+
+    user_id: str
+    channel_id: str
+    content: str
+    username: Optional[str] = None
 
 
 # Global state for health checks
@@ -126,8 +137,48 @@ async def root():
     return {
         "service": "oura-health-agent",
         "status": "running",
-        "endpoints": ["/health", "/ready"],
+        "endpoints": ["/health", "/ready", "/webhook/discord"],
     }
+
+
+@app.post("/webhook/discord")
+async def discord_webhook(message: DiscordMessage):
+    """Discord webhook endpoint for receiving messages.
+
+    Instead of polling Discord, this webhook receives messages pushed
+    directly to the agent. Much simpler and instant response.
+
+    Usage:
+    ```
+    curl -X POST http://agent:8080/webhook/discord \
+      -H "Content-Type: application/json" \
+      -d '{
+        "user_id": "123456",
+        "channel_id": "789",
+        "content": "How did I sleep?"
+      }'
+    ```
+
+    Args:
+        message: DiscordMessage with user_id, channel_id, content
+
+    Returns:
+        {"status": "received", "message_id": "..."}
+    """
+    try:
+        logger.info(f"Webhook message from {message.username or message.user_id}: {message.content[:50]}")
+
+        # TODO: Connect to agent's process_message() here
+        # For now, just acknowledge
+        return {
+            "status": "received",
+            "message_id": "pending",
+            "content": message.content,
+        }
+
+    except Exception as e:
+        logger.error(f"Webhook error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 def run_health_server(host: str = "0.0.0.0", port: int = 8080):
