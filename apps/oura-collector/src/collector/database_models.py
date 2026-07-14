@@ -127,17 +127,13 @@ class Activity(Base):
     medium_activity_minutes = Column(Float)
     low_activity_minutes = Column(Float)
     sedentary_minutes = Column(Float)
-    sedentary_met_minutes = Column(Float)  # NEW
+    sedentary_met_minutes = Column(Float)
     non_wear_minutes = Column(Float)
     resting_time_minutes = Column(Float)
     total_active_minutes = Column(Float)
 
     # MET metrics
     met_minutes = Column(Float)
-    average_met_minutes = Column(Float)
-    high_activity_met_minutes = Column(Float)
-    medium_activity_met_minutes = Column(Float)
-    low_activity_met_minutes = Column(Float)
 
     # Target metrics (NEW)
     target_meters = Column(Integer)
