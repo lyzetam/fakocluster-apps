@@ -40,6 +40,9 @@ class SupervisorState(TypedDict):
         agent_outputs: Collected outputs from specialist agents
         final_response: Synthesized final response
         routing_decision: The routing decision made by the supervisor
+        synthesis_mode: "chat" (default) or "doctor" (Dr. Oura clinical briefing)
+        report_date: For doctor mode, the date being briefed
+        metrics_json: For doctor mode, the grounded metrics passed by the collector
     """
 
     messages: Annotated[Sequence[BaseMessage], add_messages]
@@ -49,6 +52,9 @@ class SupervisorState(TypedDict):
     agent_outputs: dict[str, str]
     final_response: str
     routing_decision: str
+    synthesis_mode: str
+    report_date: str
+    metrics_json: str
 
 
 # Routing prompt for the supervisor
@@ -247,6 +253,13 @@ class SupervisorAgent:
         # Node: Route the query
         async def route_query(state: SupervisorState) -> dict:
             """Determine which agent(s) should handle the query."""
+            # Doctor mode (daily briefing hand-off from the collector): skip LLM
+            # routing and fan out to every data-domain specialist.
+            if state.get("synthesis_mode") == "doctor":
+                specialists = ["sleep_analyst", "fitness_coach", "data_auditor"]
+                logger.info(f"Doctor mode: routing to {specialists}")
+                return {"next_agents": specialists, "routing_decision": "doctor"}
+
             messages = [
                 SystemMessage(content=ROUTING_PROMPT),
                 state["messages"][-1],  # User's message
@@ -329,19 +342,26 @@ class SupervisorAgent:
         async def synthesize_response(state: SupervisorState) -> dict:
             """Synthesize responses from specialists into a unified answer."""
             outputs = state.get("agent_outputs", {})
+            outputs_text = "\n\n".join(
+                f"### {name.replace('_', ' ').title()}\n{output}"
+                for name, output in outputs.items()
+            )
 
-            if len(outputs) == 1:
+            if state.get("synthesis_mode") == "doctor":
+                # Dr. Oura clinical briefing, grounded on the collector's metrics.
+                prompt = DOCTOR_SYNTHESIS_PROMPT.format(
+                    date=state.get("report_date", "today"),
+                    metrics=state.get("metrics_json", "{}"),
+                    agent_outputs=outputs_text,
+                )
+                response = await self.llm.ainvoke([SystemMessage(content=prompt)])
+                final = response.content
+            elif len(outputs) == 1:
                 # Single agent - use directly
                 final = list(outputs.values())[0]
             else:
                 # Multiple agents - synthesize
-                outputs_text = "\n\n".join(
-                    f"### {name.replace('_', ' ').title()}\n{output}"
-                    for name, output in outputs.items()
-                )
-
                 prompt = SYNTHESIS_PROMPT.format(agent_outputs=outputs_text)
-
                 response = await self.llm.ainvoke([
                     SystemMessage(content=prompt),
                 ])
@@ -437,32 +457,25 @@ class SupervisorAgent:
             f"other dates):\n\n{metrics_json}"
         )
 
-        # Involve the three data-domain specialists (memory_keeper is not relevant here)
-        specialists = ["sleep_analyst", "fitness_coach", "data_auditor"]
+        thread_id = f"daily-briefing-{user_id}-{date_str}"
+        initial_state = {
+            "messages": [HumanMessage(content=grounded_msg)],
+            "user_id": user_id,
+            "thread_id": thread_id,
+            "next_agents": [],
+            "agent_outputs": {},
+            "final_response": "",
+            "routing_decision": "",
+            "synthesis_mode": "doctor",       # drives route + synthesize nodes
+            "report_date": date_str,
+            "metrics_json": metrics_json,
+        }
+        config = {"configurable": {"thread_id": thread_id}}
 
-        async def call_specialist(name: str) -> tuple[str, str]:
-            agent = self.agents[name]
-            try:
-                result = await agent.invoke(
-                    messages=[HumanMessage(content=grounded_msg)],
-                    user_id=user_id,
-                    thread_id=f"daily-{date_str}:{name}",
-                )
-                return name, agent.extract_response(result)
-            except Exception as e:  # one specialist failing must not sink the briefing
-                logger.error(f"Doctor briefing: specialist {name} failed: {e}")
-                return name, f"(unavailable: {e})"
-
-        results = await asyncio.gather(*[call_specialist(n) for n in specialists])
-        outputs_text = "\n\n".join(
-            f"### {name.replace('_', ' ').title()}\n{output}" for name, output in results
-        )
-
-        prompt = DOCTOR_SYNTHESIS_PROMPT.format(
-            date=date_str, metrics=metrics_json, agent_outputs=outputs_text
-        )
-        response = await self.llm.ainvoke([SystemMessage(content=prompt)])
-        return response.content
+        # Hand off to the same route -> specialists -> synthesize graph; the doctor
+        # node produces the final briefing.
+        result = await self.graph.ainvoke(initial_state, config)
+        return result["final_response"]
 
     def get_thread_config(self, user_id: str, channel_id: str) -> dict:
         """Get LangGraph config for a conversation thread.
