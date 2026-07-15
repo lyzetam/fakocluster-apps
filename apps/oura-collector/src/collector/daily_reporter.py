@@ -11,7 +11,7 @@ from sqlalchemy import func
 
 from database_models import (
     Activity, DailySleep, Readiness, SleepPeriod,
-    Stress, DailySummary
+    Stress, DailySummary, SpO2, Resilience, CardiovascularAge
 )
 
 logger = logging.getLogger(__name__)
@@ -37,6 +37,11 @@ class DailyHealthReporter:
         self.discord_webhook_url = discord_webhook_url or os.getenv("DISCORD_HEALTH_WEBHOOK_URL")
         self.vault_path = vault_path or os.getenv("OBSIDIAN_VAULT_PATH", "/vault")
         self.health_notes_path = os.path.join(self.vault_path, "Landry", "health")
+        # oura-agent (Dr. Oura) daily-briefing endpoint, in-cluster by default
+        self.dr_agent_url = os.getenv(
+            "DR_AGENT_URL",
+            "http://oura-agent.oura-agent.svc.cluster.local:8080/daily-summary",
+        )
 
     def get_daily_data(self, target_date: date) -> Dict[str, Any]:
         """Fetch all health data for a specific date.
@@ -54,6 +59,9 @@ class DailyHealthReporter:
             "readiness": None,
             "sleep_period": None,
             "stress": None,
+            "spo2": None,
+            "resilience": None,
+            "cardiovascular": None,
             "previous_day": None,
         }
 
@@ -70,7 +78,10 @@ class DailyHealthReporter:
                             "deep_sleep_score": getattr(sleep, 'score_deep_sleep', None),
                             "rem_score": getattr(sleep, 'score_rem_sleep', None),
                             "efficiency_score": getattr(sleep, 'score_efficiency', None),
+                            "restfulness_score": getattr(sleep, 'score_restfulness', None),
+                            "latency_score": getattr(sleep, 'score_latency', None),
                             "timing_score": getattr(sleep, 'score_timing', None),
+                            "total_sleep_score": getattr(sleep, 'score_total_sleep', None),
                         }
                 except Exception as e:
                     logger.warning(f"Error fetching sleep data: {e}")
@@ -84,12 +95,20 @@ class DailyHealthReporter:
                         data["activity"] = {
                             "score": activity.activity_score,
                             "steps": activity.steps,
+                            "distance_km": getattr(activity, 'distance_km', None),
                             "calories": getattr(activity, 'calories_total', None),
                             "active_calories": getattr(activity, 'calories_active', None),
+                            "target_calories": getattr(activity, 'calories_target', None),
                             "sedentary_time": (getattr(activity, 'sedentary_minutes', 0) or 0) * 60,
                             "high_activity_time": (getattr(activity, 'high_activity_minutes', 0) or 0) * 60,
                             "medium_activity_time": (getattr(activity, 'medium_activity_minutes', 0) or 0) * 60,
                             "low_activity_time": (getattr(activity, 'low_activity_minutes', 0) or 0) * 60,
+                            "resting_time_min": getattr(activity, 'resting_time_minutes', None),
+                            "avg_met": getattr(activity, 'average_met', None),
+                            "met_minutes": getattr(activity, 'met_minutes', None),
+                            "target_meters": getattr(activity, 'target_meters', None),
+                            "meters_to_target": getattr(activity, 'meters_to_target', None),
+                            "inactivity_alerts": getattr(activity, 'inactivity_alerts', None),
                         }
                 except Exception as e:
                     logger.warning(f"Error fetching activity data: {e}")
@@ -104,13 +123,20 @@ class DailyHealthReporter:
                             "score": readiness.readiness_score,
                             "resting_hr": readiness.resting_heart_rate,
                             "hrv_balance": getattr(readiness, 'hrv_balance', None),
-                            "body_temperature": getattr(readiness, 'score_body_temperature', None),
-                            "recovery_index": getattr(readiness, 'score_recovery_index', None),
+                            "recovery_index": getattr(readiness, 'recovery_index', None),
+                            "temp_deviation": getattr(readiness, 'temperature_deviation', None),
+                            "temp_trend_deviation": getattr(readiness, 'temperature_trend_deviation', None),
+                            "score_body_temp": getattr(readiness, 'score_body_temperature', None),
+                            "score_hrv_balance": getattr(readiness, 'score_hrv_balance', None),
+                            "score_resting_hr": getattr(readiness, 'score_resting_heart_rate', None),
+                            "score_recovery_index": getattr(readiness, 'score_recovery_index', None),
+                            "score_sleep_balance": getattr(readiness, 'score_sleep_balance', None),
+                            "score_activity_balance": getattr(readiness, 'score_activity_balance', None),
                         }
                 except Exception as e:
                     logger.warning(f"Error fetching readiness data: {e}")
 
-                # Sleep period details (for duration, HRV)
+                # Sleep period details (for duration, HRV, respiratory)
                 try:
                     sleep_period = session.query(SleepPeriod).filter(
                         func.date(SleepPeriod.bedtime_start) == target_date - timedelta(days=1)
@@ -118,11 +144,18 @@ class DailyHealthReporter:
                     if sleep_period:
                         data["sleep_period"] = {
                             "total_hours": round(sleep_period.total_sleep_hours or 0, 1),
+                            "time_in_bed_hours": round(sleep_period.time_in_bed_hours or 0, 1),
                             "deep_sleep_mins": int((sleep_period.deep_hours or 0) * 60),
                             "rem_sleep_mins": int((sleep_period.rem_hours or 0) * 60),
                             "light_sleep_mins": int((sleep_period.light_hours or 0) * 60),
                             "efficiency": sleep_period.efficiency_percent,
+                            "latency_min": sleep_period.latency_minutes,
+                            "restless_periods": sleep_period.restless_periods,
                             "avg_hrv": sleep_period.hrv_avg,
+                            "max_hrv": getattr(sleep_period, 'hrv_max', None),
+                            "min_hrv": getattr(sleep_period, 'hrv_min', None),
+                            "respiratory_rate": getattr(sleep_period, 'respiratory_rate', None),
+                            "avg_hr": getattr(sleep_period, 'heart_rate_avg', None),
                             # lowest_heart_rate is often unmapped/NULL; heart_rate_min is the
                             # real overnight resting-HR bpm. Fall back between them.
                             "lowest_hr": sleep_period.lowest_heart_rate or sleep_period.heart_rate_min,
@@ -138,11 +171,46 @@ class DailyHealthReporter:
                     if stress:
                         data["stress"] = {
                             "day_summary": getattr(stress, 'day_summary', None),
-                            "stress_high": getattr(stress, 'stress_high', None),
-                            "recovery_high": getattr(stress, 'recovery_high', None),
+                            "stress_high_min": getattr(stress, 'stress_high_minutes', None),
+                            "recovery_high_min": getattr(stress, 'recovery_high_minutes', None),
+                            "stress_recovery_ratio": getattr(stress, 'stress_recovery_ratio', None),
                         }
                 except Exception as e:
                     logger.warning(f"Error fetching stress data: {e}")
+
+                # SpO2 (blood oxygen)
+                try:
+                    spo2 = session.query(SpO2).filter(SpO2.date == target_date).first()
+                    if spo2:
+                        data["spo2"] = {
+                            "avg_pct": getattr(spo2, 'spo2_percentage_avg', None),
+                            "breathing_disturbance_index": getattr(spo2, 'breathing_disturbance_index', None),
+                        }
+                except Exception as e:
+                    logger.warning(f"Error fetching spo2 data: {e}")
+
+                # Resilience
+                try:
+                    resilience = session.query(Resilience).filter(Resilience.date == target_date).first()
+                    if resilience:
+                        data["resilience"] = {
+                            "level": getattr(resilience, 'resilience_level', None),
+                            "sleep_recovery": getattr(resilience, 'sleep_recovery', None),
+                            "daytime_recovery": getattr(resilience, 'daytime_recovery', None),
+                            "stress": getattr(resilience, 'stress', None),
+                        }
+                except Exception as e:
+                    logger.warning(f"Error fetching resilience data: {e}")
+
+                # Cardiovascular age
+                try:
+                    cardio = session.query(CardiovascularAge).filter(CardiovascularAge.date == target_date).first()
+                    if cardio:
+                        data["cardiovascular"] = {
+                            "cardiovascular_age": getattr(cardio, 'cardiovascular_age', None),
+                        }
+                except Exception as e:
+                    logger.warning(f"Error fetching cardiovascular data: {e}")
 
                 # Previous day for comparison
                 try:
@@ -188,102 +256,147 @@ class DailyHealthReporter:
             return "🟠"
         return "🔴"
 
-    def format_discord_message(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Format data as a Discord embed.
+    @staticmethod
+    def _fmt(value: Any, suffix: str = "", nd: Optional[int] = None) -> str:
+        """Render a value or 'n/a' if missing, with optional rounding + suffix."""
+        if value is None:
+            return "n/a"
+        if nd is not None and isinstance(value, (int, float)):
+            value = round(value, nd)
+        return f"{value}{suffix}"
+
+    def format_discord_message(
+        self, data: Dict[str, Any], doctor_briefing: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Format data as one comprehensive Discord embed.
+
+        Dr. Oura's clinical briefing leads the description; every collected metric
+        is laid out in labelled fields below it.
 
         Args:
-            data: Health data dictionary
+            data: Enriched health data dictionary
+            doctor_briefing: The Dr. Oura narrative (from the oura-agent hand-off)
 
         Returns:
-            Discord webhook payload with embed
+            Discord webhook payload with a single rich embed
         """
         target_date = data["date"]
         date_str = target_date.strftime("%B %d, %Y")
+        f = self._fmt
 
-        # Build description
-        lines = []
+        sp = data.get("sleep_period") or {}
+        sl = data.get("sleep") or {}
+        act = data.get("activity") or {}
+        rd = data.get("readiness") or {}
+        st = data.get("stress") or {}
+        spo2 = data.get("spo2") or {}
+        res = data.get("resilience") or {}
+        cardio = data.get("cardiovascular") or {}
+        prev = data.get("previous_day") or {}
 
-        # Sleep
-        if data["sleep"] and data["sleep_period"]:
-            sleep_score = data["sleep"]["score"]
-            hours = data["sleep_period"]["total_hours"]
-            trend = self._format_trend(sleep_score, data["previous_day"].get("sleep_score"))
-            emoji = self._score_emoji(sleep_score)
-            lines.append(f"{emoji} **Sleep:** {sleep_score}/100 ({hours}h) {trend}")
+        # One-line score header + Dr. Oura briefing as the description
+        header_bits = []
+        if sl.get("score") is not None:
+            header_bits.append(f"{self._score_emoji(sl['score'])} Sleep {sl['score']}")
+        if act.get("score") is not None:
+            header_bits.append(f"{self._score_emoji(act['score'])} Activity {act['score']}")
+        if rd.get("score") is not None:
+            header_bits.append(f"{self._score_emoji(rd['score'])} Readiness {rd['score']}")
+        header = " · ".join(header_bits) if header_bits else "No scores available"
 
-            # Sleep details
-            deep = data["sleep_period"]["deep_sleep_mins"]
-            rem = data["sleep_period"]["rem_sleep_mins"]
-            lines.append(f"   └ Deep: {deep}min | REM: {rem}min")
+        if doctor_briefing:
+            description = f"**{header}**\n\n🩺 **Dr. Oura's Briefing**\n{doctor_briefing.strip()}"
+        else:
+            description = f"**{header}**\n\n_(Dr. Oura's briefing unavailable — showing metrics only.)_"
+        description = description[:4096]  # Discord embed description limit
 
-        # Activity
-        if data["activity"]:
-            activity_score = data["activity"]["score"]
-            steps = data["activity"]["steps"]
-            trend = self._format_trend(activity_score, data["previous_day"].get("activity_score"))
-            emoji = self._score_emoji(activity_score)
-            lines.append(f"{emoji} **Activity:** {activity_score}/100 ({steps:,} steps) {trend}")
+        fields = []
 
-            # Activity details
-            cals = data["activity"]["active_calories"]
-            high_mins = (data["activity"]["high_activity_time"] or 0) // 60
-            lines.append(f"   └ Active cal: {cals:,} | High activity: {high_mins}min")
+        # 🌙 Sleep
+        if sl or sp:
+            trend = self._format_trend(sl.get("score"), prev.get("sleep_score"))
+            val = (
+                f"Score **{f(sl.get('score'))}/100** {trend}\n"
+                f"Duration {f(sp.get('total_hours'),'h')} (in bed {f(sp.get('time_in_bed_hours'),'h')})\n"
+                f"Deep {f(sp.get('deep_sleep_mins'),'m')} · REM {f(sp.get('rem_sleep_mins'),'m')} · "
+                f"Light {f(sp.get('light_sleep_mins'),'m')}\n"
+                f"Efficiency {f(sp.get('efficiency'),'%')} · Latency {f(sp.get('latency_min'),'m')} · "
+                f"Restless {f(sp.get('restless_periods'))}"
+            )
+            fields.append({"name": "🌙 Sleep", "value": val[:1024], "inline": False})
 
-        # Readiness
-        if data["readiness"]:
-            readiness_score = data["readiness"]["score"]
-            trend = self._format_trend(readiness_score, data["previous_day"].get("readiness_score"))
-            emoji = self._score_emoji(readiness_score)
-            lines.append(f"{emoji} **Readiness:** {readiness_score}/100 {trend}")
+        # 🏃 Activity
+        if act:
+            trend = self._format_trend(act.get("score"), prev.get("activity_score"))
+            steps = act.get("steps")
+            steps_str = f"{steps:,}" if isinstance(steps, int) else "n/a"
+            high_m = (act.get("high_activity_time") or 0) // 60
+            med_m = (act.get("medium_activity_time") or 0) // 60
+            val = (
+                f"Score **{f(act.get('score'))}/100** {trend}\n"
+                f"Steps {steps_str} · Distance {f(act.get('distance_km'),'km',2)}\n"
+                f"Calories {f(act.get('calories'))} total / {f(act.get('active_calories'))} active "
+                f"(target {f(act.get('target_calories'))})\n"
+                f"High {high_m}m · Medium {med_m}m · Avg MET {f(act.get('avg_met'),'',2)}"
+            )
+            fields.append({"name": "🏃 Activity", "value": val[:1024], "inline": False})
 
-            # HRV and HR. The readiness endpoint carries no bpm resting-HR (only a
-            # contributor score), so it's structurally NULL — fall back to the real
-            # overnight resting bpm from the sleep period.
-            rhr = data["readiness"]["resting_hr"]
-            if rhr is None and data["sleep_period"]:
-                rhr = data["sleep_period"].get("lowest_hr")
-            rhr_str = f"{rhr} bpm" if rhr is not None else "n/a"
-            if data["sleep_period"] and data["sleep_period"]["avg_hrv"]:
-                hrv = data["sleep_period"]["avg_hrv"]
-                lines.append(f"   └ Resting HR: {rhr_str} | HRV: {hrv}ms")
-            else:
-                lines.append(f"   └ Resting HR: {rhr_str}")
+        # 💚 Readiness & vitals
+        if rd or sp:
+            trend = self._format_trend(rd.get("score"), prev.get("readiness_score"))
+            rhr = rd.get("resting_hr")
+            if rhr is None:
+                rhr = sp.get("lowest_hr")
+            val = (
+                f"Score **{f(rd.get('score'))}/100** {trend}\n"
+                f"Resting HR {f(rhr,' bpm')} · HRV {f(sp.get('avg_hrv'),' ms')} "
+                f"(min {f(sp.get('min_hrv'))} / max {f(sp.get('max_hrv'))})\n"
+                f"Respiratory {f(sp.get('respiratory_rate'),'/min',1)} · "
+                f"Temp dev {f(rd.get('temp_deviation'),'°C',2)}\n"
+                f"Recovery idx {f(rd.get('recovery_index'))} · HRV balance {f(rd.get('hrv_balance'))}"
+            )
+            fields.append({"name": "💚 Readiness & Vitals", "value": val[:1024], "inline": False})
 
-        # Stress (if available)
-        if data["stress"] and data["stress"]["day_summary"]:
-            stress_summary = data["stress"]["day_summary"]
-            lines.append(f"🧘 **Stress:** {stress_summary}")
+        # 🫀 Cardiovascular & SpO2
+        if cardio or spo2:
+            val = (
+                f"Cardiovascular age {f(cardio.get('cardiovascular_age'),' yrs')}\n"
+                f"SpO₂ {f(spo2.get('avg_pct'),'%',1)} · "
+                f"Breathing disturbance {f(spo2.get('breathing_disturbance_index'),'',2)}"
+            )
+            fields.append({"name": "🫀 Cardiovascular & SpO₂", "value": val[:1024], "inline": False})
 
-        description = "\n".join(lines) if lines else "No data available for this date."
+        # 🧘 Stress & Resilience
+        if st or res:
+            val = (
+                f"Stress: **{f(st.get('day_summary'))}** "
+                f"(high {f(st.get('stress_high_min'),'m')}, recovery {f(st.get('recovery_high_min'),'m')})\n"
+                f"Resilience: **{f(res.get('level'))}** · "
+                f"sleep-recovery {f(res.get('sleep_recovery'),'',1)} · "
+                f"daytime {f(res.get('daytime_recovery'),'',1)}"
+            )
+            fields.append({"name": "🧘 Stress & Resilience", "value": val[:1024], "inline": False})
 
-        # Determine embed color based on average score
-        scores = []
-        if data["sleep"]:
-            scores.append(data["sleep"]["score"])
-        if data["activity"]:
-            scores.append(data["activity"]["score"])
-        if data["readiness"]:
-            scores.append(data["readiness"]["score"])
-
+        # Color by average of the three primary scores
+        scores = [s for s in (sl.get("score"), act.get("score"), rd.get("score")) if s is not None]
         avg_score = sum(scores) / len(scores) if scores else 0
         if avg_score >= 85:
-            color = 5763719  # Green
+            color = 5763719
         elif avg_score >= 70:
-            color = 16776960  # Yellow
+            color = 16776960
         elif avg_score >= 50:
-            color = 16744448  # Orange
+            color = 16744448
         else:
-            color = 15158332  # Red
+            color = 15158332
 
         return {
             "embeds": [{
-                "title": f"📊 Daily Health Summary",
+                "title": f"📊 Daily Health Briefing — {date_str}",
                 "description": description,
                 "color": color,
-                "footer": {
-                    "text": f"{date_str} • oura-collector"
-                },
-                "timestamp": datetime.utcnow().isoformat() + "Z"
+                "fields": fields,
+                "footer": {"text": "Dr. Oura • oura-collector → oura-agent"},
+                "timestamp": datetime.utcnow().isoformat() + "Z",
             }]
         }
 
@@ -467,6 +580,38 @@ class DailyHealthReporter:
             logger.error(f"Failed to save to vault: {e}")
             return False
 
+    def _get_doctor_briefing(self, data: Dict[str, Any], target_date: date) -> Optional[str]:
+        """Hand off the day's metrics to the oura-agent (Dr. Oura) for a briefing.
+
+        Non-fatal: if the agent is unreachable or errors, returns None and the
+        report still posts with the metric fields only.
+
+        Args:
+            data: Enriched health data dictionary
+            target_date: The report date
+
+        Returns:
+            The Dr. Oura briefing text, or None on any failure
+        """
+        # Build a JSON-serializable metrics payload (drop the date object)
+        metrics = {k: v for k, v in data.items() if k not in ("date", "previous_day") and v}
+        metrics["previous_day"] = data.get("previous_day")
+        try:
+            resp = requests.post(
+                self.dr_agent_url,
+                json={"date": target_date.isoformat(), "metrics": metrics},
+                timeout=90,  # specialists + synthesis is several LLM calls
+            )
+            resp.raise_for_status()
+            summary = resp.json().get("summary")
+            if summary:
+                logger.info("Received Dr. Oura briefing from oura-agent")
+                return summary
+            logger.warning("oura-agent returned no summary")
+        except Exception as e:
+            logger.warning(f"Dr. Oura hand-off failed ({e}); posting metrics without briefing")
+        return None
+
     def generate_and_publish(self, target_date: Optional[date] = None) -> Dict[str, bool]:
         """Generate and publish the daily summary.
 
@@ -495,8 +640,11 @@ class DailyHealthReporter:
             logger.warning(f"No health data available for {target_date}")
             return results
 
+        # Hand off to the Dr. Oura agent for the clinical briefing
+        doctor_briefing = self._get_doctor_briefing(data, target_date)
+
         # Post to Discord
-        discord_payload = self.format_discord_message(data)
+        discord_payload = self.format_discord_message(data, doctor_briefing=doctor_briefing)
         results["discord"] = self.post_to_discord(discord_payload)
 
         # Save to vault
