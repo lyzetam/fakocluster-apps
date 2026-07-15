@@ -50,6 +50,9 @@ class DailyHealthReporter:
         self.obsidian_api_url = os.getenv("OBSIDIAN_API_URL", "").rstrip("/")
         self.obsidian_api_key = os.getenv("OBSIDIAN_API_KEY", "")
         self.obsidian_verify_tls = os.getenv("OBSIDIAN_VERIFY_TLS", "false").lower() == "true"
+        # If a pinned CA cert path is provided, verify against it (real MITM protection
+        # for the self-signed endpoint). Takes precedence over the boolean flag.
+        self.obsidian_ca_cert = os.getenv("OBSIDIAN_CA_CERT", "")
         # Vault path the note is written to (folder inside the vault)
         self.obsidian_vault_folder = os.getenv("OBSIDIAN_VAULT_FOLDER", "Health/Oura Daily")
 
@@ -591,7 +594,7 @@ class DailyHealthReporter:
                     "Authorization": f"Bearer {self.obsidian_api_key}",
                     "Content-Type": "text/markdown",
                 },
-                verify=self.obsidian_verify_tls,
+                verify=(self.obsidian_ca_cert if self.obsidian_ca_cert else self.obsidian_verify_tls),
                 timeout=20,
             )
             resp.raise_for_status()
