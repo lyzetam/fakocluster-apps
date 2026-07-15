@@ -353,7 +353,13 @@ class DailyHealthReporter:
                 f"(min {f(sp.get('min_hrv'))} / max {f(sp.get('max_hrv'))})\n"
                 f"Respiratory {f(sp.get('respiratory_rate'),'/min',1)} · "
                 f"Temp dev {f(rd.get('temp_deviation'),'°C',2)}\n"
-                f"Recovery idx {f(rd.get('recovery_index'))} · HRV balance {f(rd.get('hrv_balance'))}"
+                # Readiness contributor sub-scores (0-100), consistently labelled — the
+                # raw recovery_index / hrv_balance fields are frequently null, so we show
+                # the populated contributor scores instead.
+                f"Contributors → Recovery {f(rd.get('score_recovery_index'),'/100')} · "
+                f"HRV bal {f(rd.get('score_hrv_balance'),'/100')} · "
+                f"Sleep bal {f(rd.get('score_sleep_balance'),'/100')} · "
+                f"Temp {f(rd.get('score_body_temp'),'/100')}"
             )
             fields.append({"name": "💚 Readiness & Vitals", "value": val[:1024], "inline": False})
 
