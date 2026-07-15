@@ -4,6 +4,7 @@ Provides /health and /ready endpoints for K8s probes.
 """
 
 import asyncio
+import json
 import logging
 from contextlib import asynccontextmanager
 from typing import Optional
@@ -34,6 +35,17 @@ class DiscordMessage(BaseModel):
     channel_id: str
     content: str
     username: Optional[str] = None
+
+
+class DailySummaryRequest(BaseModel):
+    """Request for a Dr. Oura daily clinical briefing.
+
+    The oura-collector passes the full set of metrics it already gathered for
+    the date so the specialists analyze grounded data instead of re-querying.
+    """
+
+    date: str
+    metrics: dict
 
 
 # Global state for health checks
@@ -152,8 +164,31 @@ async def root():
     return {
         "service": "oura-health-agent",
         "status": "running",
-        "endpoints": ["/health", "/ready", "/webhook/discord"],
+        "endpoints": ["/health", "/ready", "/webhook/discord", "/daily-summary"],
     }
+
+
+@app.post("/daily-summary")
+async def daily_summary(req: DailySummaryRequest):
+    """Produce a Dr. Oura clinical briefing for a day's metrics.
+
+    Called by the oura-collector when building the daily health report. Routes
+    the metrics through the domain specialists, then Dr. Oura synthesizes.
+
+    Returns:
+        {"summary": "...clinical briefing..."}
+    """
+    if not _agent:
+        raise HTTPException(status_code=503, detail="Agent not initialized yet")
+    try:
+        metrics_json = json.dumps(req.metrics, default=str, indent=2)
+        summary = await _agent.generate_doctor_briefing(
+            date_str=req.date, metrics_json=metrics_json
+        )
+        return {"summary": summary}
+    except Exception as e:
+        logger.error(f"daily-summary error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/webhook/discord")

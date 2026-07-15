@@ -129,6 +129,36 @@ Given the specialist responses below, create a unified, helpful response for the
 Create a cohesive response that combines these specialist insights into a helpful, unified answer."""
 
 
+# Doctor synthesis prompt for the daily clinical briefing
+DOCTOR_SYNTHESIS_PROMPT = """You are Dr. Oura, an experienced physician reviewing a patient's \
+daily wearable-health data. The domain specialists below have each analyzed their area. \
+Using their analyses AND the raw metrics for {date}, write a concise clinical daily briefing.
+
+Structure your briefing with these sections (use markdown, keep it tight):
+
+**Assessment** — one or two sentences on the patient's overall state today.
+
+**What stands out** — the notable findings. Explicitly flag anything outside healthy ranges: \
+low HRV vs baseline, poor sleep efficiency (<85%) or short duration (<7h), elevated resting HR, \
+meaningful temperature deviation, low SpO2 (<95%), abnormal respiratory rate, low readiness/recovery.
+
+**Recommendations** — 1 to 3 specific, actionable steps for today/tonight, grounded in the data.
+
+Rules:
+- Cite the actual numbers (e.g. "HRV 18ms", "efficiency 87%").
+- Be warm but clinically precise.
+- This is wellness guidance, NOT medical diagnosis; if something looks genuinely concerning, \
+say it warrants attention from a real clinician.
+- If data is missing or stale, note it briefly rather than inventing values.
+
+## Raw metrics for {date}
+{metrics}
+
+## Specialist analyses
+{agent_outputs}
+"""
+
+
 class SupervisorAgent:
     """Orchestrator agent that routes queries to specialists.
 
@@ -380,6 +410,59 @@ class SupervisorAgent:
                 "I encountered an error processing your question. "
                 "Please try again or rephrase your question."
             )
+
+    async def generate_doctor_briefing(
+        self,
+        date_str: str,
+        metrics_json: str,
+        user_id: str = "daily-report",
+    ) -> str:
+        """Generate a physician-style daily briefing for the collector's report.
+
+        Routes the day's metrics through the domain specialists (grounded on the
+        provided data so they analyse the correct date), then has Dr. Oura
+        synthesize a clinical briefing.
+
+        Args:
+            date_str: The report date, e.g. "2026-07-13"
+            metrics_json: JSON string of all collected metrics for that date
+            user_id: Identifier for thread scoping
+
+        Returns:
+            The Dr. Oura clinical briefing text
+        """
+        grounded_msg = (
+            f"Analyze this patient's wearable-health data for {date_str} and give your "
+            f"domain-specific clinical read. Base your analysis on THIS data (do not query "
+            f"other dates):\n\n{metrics_json}"
+        )
+
+        # Involve the three data-domain specialists (memory_keeper is not relevant here)
+        specialists = ["sleep_analyst", "fitness_coach", "data_auditor"]
+
+        async def call_specialist(name: str) -> tuple[str, str]:
+            agent = self.agents[name]
+            try:
+                result = await agent.invoke(
+                    messages=[HumanMessage(content=grounded_msg)],
+                    user_id=user_id,
+                    thread_id=f"daily-{date_str}:{name}",
+                )
+                return name, agent.extract_response(result)
+            except Exception as e:  # one specialist failing must not sink the briefing
+                logger.error(f"Doctor briefing: specialist {name} failed: {e}")
+                return name, f"(unavailable: {e})"
+
+        results = await asyncio.gather(*[call_specialist(n) for n in specialists])
+        outputs_text = "\n\n".join(
+            f"### {name.replace('_', ' ').title()}\n{output}" for name, output in results
+        )
+
+        prompt = DOCTOR_SYNTHESIS_PROMPT.format(
+            date=date_str, metrics=metrics_json, agent_outputs=outputs_text
+        )
+        response = await self.llm.ainvoke([SystemMessage(content=prompt)])
+        return response.content
 
     def get_thread_config(self, user_id: str, channel_id: str) -> dict:
         """Get LangGraph config for a conversation thread.
