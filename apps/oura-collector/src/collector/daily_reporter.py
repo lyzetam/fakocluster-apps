@@ -43,6 +43,8 @@ class DailyHealthReporter:
             "DR_AGENT_URL",
             "http://oura-agent.oura-agent.svc.cluster.local:8080/daily-summary",
         )
+        # Shared bearer token for the authenticated /daily-summary endpoint
+        self.dr_agent_token = os.getenv("DR_AGENT_TOKEN", "")
         # Obsidian Local REST API (fronted by obsidian-api.landryzetam.net). When set,
         # the daily report is PUT into the vault via the API instead of a mounted path.
         self.obsidian_api_url = os.getenv("OBSIDIAN_API_URL", "").rstrip("/")
@@ -652,9 +654,13 @@ class DailyHealthReporter:
         metrics = {k: v for k, v in data.items() if k not in ("date", "previous_day") and v}
         metrics["previous_day"] = data.get("previous_day")
         try:
+            headers = {}
+            if self.dr_agent_token:
+                headers["Authorization"] = f"Bearer {self.dr_agent_token}"
             resp = requests.post(
                 self.dr_agent_url,
                 json={"date": target_date.isoformat(), "metrics": metrics},
+                headers=headers,
                 timeout=90,  # specialists + synthesis is several LLM calls
             )
             resp.raise_for_status()

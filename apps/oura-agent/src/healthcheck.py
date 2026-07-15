@@ -6,13 +6,13 @@ Provides /health and /ready endpoints for K8s probes.
 import asyncio
 import json
 import logging
+import os
 from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, Response, Request, HTTPException
 from pydantic import BaseModel
 import hmac
-import hashlib
 
 from database.connection import test_connection
 from src.config import get_config
@@ -72,6 +72,22 @@ def update_health_state(
         _health_state["discord_ok"] = discord_ok
     if last_poll is not None:
         _health_state["last_poll"] = last_poll
+
+
+def _require_auth(request: Request) -> None:
+    """Enforce a shared bearer token on mutating endpoints (fail closed).
+
+    Token comes from the WEBHOOK_AUTH_TOKEN env (an ExternalSecret). Compared
+    with hmac.compare_digest to avoid timing leaks. If no token is configured
+    the endpoint refuses to serve rather than running open.
+    """
+    expected = os.getenv("WEBHOOK_AUTH_TOKEN", "")
+    if not expected:
+        raise HTTPException(status_code=503, detail="Endpoint auth not configured")
+    header = request.headers.get("authorization", "")
+    provided = header[7:] if header.lower().startswith("bearer ") else ""
+    if not provided or not hmac.compare_digest(provided, expected):
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 def set_agent_dependencies(agent, discord_client):
@@ -169,15 +185,17 @@ async def root():
 
 
 @app.post("/daily-summary")
-async def daily_summary(req: DailySummaryRequest):
+async def daily_summary(req: DailySummaryRequest, request: Request):
     """Produce a Dr. Oura clinical briefing for a day's metrics.
 
     Called by the oura-collector when building the daily health report. Routes
     the metrics through the domain specialists, then Dr. Oura synthesizes.
+    Requires a shared bearer token.
 
     Returns:
         {"summary": "...clinical briefing..."}
     """
+    _require_auth(request)
     if not _agent:
         raise HTTPException(status_code=503, detail="Agent not initialized yet")
     try:
@@ -186,13 +204,15 @@ async def daily_summary(req: DailySummaryRequest):
             date_str=req.date, metrics_json=metrics_json
         )
         return {"summary": summary}
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"daily-summary error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal error")
 
 
 @app.post("/webhook/discord")
-async def discord_webhook(message: DiscordMessage):
+async def discord_webhook(message: DiscordMessage, request: Request):
     """Discord webhook endpoint for receiving messages.
 
     Instead of polling Discord, this webhook receives messages pushed
@@ -215,6 +235,7 @@ async def discord_webhook(message: DiscordMessage):
     Returns:
         {"status": "ok", "response": "..."}
     """
+    _require_auth(request)
     try:
         if not _agent or not _discord_client:
             raise HTTPException(
@@ -222,14 +243,24 @@ async def discord_webhook(message: DiscordMessage):
                 detail="Agent not initialized yet"
             )
 
+        # Only answer into the configured health channel — never an arbitrary
+        # caller-supplied channel (prevents health-data redirection).
+        config = get_config()
+        allowed_channel = str(config.discord.health_channel_id)
+        if str(message.channel_id) != allowed_channel:
+            raise HTTPException(status_code=403, detail="Channel not allowed")
+
+        # Cap content length to bound prompt-injection surface / cost
+        content = (message.content or "")[:1000]
+
         logger.info(
             f"Webhook message from {message.username or message.user_id}: "
-            f"{message.content[:50]}..."
+            f"{content[:50]}..."
         )
 
         # Process message through supervisor agent
         response = await _agent.process_message(
-            message=message.content,
+            message=content,
             user_id=message.user_id,
             channel_id=message.channel_id,
             session_id=None,
@@ -246,14 +277,13 @@ async def discord_webhook(message: DiscordMessage):
         else:
             logger.warning(f"Agent returned empty response")
 
-        return {
-            "status": "ok",
-            "response": response[:100] if response else "No response",
-        }
+        return {"status": "ok"}
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Webhook error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal error")
 
 
 def run_health_server(host: str = "0.0.0.0", port: int = 8080):
