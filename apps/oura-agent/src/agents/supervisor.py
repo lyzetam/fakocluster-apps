@@ -186,7 +186,7 @@ class SupervisorAgent:
         connection_string: str,
         embedding_service: EmbeddingService,
         api_key: str,
-        model: str = "claude-sonnet-4-20250514",
+        model: str = "claude-sonnet-4-5-20250929",
         checkpointer: Optional[AsyncPostgresSaver] = None,
     ):
         """Initialize the supervisor.
@@ -354,7 +354,12 @@ class SupervisorAgent:
                     metrics=state.get("metrics_json", "{}"),
                     agent_outputs=outputs_text,
                 )
-                response = await self.llm.ainvoke([SystemMessage(content=prompt)])
+                # Anthropic requires >=1 non-system message, so the instructions go
+                # in the system slot and a short user turn triggers generation.
+                response = await self.llm.ainvoke([
+                    SystemMessage(content=prompt),
+                    HumanMessage(content=f"Write the clinical daily briefing for {state.get('report_date', 'today')} now."),
+                ])
                 final = response.content
             elif len(outputs) == 1:
                 # Single agent - use directly
@@ -364,6 +369,7 @@ class SupervisorAgent:
                 prompt = SYNTHESIS_PROMPT.format(agent_outputs=outputs_text)
                 response = await self.llm.ainvoke([
                     SystemMessage(content=prompt),
+                    HumanMessage(content="Synthesize the specialist responses into one answer."),
                 ])
                 final = response.content
 

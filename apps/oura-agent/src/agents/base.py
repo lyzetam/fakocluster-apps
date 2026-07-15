@@ -58,7 +58,7 @@ class BaseAgent(ABC):
 
     def __init__(
         self,
-        model: str = "claude-sonnet-4-20250514",
+        model: str = "claude-sonnet-4-5-20250929",
         temperature: float = 0,
         max_tokens: int = 4096,
         api_key: str | None = None,

@@ -47,7 +47,7 @@ class LLMConfig:
     """LLM configuration for Claude Sonnet."""
 
     api_key: str
-    model: str = "claude-sonnet-4-20250514"
+    model: str = "claude-sonnet-4-5-20250929"
     temperature: float = 0.3  # Lower for accuracy in health responses
     max_tokens: int = 4096
 
@@ -149,7 +149,7 @@ def get_config() -> Config:
     # LLM config
     llm_config = LLMConfig(
         api_key=anthropic_secrets.get("api_key", ""),
-        model=os.getenv("LLM_MODEL", "claude-sonnet-4-20250514"),
+        model=os.getenv("LLM_MODEL", "claude-sonnet-4-5-20250929"),
         temperature=float(os.getenv("LLM_TEMPERATURE", "0.3")),
         max_tokens=int(os.getenv("LLM_MAX_TOKENS", "4096")),
     )
