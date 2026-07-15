@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 
 import requests
+from urllib.parse import quote
 from sqlalchemy import func
 
 from database_models import (
@@ -42,6 +43,13 @@ class DailyHealthReporter:
             "DR_AGENT_URL",
             "http://oura-agent.oura-agent.svc.cluster.local:8080/daily-summary",
         )
+        # Obsidian Local REST API (fronted by obsidian-api.landryzetam.net). When set,
+        # the daily report is PUT into the vault via the API instead of a mounted path.
+        self.obsidian_api_url = os.getenv("OBSIDIAN_API_URL", "").rstrip("/")
+        self.obsidian_api_key = os.getenv("OBSIDIAN_API_KEY", "")
+        self.obsidian_verify_tls = os.getenv("OBSIDIAN_VERIFY_TLS", "false").lower() == "true"
+        # Vault path the note is written to (folder inside the vault)
+        self.obsidian_vault_folder = os.getenv("OBSIDIAN_VAULT_FOLDER", "Health/Oura Daily")
 
     def get_daily_data(self, target_date: date) -> Dict[str, Any]:
         """Fetch all health data for a specific date.
@@ -554,8 +562,38 @@ class DailyHealthReporter:
             logger.error(f"Failed to post to Discord: {e}")
             return False
 
+    def _save_to_obsidian_api(self, markdown: str, target_date: date) -> bool:
+        """PUT the report into the Obsidian vault via the Local REST API.
+
+        Uses obsidian-api.landryzetam.net (creds from the obsidian/api secret).
+        Non-fatal: returns False on any failure so the Discord post still stands.
+        """
+        vault_path = f"{self.obsidian_vault_folder}/oura-{target_date.strftime('%Y-%m-%d')}.md"
+        # The REST API PUTs to /vault/<url-encoded path>
+        url = f"{self.obsidian_api_url}/vault/{quote(vault_path)}"
+        try:
+            resp = requests.put(
+                url,
+                data=markdown.encode("utf-8"),
+                headers={
+                    "Authorization": f"Bearer {self.obsidian_api_key}",
+                    "Content-Type": "text/markdown",
+                },
+                verify=self.obsidian_verify_tls,
+                timeout=20,
+            )
+            resp.raise_for_status()
+            logger.info(f"Daily report saved to Obsidian vault: {vault_path}")
+            return True
+        except Exception as e:
+            logger.warning(f"Obsidian API save failed ({e}); vault copy skipped")
+            return False
+
     def save_to_vault(self, markdown: str, target_date: date) -> bool:
-        """Save the markdown to Obsidian vault.
+        """Save the markdown to the Obsidian vault.
+
+        Prefers the Obsidian Local REST API (works from the cluster); falls back
+        to a mounted filesystem path if the API isn't configured.
 
         Args:
             markdown: Markdown content
@@ -564,18 +602,19 @@ class DailyHealthReporter:
         Returns:
             True if successful
         """
+        # Preferred path: Obsidian Local REST API
+        if self.obsidian_api_url and self.obsidian_api_key:
+            return self._save_to_obsidian_api(markdown, target_date)
+
+        # Fallback: mounted filesystem vault
         try:
-            # Create directory if it doesn't exist
             vault_dir = Path(self.health_notes_path)
             if not vault_dir.exists():
                 logger.warning(f"Vault path does not exist: {vault_dir}")
                 return False
 
-            # Create filename: YYYY-MM-DD-health.md
             filename = f"{target_date.strftime('%Y-%m-%d')}-health.md"
             filepath = vault_dir / filename
-
-            # Write the file
             with open(filepath, "w", encoding="utf-8") as f:
                 f.write(markdown)
 
