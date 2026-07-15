@@ -510,10 +510,10 @@ class DailyHealthReporter:
             lines.append(f"|--------|-------|")
             if data["stress"]["day_summary"]:
                 lines.append(f"| Day Summary | {data['stress']['day_summary']} |")
-            if data["stress"]["stress_high"]:
-                lines.append(f"| High Stress | {data['stress']['stress_high']} min |")
-            if data["stress"]["recovery_high"]:
-                lines.append(f"| High Recovery | {data['stress']['recovery_high']} min |")
+            if data["stress"].get("stress_high_min"):
+                lines.append(f"| High Stress | {data['stress']['stress_high_min']} min |")
+            if data["stress"].get("recovery_high_min"):
+                lines.append(f"| High Recovery | {data['stress']['recovery_high_min']} min |")
             lines.append(f"")
 
         # Footer
