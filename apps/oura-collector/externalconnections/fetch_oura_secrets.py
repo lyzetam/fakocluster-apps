@@ -1,6 +1,7 @@
 """Fetch Oura and PostgreSQL secrets from AWS Secrets Manager"""
 import json
 import logging
+import os
 import boto3
 from botocore.exceptions import ClientError
 
@@ -65,23 +66,31 @@ def get_oura_credentials(secret_name: str = "oura/api-credentials",
         "days_to_backfill": 7,
         "collect_all_endpoints": true
     }
+
+    Prefers the OURA_PERSONAL_ACCESS_TOKEN env var (delivered by the
+    external-secrets controller); falls back to AWS only if absent.
     """
+    token = os.getenv("OURA_PERSONAL_ACCESS_TOKEN")
+    if token:
+        return {"oura_personal_access_token": token}
     return get_secret(secret_name, region_name)
 
 def get_postgres_credentials(secret_name: str = "postgres/app-user",
                            region_name: str = "us-east-1") -> dict:
     """
-    Fetch PostgreSQL credentials from AWS Secrets Manager.
-    
-    Expected secret format:
-    {
-        "username": "your_username",
-        "password": "your_password",
-        "host": "your-database-host.region.rds.amazonaws.com",
-        "port": 5432,
-        "database": "oura_health"
-    }
+    Fetch PostgreSQL credentials.
+
+    Prefers env vars (DATABASE_USER/PASSWORD/HOST/PORT/NAME, delivered by the
+    external-secrets controller + configmap); falls back to AWS only if absent.
     """
+    if os.getenv("DATABASE_USER") and os.getenv("DATABASE_PASSWORD") and os.getenv("DATABASE_HOST"):
+        return {
+            "username": os.getenv("DATABASE_USER"),
+            "password": os.getenv("DATABASE_PASSWORD"),
+            "host": os.getenv("DATABASE_HOST"),
+            "port": os.getenv("DATABASE_PORT", "5432"),
+            "database": os.getenv("DATABASE_NAME", "oura"),
+        }
     return get_secret(secret_name, region_name)
 
 def build_postgres_connection_string(credentials: dict) -> str:

@@ -59,17 +59,16 @@ def get_discord_secrets(secret_name: str = "oura-agent/discord") -> dict:
         "health_channel_id": "1449859614295199744"
     }
 
-    Falls back to environment variables if AWS fetch fails.
+    Prefers environment variables (delivered by the external-secrets controller),
+    falling back to a direct AWS Secrets Manager fetch only if they're absent.
     """
-    try:
-        return get_secret(secret_name)
-    except Exception as e:
-        logger.warning(f"Could not fetch Discord secrets from AWS: {e}")
+    if os.getenv("DISCORD_BOT_TOKEN"):
         return {
             "bot_token": os.getenv("DISCORD_BOT_TOKEN"),
             "guild_id": os.getenv("DISCORD_GUILD_ID"),
             "health_channel_id": os.getenv("DISCORD_HEALTH_CHANNEL_ID"),
         }
+    return get_secret(secret_name)
 
 
 def get_anthropic_secrets(secret_name: str = "oura-agent/anthropic") -> dict:
@@ -80,13 +79,12 @@ def get_anthropic_secrets(secret_name: str = "oura-agent/anthropic") -> dict:
         "api_key": "sk-ant-..."
     }
 
-    Falls back to environment variables if AWS fetch fails.
+    Prefers the ANTHROPIC_API_KEY env var (from the external-secrets controller),
+    falling back to a direct AWS Secrets Manager fetch only if it's absent.
     """
-    try:
-        return get_secret(secret_name)
-    except Exception as e:
-        logger.warning(f"Could not fetch Anthropic secrets from AWS: {e}")
+    if os.getenv("ANTHROPIC_API_KEY"):
         return {"api_key": os.getenv("ANTHROPIC_API_KEY")}
+    return get_secret(secret_name)
 
 
 def get_database_secrets(secret_name: str = "postgres/app-user") -> dict:
@@ -126,13 +124,15 @@ def get_ollama_secrets(secret_name: str = "ollama/endpoint") -> dict:
         "base_url": "http://ollama.ai-ml.svc.cluster.local:11434"
     }
 
-    Falls back to environment variables if AWS fetch fails.
+    Prefers the OLLAMA_BASE_URL env var, falling back to AWS only if absent.
     """
+    if os.getenv("OLLAMA_BASE_URL"):
+        return {"base_url": os.getenv("OLLAMA_BASE_URL")}
     try:
         return get_secret(secret_name)
     except Exception as e:
         logger.warning(f"Could not fetch Ollama secrets from AWS: {e}")
-        return {"base_url": os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")}
+        return {"base_url": "http://localhost:11434"}
 
 
 def build_postgres_connection_string(credentials: dict) -> str:
