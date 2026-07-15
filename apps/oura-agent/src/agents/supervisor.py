@@ -14,8 +14,8 @@ import asyncio
 import logging
 from typing import Any, Literal, Optional, Sequence, TypedDict, Annotated
 
-from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from src.llm_factory import build_chat_llm
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
@@ -203,10 +203,10 @@ class SupervisorAgent:
         self.model = model
         self.checkpointer = checkpointer
 
-        # Initialize LLM for routing and synthesis
-        self.llm = ChatAnthropic(
-            api_key=api_key,
+        # Initialize LLM for routing and synthesis (provider from LLM_PROVIDER)
+        self.llm = build_chat_llm(
             model=model,
+            api_key=api_key,
             temperature=0,
             max_tokens=4096,
         )

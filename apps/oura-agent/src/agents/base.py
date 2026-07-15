@@ -8,8 +8,8 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Annotated, Any, Literal, Sequence, TypedDict
 
-from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage, BaseMessage, SystemMessage
+from src.llm_factory import build_chat_llm
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
@@ -75,16 +75,13 @@ class BaseAgent(ABC):
         self.temperature = temperature
         self.max_tokens = max_tokens
 
-        # Initialize LLM
-        llm_kwargs = {
-            "model": model,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-        }
-        if api_key:
-            llm_kwargs["api_key"] = api_key
-
-        self.llm = ChatAnthropic(**llm_kwargs)
+        # Initialize LLM (provider selected by LLM_PROVIDER env)
+        self.llm = build_chat_llm(
+            model=model,
+            api_key=api_key,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
 
         # Get tools and bind to LLM
         self.tools = self.get_tools()
