@@ -414,11 +414,12 @@ class DailyHealthReporter:
             }]
         }
 
-    def format_markdown(self, data: Dict[str, Any]) -> str:
+    def format_markdown(self, data: Dict[str, Any], doctor_briefing: Optional[str] = None) -> str:
         """Format data as Obsidian markdown.
 
         Args:
             data: Health data dictionary
+            doctor_briefing: The Dr. Oura clinical briefing (included as a section)
 
         Returns:
             Markdown string for Obsidian note
@@ -446,6 +447,15 @@ class DailyHealthReporter:
         lines.append(f"")
         lines.append(f"# Daily Health Summary - {date_display}")
         lines.append(f"")
+
+        # Dr. Oura's clinical briefing (the interpretive summary) leads the note
+        if doctor_briefing:
+            lines.append(f"## 🩺 Dr. Oura's Briefing")
+            lines.append(f"")
+            lines.append(doctor_briefing.strip())
+            lines.append(f"")
+            lines.append(f"---")
+            lines.append(f"")
 
         # Sleep Section
         lines.append(f"## 😴 Sleep")
@@ -692,8 +702,8 @@ class DailyHealthReporter:
         discord_payload = self.format_discord_message(data, doctor_briefing=doctor_briefing)
         results["discord"] = self.post_to_discord(discord_payload)
 
-        # Save to vault
-        markdown = self.format_markdown(data)
+        # Save to vault (same briefing as the Discord post)
+        markdown = self.format_markdown(data, doctor_briefing=doctor_briefing)
         results["vault"] = self.save_to_vault(markdown, target_date)
 
         return results
