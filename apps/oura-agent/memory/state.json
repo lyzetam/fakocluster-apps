@@ -1,0 +1,53 @@
+{
+  "agent_state": {
+    "version": "1.0",
+    "last_heartbeat": "2026-07-13T16:30:00Z",
+    "alerts": {
+      "sync_alerts": {
+        "last_alert": "2026-07-11T10:15:00Z",
+        "threshold_days": 3,
+        "alerted_users": {}
+      },
+      "fatigue_alerts": {
+        "last_alert": "2026-07-12T14:20:00Z",
+        "threshold_hrv_drop_percent": 20,
+        "alerted_users": {}
+      },
+      "recovery_alerts": {
+        "last_alert": null,
+        "threshold_readiness": 40,
+        "alerted_users": {}
+      }
+    },
+    "tracking": {
+      "total_messages_processed": 42,
+      "specialist_calls": {
+        "sleep_analyst": 15,
+        "activity_specialist": 12,
+        "readiness_advisor": 10,
+        "heart_health_monitor": 3,
+        "stress_manager": 2,
+        "recovery_specialist": 4,
+        "memory_keeper": 1,
+        "data_auditor": 2
+      },
+      "avg_response_time_ms": 1250,
+      "error_count": 0
+    },
+    "users": {
+      "123456789": {
+        "last_interaction": "2026-07-13T15:45:00Z",
+        "interaction_count": 8,
+        "last_alert": "2026-07-12T09:30:00Z",
+        "specialist_preferences": ["sleep_analyst", "readiness_advisor"],
+        "known_baselines": {
+          "hrv_baseline_ms": 42,
+          "resting_hr_baseline": 58,
+          "sleep_target_hours": 7.5,
+          "activity_target_steps": 10000
+        }
+      }
+    },
+    "notes": "This state file tracks what the agent has already communicated to avoid repeating alerts and personalizes responses based on user history."
+  }
+}

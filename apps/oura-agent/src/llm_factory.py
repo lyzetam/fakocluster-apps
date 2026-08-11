@@ -75,11 +75,18 @@ def build_chat_llm(
         base_url = _pick_ollama_url(urls)
         ollama_model = os.getenv("OLLAMA_CHAT_MODEL", DEFAULT_OLLAMA_MODEL)
         logger.info(f"LLM provider=ollama model={ollama_model} url={base_url}")
+        # The APISIX gateway authenticates callers with a key-auth header.
+        # client_kwargs is passed through to the underlying ollama client;
+        # ChatOllama has no first-class auth argument. An empty key leaves the
+        # headers unset, so this still works against a bare Ollama node.
+        api_key = os.getenv("OLLAMA_API_KEY", "").strip()
+        client_kwargs = {"headers": {"apikey": api_key}} if api_key else {}
         return ChatOllama(
             base_url=base_url,
             model=ollama_model,
             temperature=temperature,
             num_predict=max_tokens,  # Ollama's name for max output tokens
+            client_kwargs=client_kwargs,
         )
 
     # Default: Anthropic
