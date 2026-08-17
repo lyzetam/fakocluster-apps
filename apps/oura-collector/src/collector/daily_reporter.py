@@ -2,6 +2,7 @@
 
 import logging
 import os
+import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Dict, Any, List, Optional
@@ -577,32 +578,60 @@ class DailyHealthReporter:
             logger.error(f"Failed to post to Discord: {e}")
             return False
 
+    # The host serving the Obsidian Local REST API (mm1) sits on a marginal
+    # WiFi link (-80dBm, "Poor" AP/client balance per UniFi) — root-caused
+    # 2026-08-17 after Health/Oura Daily/ went stale for five weeks. One
+    # attempt in six succeeds on a bad link; that isn't rare enough to skip
+    # retrying. Moving mm1 to Ethernet or closer to an AP is out of scope —
+    # it stays on WiFi by design — so this retries through the flakiness
+    # instead of trying to fix the radio link.
+    OBSIDIAN_SAVE_RETRIES = 4
+    OBSIDIAN_SAVE_BACKOFF_BASE = 2  # seconds: 2, 4, 8, 16
+
     def _save_to_obsidian_api(self, markdown: str, target_date: date) -> bool:
         """PUT the report into the Obsidian vault via the Local REST API.
 
         Uses obsidian-api.landryzetam.net (creds from the obsidian/api secret).
         Non-fatal: returns False on any failure so the Discord post still stands.
+        Retries with backoff — see OBSIDIAN_SAVE_RETRIES comment above.
         """
         vault_path = f"{self.obsidian_vault_folder}/oura-{target_date.strftime('%Y-%m-%d')}.md"
         # The REST API PUTs to /vault/<url-encoded path>
         url = f"{self.obsidian_api_url}/vault/{quote(vault_path)}"
-        try:
-            resp = requests.put(
-                url,
-                data=markdown.encode("utf-8"),
-                headers={
-                    "Authorization": f"Bearer {self.obsidian_api_key}",
-                    "Content-Type": "text/markdown",
-                },
-                verify=(self.obsidian_ca_cert if self.obsidian_ca_cert else self.obsidian_verify_tls),
-                timeout=20,
-            )
-            resp.raise_for_status()
-            logger.info(f"Daily report saved to Obsidian vault: {vault_path}")
-            return True
-        except Exception as e:
-            logger.warning(f"Obsidian API save failed ({e}); vault copy skipped")
-            return False
+
+        last_error = None
+        for attempt in range(1, self.OBSIDIAN_SAVE_RETRIES + 1):
+            try:
+                resp = requests.put(
+                    url,
+                    data=markdown.encode("utf-8"),
+                    headers={
+                        "Authorization": f"Bearer {self.obsidian_api_key}",
+                        "Content-Type": "text/markdown",
+                    },
+                    verify=(self.obsidian_ca_cert if self.obsidian_ca_cert else self.obsidian_verify_tls),
+                    timeout=20,
+                )
+                resp.raise_for_status()
+                if attempt > 1:
+                    logger.info(f"Obsidian API save succeeded on attempt {attempt}/{self.OBSIDIAN_SAVE_RETRIES}")
+                logger.info(f"Daily report saved to Obsidian vault: {vault_path}")
+                return True
+            except Exception as e:
+                last_error = e
+                if attempt < self.OBSIDIAN_SAVE_RETRIES:
+                    wait = self.OBSIDIAN_SAVE_BACKOFF_BASE * (2 ** (attempt - 1))
+                    logger.warning(
+                        f"Obsidian API save failed on attempt {attempt}/{self.OBSIDIAN_SAVE_RETRIES} "
+                        f"({e}); retrying in {wait}s"
+                    )
+                    time.sleep(wait)
+
+        logger.warning(
+            f"Obsidian API save failed after {self.OBSIDIAN_SAVE_RETRIES} attempts ({last_error}); "
+            f"vault copy skipped"
+        )
+        return False
 
     def save_to_vault(self, markdown: str, target_date: date) -> bool:
         """Save the markdown to the Obsidian vault.
