@@ -8,6 +8,9 @@ Env:
                           default "glm-4.7-flash:latest" — present on ms1/ms2/ms3)
     OLLAMA_CHAT_BASE_URLS comma-separated Ollama endpoints tried in order until one
                           responds (default the ms1/ms2/ms3 homelab nodes)
+    OLLAMA_REASONING      "true" to let the model think before answering (default
+                          off: glm-4.7-flash spent all 4096 output tokens thinking
+                          and returned an empty briefing, 2026-09-23)
 
 Keeping this in one place means supervisor + specialists all honour the same
 switch, so flipping LLM_PROVIDER=ollama moves the entire briefing pipeline
@@ -86,6 +89,7 @@ def build_chat_llm(
             model=ollama_model,
             temperature=temperature,
             num_predict=max_tokens,  # Ollama's name for max output tokens
+            reasoning=os.getenv("OLLAMA_REASONING", "false").strip().lower() in ("1", "true", "yes"),
             client_kwargs=client_kwargs,
         )
 
