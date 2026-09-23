@@ -6,9 +6,11 @@ multi-turn conversations.
 """
 
 import logging
-from typing import Optional, Any
+from typing import Optional
 
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+from psycopg.rows import dict_row
+from psycopg_pool import AsyncConnectionPool
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +46,7 @@ class WorkingMemory:
         """
         self.connection_string = connection_string
         self._checkpointer: Optional[AsyncPostgresSaver] = None
-        self._context_manager: Optional[Any] = None
+        self._pool: Optional[AsyncConnectionPool] = None
 
     async def get_checkpointer(self) -> AsyncPostgresSaver:
         """Get or create the async checkpointer.
@@ -66,14 +68,21 @@ class WorkingMemory:
             logger.info("Working memory already initialized")
             return
 
-        # from_conn_string returns an async context manager
-        # We need to enter it and keep it alive
-        self._context_manager = AsyncPostgresSaver.from_conn_string(
-            self.connection_string
+        # A pool, not one connection held for the life of the pod: Postgres
+        # drops idle connections, and a lone connection never came back
+        # ("the connection is closed" on every briefing until a restart).
+        # check_connection pings each connection before handing it out and
+        # replaces a dead one.
+        self._pool = AsyncConnectionPool(
+            self.connection_string,
+            min_size=1,
+            max_size=4,
+            open=False,
+            check=AsyncConnectionPool.check_connection,
+            kwargs={"autocommit": True, "prepare_threshold": 0, "row_factory": dict_row},
         )
-        # Enter the context manager to get the actual checkpointer
-        self._checkpointer = await self._context_manager.__aenter__()
-        # Setup creates the tables
+        await self._pool.open(wait=True)
+        self._checkpointer = AsyncPostgresSaver(self._pool)
         await self._checkpointer.setup()
         logger.info("Working memory checkpointer initialized")
         logger.info("Working memory tables created/verified")
@@ -105,12 +114,13 @@ class WorkingMemory:
         """
         try:
             thread_id = create_thread_id(user_id, channel_id)
-            checkpointer = await self.get_checkpointer()
+            if self._pool is None:
+                raise RuntimeError("WorkingMemory not initialized. Call setup() first.")
 
             # Delete all checkpoints for this thread
             # Note: This depends on LangGraph's internal table structure
             # A cleaner approach would be to use LangGraph's API if available
-            async with checkpointer.conn.cursor() as cur:
+            async with self._pool.connection() as conn, conn.cursor() as cur:
                 await cur.execute(
                     "DELETE FROM checkpoints WHERE thread_id = %s",
                     (thread_id,),
@@ -128,16 +138,15 @@ class WorkingMemory:
             return False
 
     async def close(self) -> None:
-        """Close the checkpointer connection."""
-        if self._context_manager is not None:
+        """Close the checkpointer's connection pool."""
+        if self._pool is not None:
             try:
-                # Exit the async context manager to close connections
-                await self._context_manager.__aexit__(None, None, None)
-                logger.info("Working memory context manager closed")
+                await self._pool.close()
+                logger.info("Working memory pool closed")
             except Exception as e:
-                logger.warning(f"Error closing working memory context: {e}")
+                logger.warning(f"Error closing working memory pool: {e}")
             finally:
-                self._context_manager = None
+                self._pool = None
                 self._checkpointer = None
                 logger.info("Working memory closed")
 
