@@ -695,8 +695,10 @@ class DailyHealthReporter:
                 headers=headers,
                 # Specialists + synthesis is several LLM calls. On the homelab
                 # Ollama model a full briefing measured 345s (2026-09-23), so
-                # 90s dropped every briefing. Once a day, so a long wait is fine.
-                timeout=600,
+                # 90s dropped every briefing. The agent also retries once on a
+                # blank reply, so allow two full runs. Once a day; the health
+                # check tolerates 2h, so a long wait is fine.
+                timeout=1200,
             )
             resp.raise_for_status()
             summary = resp.json().get("summary")

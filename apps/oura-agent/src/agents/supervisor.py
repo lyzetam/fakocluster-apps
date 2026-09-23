@@ -29,6 +29,26 @@ from src.agents.sleep_analyst import SleepAnalystAgent
 logger = logging.getLogger(__name__)
 
 
+async def invoke_nonempty(llm: Any, messages: Sequence[BaseMessage], attempts: int = 2) -> str:
+    """Invoke the LLM, retrying when the reply text is blank.
+
+    The homelab Ollama model sometimes returns an empty string with no error
+    (one real briefing in three on 2026-09-23), which would ship a daily report
+    with no briefing. Returns "" only if every attempt came back blank.
+    """
+    content = ""
+    for attempt in range(1, attempts + 1):
+        response = await llm.ainvoke(messages)
+        content = response.content if isinstance(response.content, str) else str(response.content or "")
+        if content.strip():
+            return content
+        logger.warning(
+            "LLM returned a blank reply (attempt %d/%d, metadata=%s)",
+            attempt, attempts, getattr(response, "response_metadata", {}),
+        )
+    return content
+
+
 class SupervisorState(TypedDict):
     """State for supervisor orchestration.
 
@@ -356,11 +376,10 @@ class SupervisorAgent:
                 )
                 # Anthropic requires >=1 non-system message, so the instructions go
                 # in the system slot and a short user turn triggers generation.
-                response = await self.llm.ainvoke([
+                final = await invoke_nonempty(self.llm, [
                     SystemMessage(content=prompt),
                     HumanMessage(content=f"Write the clinical daily briefing for {state.get('report_date', 'today')} now."),
                 ])
-                final = response.content
             elif len(outputs) == 1:
                 # Single agent - use directly
                 final = list(outputs.values())[0]
