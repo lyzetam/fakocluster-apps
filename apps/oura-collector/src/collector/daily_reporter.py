@@ -693,7 +693,10 @@ class DailyHealthReporter:
                 self.dr_agent_url,
                 json={"date": target_date.isoformat(), "metrics": metrics},
                 headers=headers,
-                timeout=90,  # specialists + synthesis is several LLM calls
+                # Specialists + synthesis is several LLM calls. On the homelab
+                # Ollama model a full briefing measured 345s (2026-09-23), so
+                # 90s dropped every briefing. Once a day, so a long wait is fine.
+                timeout=600,
             )
             resp.raise_for_status()
             summary = resp.json().get("summary")
