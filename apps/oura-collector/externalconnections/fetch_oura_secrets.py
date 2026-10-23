@@ -116,4 +116,4 @@ def build_postgres_connection_string(credentials: dict) -> str:
     from urllib.parse import quote_plus
     encoded_password = quote_plus(password)
     
-    return f"postgresql://{username}:{encoded_password}@{host}:{port}/{database}"
+    return f"postgresql+psycopg2://{username}:{encoded_password}@{host}:{port}/{database}"
