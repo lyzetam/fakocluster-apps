@@ -52,7 +52,7 @@ def run_migrations_offline() -> None:
         db_name = os.environ.get("DATABASE_NAME", "oura_health")
         db_user = os.environ.get("DATABASE_USER", "postgres")
         db_pass = os.environ.get("DATABASE_PASSWORD", "")
-        url = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+        url = f"postgresql+psycopg2://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
 
     context.configure(
         url=url,
@@ -81,7 +81,7 @@ def run_migrations_online() -> None:
         db_name = os.environ.get("DATABASE_NAME", "oura_health")
         db_user = os.environ.get("DATABASE_USER", "postgres")
         db_pass = os.environ.get("DATABASE_PASSWORD", "")
-        configuration["sqlalchemy.url"] = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+        configuration["sqlalchemy.url"] = f"postgresql+psycopg2://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
 
     connectable = engine_from_config(
         configuration,
